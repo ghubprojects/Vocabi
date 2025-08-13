@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Vocabi.Domain\Vocabi.Domain.csproj" />
+    <ProjectReference Include="..\Vocabi.Shared\Vocabi.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vocabi.Application", "Vocab
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vocabi.Infrastructure", "Vocabi.Infrastructure\Vocabi.Infrastructure.csproj", "{AE0121B2-43B4-4A12-98DB-E848C7BB9D3C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vocabi.Shared", "Vocabi.Shared\Vocabi.Shared.csproj", "{80E4D7BC-60E4-42BE-A135-216944BCA55E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{AE0121B2-43B4-4A12-98DB-E848C7BB9D3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE0121B2-43B4-4A12-98DB-E848C7BB9D3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE0121B2-43B4-4A12-98DB-E848C7BB9D3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80E4D7BC-60E4-42BE-A135-216944BCA55E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80E4D7BC-60E4-42BE-A135-216944BCA55E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80E4D7BC-60E4-42BE-A135-216944BCA55E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80E4D7BC-60E4-42BE-A135-216944BCA55E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

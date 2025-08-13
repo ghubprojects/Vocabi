@@ -1,5 +1,11 @@
-﻿namespace Vocabi.Domain.Aggregates.MediaFiles;
+﻿using Vocabi.Domain.SeedWork;
 
-public interface IMediaFileRepository
+namespace Vocabi.Domain.Aggregates.MediaFiles;
+
+public interface IMediaFileRepository : IRepository<MediaFile>
 {
+    Task AddAsync(MediaFile entity);
+    Task AddRangeAsync(IEnumerable<MediaFile> entities);
+    Task UpdateAsync(MediaFile entity);
+    Task DeleteAsync(Guid id);
 }

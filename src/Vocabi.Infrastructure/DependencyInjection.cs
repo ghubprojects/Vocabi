@@ -1,21 +1,48 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Vocabi.Application.Contracts.External.Audio;
+using Vocabi.Application.Contracts.External.Dictionary;
+using Vocabi.Application.Contracts.External.Image;
+using Vocabi.Application.Contracts.Services;
+using Vocabi.Application.Contracts.Storage;
+using Vocabi.Domain.Aggregates.LookupEntries;
+using Vocabi.Domain.Aggregates.MediaFiles;
 using Vocabi.Domain.Aggregates.Vocabularies;
-using Vocabi.Infrastructure.Repositories;
+using Vocabi.Infrastructure.External.Audio;
+using Vocabi.Infrastructure.External.Dictionary;
+using Vocabi.Infrastructure.External.Image;
+using Vocabi.Infrastructure.Persistence;
+using Vocabi.Infrastructure.Persistence.Repositories;
+using Vocabi.Infrastructure.Services;
+using Vocabi.Infrastructure.Storage;
 
 namespace Vocabi.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
+        // DbContext configuration
         services.AddDbContext<ApplicationDbContext>(options =>
-        {
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
-        });
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+        // Register repositories
         services.AddScoped<IVocabularyRepository, VocabularyRepository>();
+        services.AddScoped<ILookupEntryRepository, LookupEntryRepository>();
+        services.AddScoped<IMediaFileRepository, MediaFileRepository>();
+
+        // Register services
+        services.AddScoped<IFileDownloader, FileDownloader>();
+
+        // Register storage
+        services.AddScoped<IFileStorage, LocalFileStorage>();
+
+        // Register external providers
+        services.AddScoped<IAudioProvider, GoogleTtsProvider>();
+        services.AddScoped<IMainDictionaryProvider, CambridgeProvider>();
+        services.AddScoped<IFallbackDictionaryProvider, CovietProvider>();
+        services.AddScoped<IImageProvider, PixabayProvider>();
 
         return services;
     }

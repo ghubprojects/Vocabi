@@ -1,7 +1,8 @@
 using Microsoft.FluentUI.AspNetCore.Components;
-using Vocabi.Web.Components;
 using Vocabi.Application;
 using Vocabi.Infrastructure;
+using Vocabi.Web;
+using Vocabi.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +12,9 @@ builder.Services.AddRazorComponents()
 builder.Services.AddFluentUIComponents();
 
 builder.Services
-    .AddApplication()
-    .AddInfrastructure(builder.Configuration);
+    .AddApplicationServices()
+    .AddInfrastructureServices(builder.Configuration)
+    .AddUIServices();
 
 var app = builder.Build();
 

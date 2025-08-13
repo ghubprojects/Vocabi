@@ -1,9 +1,9 @@
-﻿//namespace Vocabi.Web.Services.Navigation;
+﻿namespace Vocabi.Web.Services.Navigation;
 
-//public interface INavigationService
-//{
-//    void NavigateToVocabList();
-//    void NavigateToVocabAdd();
-//    void NavigateToVocabDetail(Guid id);
-//    void NavigateToVocabEdit(Guid id);
-//}
+public interface INavigationService
+{
+    void GoToList();
+    void GoToCreate();
+    void GoToEdit(Guid id);
+    void GoToDetail(Guid id);
+}
