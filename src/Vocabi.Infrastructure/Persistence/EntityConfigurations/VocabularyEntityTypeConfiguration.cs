@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vocabi.Domain.Aggregates.MediaFiles;
 using Vocabi.Domain.Aggregates.Vocabularies;
 
-namespace Vocabi.Infrastructure.EntityConfigurations;
+namespace Vocabi.Infrastructure.Persistence.EntityConfigurations;
 
 public class VocabularyEntityTypeConfiguration : IEntityTypeConfiguration<Vocabulary>
 {

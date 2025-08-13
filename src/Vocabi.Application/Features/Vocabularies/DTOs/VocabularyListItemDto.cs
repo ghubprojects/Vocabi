@@ -1,10 +1,13 @@
-﻿namespace Vocabi.Application.Features.Vocabularies.Models;
+﻿using AutoMapper;
+using Vocabi.Domain.Aggregates.Vocabularies;
 
-public class VocabularyModel
+namespace Vocabi.Application.Features.Vocabularies.DTOs;
+
+public class VocabularyListItemDto
 {
     public Guid Id { get; set; }
     public string Word { get; set; } = string.Empty;
-    public string Phonetic { get; set; } = string.Empty;
+    public string Pronunciation { get; set; } = string.Empty;
     public string PartOfSpeech { get; set; } = string.Empty;
     public string Definition { get; set; } = string.Empty;
     public string Example { get; set; } = string.Empty;
@@ -12,4 +15,12 @@ public class VocabularyModel
     public string Meaning { get; set; } = string.Empty;
     public bool IsSyncedToAnki { get; set; }
     public DateTime CreatedAt { get; set; }
+
+    private class Mapping : Profile
+    {
+        public Mapping()
+        {
+            CreateMap<Vocabulary, VocabularyListItemDto>();
+        }
+    }
 }

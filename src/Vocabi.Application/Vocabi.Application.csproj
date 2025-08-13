@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Vocabi.Domain\Vocabi.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Vocabularies\Commands\" />
+  </ItemGroup>
+
 </Project>

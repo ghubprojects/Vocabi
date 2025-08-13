@@ -5,7 +5,7 @@ using Vocabi.Domain.Aggregates.MediaFiles;
 using Vocabi.Domain.Aggregates.Vocabularies;
 using Vocabi.Domain.SeedWork;
 
-namespace Vocabi.Infrastructure;
+namespace Vocabi.Infrastructure.Persistence;
 
 public class ApplicationDbContext : DbContext, IUnitOfWork
 {

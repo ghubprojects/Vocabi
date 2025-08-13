@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vocabi.Domain.Aggregates.MediaFiles;
 
-namespace Vocabi.Infrastructure.EntityConfigurations;
+namespace Vocabi.Infrastructure.Persistence.EntityConfigurations;
 
 public class MediaFileEntityTypeConfiguration : IEntityTypeConfiguration<MediaFile>
 {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vocabi.Domain.Aggregates.LookupEntries;
 using Vocabi.Domain.Aggregates.MediaFiles;
 
-namespace Vocabi.Infrastructure.EntityConfigurations;
+namespace Vocabi.Infrastructure.Persistence.EntityConfigurations;
 
 public class LookupEntryEntityTypeConfiguration : IEntityTypeConfiguration<LookupEntry>
 {

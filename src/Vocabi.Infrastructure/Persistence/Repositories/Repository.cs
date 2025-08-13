@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vocabi.Domain.SeedWork;
 
-namespace Vocabi.Infrastructure.Repositories;
+namespace Vocabi.Infrastructure.Persistence.Repositories;
 
 public class Repository<T>(ApplicationDbContext context) : IRepository<T> where T : class
 {
