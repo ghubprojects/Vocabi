@@ -67,18 +67,12 @@ namespace Vocabi.Infrastructure.Migrations
                         .HasMaxLength(1024)
                         .HasColumnType("character varying(1024)");
 
-                    b.Property<int>("MediaType")
-                        .HasColumnType("integer");
+                    b.Property<string>("Provider")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
-
-                    b.Property<int>("SourceCategory")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("SourceName")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
 
@@ -106,16 +100,13 @@ namespace Vocabi.Infrastructure.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
 
-                    b.Property<bool>("IsSyncedToAnki")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Meaning")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("PartOfSpeech")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Pronunciation")
                         .HasMaxLength(200)
@@ -246,6 +237,29 @@ namespace Vocabi.Infrastructure.Migrations
 
             modelBuilder.Entity("Vocabi.Domain.Aggregates.Vocabularies.Vocabulary", b =>
                 {
+                    b.OwnsOne("Vocabi.Domain.Aggregates.Vocabularies.VocabularyFlashcard", "Flashcard", b1 =>
+                        {
+                            b1.Property<Guid>("VocabularyId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("CreatedAt")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.Property<long?>("NoteId")
+                                .HasColumnType("bigint");
+
+                            b1.Property<string>("Status")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("VocabularyId");
+
+                            b1.ToTable("Vocabularies");
+
+                            b1.WithOwner()
+                                .HasForeignKey("VocabularyId");
+                        });
+
                     b.OwnsMany("Vocabi.Domain.Aggregates.Vocabularies.VocabularyMediaFile", "MediaFiles", b1 =>
                         {
                             b1.Property<Guid>("Id")
@@ -275,6 +289,8 @@ namespace Vocabi.Infrastructure.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("VocabularyId");
                         });
+
+                    b.Navigation("Flashcard");
 
                     b.Navigation("MediaFiles");
                 });

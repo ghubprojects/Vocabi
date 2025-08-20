@@ -1,0 +1,131 @@
+﻿@page "/vocabularies/pending/create"
+@rendermode InteractiveServer
+@using Vocabi.Domain.Aggregates.MediaFiles
+@using Vocabi.Shared
+@using Vocabi.Shared.Common
+@using Vocabi.Web.Components.Common
+@using static Vocabi.Shared.Common.Enums
+@inherits BasePage
+
+<PageTitle>Create Vocabulary</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
+        <FluentStack VerticalAlignment="VerticalAlignment.Center">
+            <FluentLabel Typo="Typography.H4">
+                Create Vocabulary
+            </FluentLabel>
+            <FluentIcon Value="@(new Icons.Regular.Size16.Info())" />
+        </FluentStack>
+        <FluentStack VerticalAlignment="VerticalAlignment.Center" Width="auto">
+            <FluentButton OnClick="SubmitAsync"
+                          Appearance="Appearance.Accent"
+                          IconStart="@(new Icons.Regular.Size16.Add())"
+                          Loading="@isSubmitting"
+                          Style="min-width:80px">
+                Create
+            </FluentButton>
+
+            <FluentButton OnClick="@ClearForm"
+                          Appearance="Appearance.Neutral"
+                          IconStart="@(new Icons.Regular.Size16.Broom())"
+                          Style="min-width:80px">
+                Clear
+            </FluentButton>
+        </FluentStack>
+    </FluentStack>
+
+    <FluentEditForm EditContext="editContext" style="width:100%">
+        <DataAnnotationsValidator />
+        @* <CustomValidator @ref="_customValidator" /> *@
+
+        <div style="color: var(--error);">
+            <FluentValidationSummary />
+        </div>
+
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+            <FluentStack VerticalAlignment="VerticalAlignment.Bottom">
+                <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0" Style="flex:1;">
+                    <FluentTextField @bind-Value="@vocabularyForm.Word"
+                                     Name="word" Label="Word"
+                                     Required Autofocus />
+                </FluentStack>
+                <FluentButton Appearance="Appearance.Accent"
+                              IconStart="@(new Icons.Regular.Size20.GlobeSearch())"
+                              OnClick="LookupAsync"
+                              Loading="@isLookingUp">
+                    Look up
+                </FluentButton>
+            </FluentStack>
+
+            <FluentStack>
+                <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0">
+                    <FluentCombobox @bind-Value="vocabularyForm.PartOfSpeech"
+                                    @onchange="HandleChangeWordType"
+                                    Name="PartOfSpeech" Label="Part of speech"
+                                    Items="lookupEntryDtos.Select(x => x.PartOfSpeech)" />
+                </FluentStack>
+                <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0">
+                    <FluentTextField @bind-Value="vocabularyForm.Pronunciation"
+                                     Name="Pronunciation" Label="Pronunciation"
+                                     ReadOnly />
+                </FluentStack>
+            </FluentStack>
+
+            <FluentStack>
+                <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0">
+                    <FluentCombobox @bind-Value="vocabularyForm.Meaning"
+                                    Name="Meaning" Label="Meaning"
+                                    Items="lookupEntryDtos.SelectMany(x => x.Meanings)"
+                                    Required />
+                </FluentStack>
+                <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0">
+                    <FluentTextField @bind-Value="vocabularyForm.Cloze"
+                                     Name="Cloze" Label="Cloze" />
+                </FluentStack>
+            </FluentStack>
+
+            <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0">
+                <FluentCombobox @bind-Value="vocabularyForm.Definition"
+                                @onchange="HandleChangeDefinition"
+                                Name="Definition" Label="Definition"
+                                Items="lookupEntryDtos.SelectMany(e => e.Definitions.Select(d => d.Text))"
+                                Required />
+            </FluentStack>
+
+            <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0">
+                <FluentCombobox @bind-Value="vocabularyForm.Example"
+                                @onchange="HandleChangeExample"
+                                Name="Example" Label="Example"
+                                Items="lookupEntryDtos.SelectMany(e => e.Definitions.SelectMany(d => d.Examples))" />
+            </FluentStack>
+
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="6">
+                <FluentLabel>
+                    Attachments
+                </FluentLabel>
+                <FluentStack VerticalAlignment="VerticalAlignment.Stretch">
+                    <MediaFileInput FileType="MediaType.Audio"
+                                    MaxFileSizeInKB="100"
+                                    Accept="audio/*"
+                                    AnchorId="audio-file-input"
+                                    Placeholder="Select an audio file (≤100 KB)"
+                                    Icon="new Icons.Regular.Size32.Headphones()"
+                                    UploadedFile="audioFile"
+                                    OnFileUploaded="HandleFileUploadedAsync"
+                                    OnRemoveFile="HandleRemoveFile" />
+
+                    <MediaFileInput FileType="MediaType.Image"
+                                    MaxFileSizeInKB="2000"
+                                    Accept="image/*"
+                                    AnchorId="image-file-input"
+                                    Placeholder="Select an image file (≤2 MB)"
+                                    Icon="new Icons.Regular.Size32.Image()"
+                                    UploadedFile="imageFile"
+                                    OnFileUploaded="HandleFileUploadedAsync"
+                                    OnRemoveFile="HandleRemoveFile" />
+                </FluentStack>
+            </FluentStack>
+        </FluentStack>
+    </FluentEditForm>
+</FluentStack>

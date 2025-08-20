@@ -20,7 +20,11 @@ public class Result
 
     public static Result Success() => new(true, []);
 
-    public static Result Failure(params string[] errors) => new(false, errors);
+    public static Task<Result> SuccessAsync() => Task.FromResult(Success());
+
+    public static Result Failure(params IEnumerable<string> errors) => new(false, errors);
+
+    public static Task<Result> FailureAsync(params IEnumerable<string> errors) => Task.FromResult(Failure(errors));
 }
 
 public class Result<T> : Result
@@ -34,5 +38,9 @@ public class Result<T> : Result
 
     public static Result<T> Success(T data) => new(data, true, []);
 
-    public new static Result<T> Failure(params string[] errors) => new(default!, false, errors);
+    public static Task<Result<T>> SuccessAsync(T data) => Task.FromResult(Success(data));
+
+    public new static Result<T> Failure(params IEnumerable<string> errors) => new(default!, false, errors);
+
+    public static new Task<Result<T>> FailureAsync(params IEnumerable<string> errors) => Task.FromResult(Failure(errors));
 }

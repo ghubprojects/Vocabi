@@ -1,0 +1,95 @@
+﻿<div class="container">
+	<div class="wrapper">
+		<div class="no">
+			{{No}}
+		</div>
+    <div class="image-container">
+        {{Image}}
+    </div>
+		<div class="content-container">  
+    	<div class="suggestion">
+        {{Suggestion}} 
+	    </div>
+			<span class="word-type">
+				{{Type}}
+			</span>
+			<br/>
+    	<div class="meaning">
+        {{Meaning}}
+    	</div>
+    </div>
+	</div>
+ 		<div class="type-word">
+    		{{type:Word}}
+   </div>
+</div>
+đây là front
+
+
+<div class="container">
+	<div class="wrapper">
+		<div class="no">
+			{{No}}
+		</div>
+		<div class="check-word">
+			{{type:Word}}
+		</div>
+    <div class="image-container">
+        {{Image}}
+    </div>
+    <div class="content-container">  
+    	<div class="word-detail">
+        {{Word}} 
+	    </div>
+			<span class="word-type">
+				{{Type}}
+			</span>
+  	  <div class="phonetic">
+        {{Audio}} {{Phonetic}}
+    	</div>
+			<br/>
+    	<div class="meaning">
+        {{Meaning}}
+    	</div>
+			<div class="example">
+			Eg: {{Example}}
+			</div>
+    </div>
+	</div>
+</div>
+đây là back
+
+
+chatgpt optimize:
+Front:
+<div class="container">
+  <div class="wrapper">
+    <div class="no">{{No}}</div>
+    <div class="image-container">{{Image}}</div>
+    <div class="content-container">
+      <div class="suggestion">{{Suggestion}}</div>
+      <div class="word-type">{{Type}}</div>
+      <div class="meaning">{{Meaning}}</div>
+    </div>
+  </div>
+  <div class="type-word">{{type:Word}}</div>
+</div>
+
+Back:
+<div class="container">
+  <div class="wrapper">
+    <div class="no">{{No}}</div>
+    <div class="check-word">{{type:Word}}</div>
+    <div class="image-container">{{Image}}</div>
+    <div class="content-container">
+      <div class="word-detail">{{Word}} <span class="audio">{{Audio}}</span></div>
+      <div class="word-type">{{Type}}</div>
+      <div class="phonetic">{{Phonetic}}</div>
+      <div class="meaning">{{Meaning}}</div>
+      <div class="example">Eg: {{Example}}</div>
+    </div>
+  </div>
+</div>
+
+chatgpt chat link:
+https://chatgpt.com/share/68bdd6ab-050c-8011-875b-cae71cb95122

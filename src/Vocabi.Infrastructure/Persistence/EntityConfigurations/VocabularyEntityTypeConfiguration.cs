@@ -11,53 +11,63 @@ public class VocabularyEntityTypeConfiguration : IEntityTypeConfiguration<Vocabu
     {
         builder.ToTable("Vocabularies");
 
-        builder.HasKey(v => v.Id);
+        builder.HasKey(x => x.Id);
 
-        builder.Property(v => v.Word)
+        builder.Property(x => x.Word)
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(v => v.PartOfSpeech)
-            .HasMaxLength(100);
+        builder.Property(x => x.PartOfSpeech)
+            .HasMaxLength(50);
 
-        builder.Property(v => v.Pronunciation)
+        builder.Property(x => x.Pronunciation)
             .HasMaxLength(200);
 
-        builder.Property(v => v.Cloze)
+        builder.Property(x => x.Cloze)
             .HasMaxLength(500);
 
-        builder.Property(v => v.Definition)
+        builder.Property(x => x.Definition)
             .HasMaxLength(1000);
 
-        builder.Property(v => v.Example)
+        builder.Property(x => x.Example)
             .HasMaxLength(1000);
 
-        builder.Property(v => v.Meaning)
-            .HasMaxLength(1000);
+        builder.Property(x => x.Meaning)
+            .HasMaxLength(500);
 
-        builder.Property(v => v.IsSyncedToAnki)
-            .IsRequired();
-
-        builder.Property(v => v.CreatedAt)
+        builder.Property(x => x.CreatedAt)
             .IsRequired();
 
         // Media files
-        builder.OwnsMany(e => e.MediaFiles, fBuilder =>
+        builder.OwnsMany(x => x.MediaFiles, b =>
         {
-            fBuilder.ToTable("VocabularyMediaFiles");
+            b.ToTable("VocabularyMediaFiles");
 
-            fBuilder.HasKey(m => m.Id);
+            b.HasKey(m => m.Id);
 
-            fBuilder.WithOwner()
-                .HasForeignKey(m => m.VocabularyId);
+            b.WithOwner()
+            .HasForeignKey(m => m.VocabularyId);
 
-            fBuilder.Property(m => m.MediaFileId)
-                .IsRequired();
+            b.Property(m => m.MediaFileId)
+            .IsRequired();
 
-            fBuilder.HasOne<MediaFile>()
-               .WithMany()
-               .HasForeignKey(m => m.MediaFileId)
-               .OnDelete(DeleteBehavior.Restrict);
+            b.HasOne<MediaFile>()
+            .WithMany()
+            .HasForeignKey(m => m.MediaFileId)
+            .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Flashcards
+        builder.OwnsOne(x => x.Flashcard, b =>
+        {
+            b.Property(f => f.NoteId);
+
+            b.Property(f => f.Status)
+             .HasConversion<string>()
+             .IsRequired();
+
+            b.Property(f => f.CreatedAt)
+            .IsRequired();
         });
     }
 }

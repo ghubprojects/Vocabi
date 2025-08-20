@@ -7,13 +7,11 @@ using Vocabi.Domain.SeedWork;
 
 namespace Vocabi.Infrastructure.Persistence;
 
-public class ApplicationDbContext : DbContext, IUnitOfWork
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options), IUnitOfWork
 {
     public DbSet<Vocabulary> Vocabularies { get; set; }
     public DbSet<LookupEntry> LookupEntries { get; set; }
     public DbSet<MediaFile> MediaFiles { get; set; }
-
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

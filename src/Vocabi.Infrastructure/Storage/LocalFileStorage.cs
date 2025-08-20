@@ -1,37 +1,73 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Logging;
+using Vocabi.Application.Common.Models;
 using Vocabi.Application.Contracts.Storage;
+using Vocabi.Shared.Utils;
 
 namespace Vocabi.Infrastructure.Storage;
 
 public class LocalFileStorage : IFileStorage
 {
-    private readonly string _basePath;
+    private readonly string _rootPath;
+    private readonly ILogger<LocalFileStorage> _logger;
 
-    public LocalFileStorage()
+    public LocalFileStorage(ILogger<LocalFileStorage> logger)
     {
-        _basePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+        _rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+        _logger = logger;
 
-        if (!Directory.Exists(_basePath))
-            Directory.CreateDirectory(_basePath);
+        if (!Directory.Exists(_rootPath))
+            Directory.CreateDirectory(_rootPath);
     }
 
-    public async Task<string> SaveAsync(Stream fileStream, string fileName, CancellationToken cancellationToken = default)
+    public async Task<Result<string>> SaveAsync(Stream stream, string fileName, string? subFolder = null)
     {
-        var safeFileName = Path.GetFileName(fileName); // tránh path injection
-        var uniqueName = $"{Guid.NewGuid()}_{safeFileName}";
-        var fullPath = Path.Combine(_basePath, uniqueName);
+        try
+        {
+            var folder = EnsureFolder(subFolder);
+            var uniqueFileName = FileUtils.GenerateSafeFileName(fileName);
+            var filePath = Path.Combine(folder, uniqueFileName);
 
-        await using var output = File.Create(fullPath);
-        await fileStream.CopyToAsync(output, cancellationToken);
+            await using var fileStream = new FileStream(filePath, FileMode.Create);
+            await stream.CopyToAsync(fileStream);
 
-        return fullPath; // hoặc return relative path nếu muốn
+            var relativeFilePath = Path.Combine("uploads", subFolder ?? string.Empty, uniqueFileName);
+            return Result<string>.Success(relativeFilePath);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to save file {FileName}", fileName);
+            return Result<string>.Failure(ex.Message);
+        }
     }
 
-    public Task DeleteAsync(string filePath, CancellationToken cancellationToken = default)
+    public async Task<Result> DeleteAsync(string fileName, string? subFolder = null)
     {
-        if (File.Exists(filePath))
+        try
+        {
+            var folder = EnsureFolder(subFolder);
+            var filePath = Path.Combine(folder, fileName);
+
+            if (!File.Exists(filePath))
+                return await Result.FailureAsync($"File not found: {filePath}");
+
             File.Delete(filePath);
+            return await Result.SuccessAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to delete file {FileName}", fileName);
+            return await Result.FailureAsync(ex.Message);
+        }
+    }
 
-        return Task.CompletedTask;
+    private string EnsureFolder(string? subFolder)
+    {
+        var folder = _rootPath;
+
+        if (!string.IsNullOrWhiteSpace(subFolder))
+            folder = Path.Combine(_rootPath, subFolder);
+
+        Directory.CreateDirectory(folder);
+        return folder;
     }
 }

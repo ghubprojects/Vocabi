@@ -2,9 +2,16 @@
 
 public static class Routes
 {
+    // Vocabularies
     private const string Vocabulary = "/vocabularies";
-    public const string VocabularyList = Vocabulary;
-    public const string VocabularyCreate = Vocabulary + "/create";
-    public const string VocabularyEdit = Vocabulary + "/edit";
-    public const string VocabularyDetail = Vocabulary + "/details";
+    private const string VocabularyPending = Vocabulary + "/pending";
+    private const string VocabularyExported = Vocabulary + "/exported";
+
+    public const string VocabularyPendingList = VocabularyPending;
+    public const string VocabularyPendingCreate = VocabularyPending + "/create";
+    public const string VocabularyPendingEdit = VocabularyPending + "/edit";
+    public const string VocabularyPendingDetail = VocabularyPending + "/details";
+
+    public const string VocabularyExportedList = VocabularyExported;
+    public const string VocabularyExportedDetail = VocabularyExported + "/details";
 }

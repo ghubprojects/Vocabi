@@ -11,16 +11,17 @@ public static class QueryableExtensions
         this IQueryable<TSource> source,
         int pageIndex,
         int pageSize,
-        IConfigurationProvider configuration) 
+        IConfigurationProvider configuration,
+        CancellationToken cancellationToken) 
         where TResult : class
     {
-        var count = await source.CountAsync();
+        var count = await source.CountAsync(cancellationToken);
 
         var items = await source
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
             .ProjectTo<TResult>(configuration)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return new PaginatedData<TResult>(items, count, pageIndex, pageSize);
     }

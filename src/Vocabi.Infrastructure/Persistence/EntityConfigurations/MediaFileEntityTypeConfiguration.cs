@@ -27,11 +27,7 @@ public class MediaFileEntityTypeConfiguration : IEntityTypeConfiguration<MediaFi
         builder.Property(m => m.Size)
             .IsRequired();
 
-        builder.Property(m => m.SourceCategory)
-            .IsRequired()
-            .HasConversion<int>();
-
-        builder.Property(m => m.SourceName)
+        builder.Property(m => m.Provider)
             .HasMaxLength(255);
     }
 }

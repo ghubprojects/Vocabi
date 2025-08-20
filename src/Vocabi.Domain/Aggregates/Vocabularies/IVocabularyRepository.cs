@@ -4,8 +4,7 @@ namespace Vocabi.Domain.Aggregates.Vocabularies;
 
 public interface IVocabularyRepository : IRepository<Vocabulary>
 {
+    Task<Vocabulary?> GetByIdAsync(Guid id);
+    Task<IReadOnlyList<Vocabulary>> GetByIdsAsync(IReadOnlyCollection<Guid> ids);
     Task AddAsync(Vocabulary entry);
-    void Update(Vocabulary entry);
-    void Remove(Vocabulary entry);
-    Task<bool> ExistsAsync(string word);
 }

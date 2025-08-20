@@ -1,14 +1,14 @@
-﻿using Vocabi.Domain.Aggregates.MediaFiles;
+﻿using static Vocabi.Shared.Common.Enums;
 
 namespace Vocabi.Application.Services.Media;
 
 public class MediaDownloadService(IEnumerable<IMediaService> mediaServices)
 {
-    public async Task<List<Guid>> DownloadAllMediaAsync(string headword, Dictionary<MediaType, string?> urls, string providerName, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<Guid>> DownloadAllMediaAsync(string headword, IReadOnlyDictionary<MediaType, string?> urls, string providerName, CancellationToken cancellationToken)
     {
-        var tasks = mediaServices.Select(service => service.DownloadOrFallbackAsync(
-            headword, 
-            urls.GetValueOrDefault(service.MediaType), 
+        var tasks = mediaServices.Select(service => service.DownloadAsyncWithFallback(
+            headword,
+            urls.GetValueOrDefault(service.MediaType),
             providerName,
             cancellationToken));
 

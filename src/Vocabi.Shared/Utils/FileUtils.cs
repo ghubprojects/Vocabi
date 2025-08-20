@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.StaticFiles;
+using static Vocabi.Shared.Common.Enums;
 
 namespace Vocabi.Shared.Utils;
 
@@ -14,22 +15,37 @@ public static class FileUtils
         return "application/octet-stream";
     }
 
-    /// <summary>
-    /// Lấy tên file an toàn (tránh null/empty).
-    /// </summary>
-    public static string GetSafeFileName(string filePath)
+    public static MediaType GetMediaType(string contentType)
     {
-        return string.IsNullOrWhiteSpace(filePath)
-            ? "unknown"
-            : Path.GetFileName(filePath);
+        if (string.IsNullOrWhiteSpace(contentType))
+            return MediaType.Unknown;
+
+        if (contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+            return MediaType.Image;
+
+        if (contentType.StartsWith("video/", StringComparison.OrdinalIgnoreCase))
+            return MediaType.Video;
+
+        if (contentType.StartsWith("audio/", StringComparison.OrdinalIgnoreCase))
+            return MediaType.Audio;
+
+        if (contentType.StartsWith("application/pdf", StringComparison.OrdinalIgnoreCase) || contentType.StartsWith("text/", StringComparison.OrdinalIgnoreCase))
+            return MediaType.Document;
+
+        return MediaType.Other;
     }
 
-    /// <summary>
-    /// Kiểm tra file có phải là hình ảnh hay không (jpg, png, gif...).
-    /// </summary>
-    public static bool IsImage(string fileName)
+    public static string GenerateSafeFileName(string originalFileName)
     {
-        var contentType = GetContentType(fileName);
-        return contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase);
+        string extension = Path.GetExtension(originalFileName);
+        string randomPart = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
+
+        return $"{randomPart}{extension}";
+    }
+
+    public static string GetFileNameFromUrl(string url)
+    {
+        var uri = new Uri(url);
+        return Path.GetFileName(uri.AbsolutePath);
     }
 }

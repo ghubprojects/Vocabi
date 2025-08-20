@@ -1,6 +1,7 @@
 using Microsoft.FluentUI.AspNetCore.Components;
 using Vocabi.Application;
 using Vocabi.Infrastructure;
+using Vocabi.Infrastructure.External.Flashcards;
 using Vocabi.Web;
 using Vocabi.Web.Components;
 
@@ -17,6 +18,13 @@ builder.Services
     .AddUIServices();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var configurator = scope.ServiceProvider.GetRequiredService<IAnkiTemplateConfigurator>();
+    await configurator.EnsureVocabiDeckAsync();
+    await configurator.EnsureVocabiNoteModelAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

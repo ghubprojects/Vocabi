@@ -2,8 +2,10 @@
 
 public interface INavigationService
 {
-    void GoToList();
-    void GoToCreate();
-    void GoToEdit(Guid id);
-    void GoToDetail(Guid id);
+    void GoToVocabularyPendingList();
+    void GoToVocabularyPendingCreate();
+    void GoToVocabularyPendingEdit(Guid id);
+    void GoToVocabularyPendingDetail(Guid id);
+    void GoToVocabularyExportedList();
+    void GoToVocabularyExportedDetail(Guid id);
 }

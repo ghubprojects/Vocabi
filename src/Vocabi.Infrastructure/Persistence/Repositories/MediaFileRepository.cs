@@ -1,10 +1,23 @@
-﻿using Vocabi.Domain.Aggregates.MediaFiles;
+﻿using Microsoft.EntityFrameworkCore;
+using Vocabi.Domain.Aggregates.MediaFiles;
+using Vocabi.Domain.Aggregates.Vocabularies;
 
 namespace Vocabi.Infrastructure.Persistence.Repositories;
 
-public class MediaFileRepository: Repository<MediaFile>, IMediaFileRepository
+public class MediaFileRepository(ApplicationDbContext context) : Repository<MediaFile>(context), IMediaFileRepository
 {
-    public MediaFileRepository(ApplicationDbContext context) : base(context) { }
+    public async Task<MediaFile?> GetByIdAsync(Guid id)
+    {
+        return await DbSet
+            .FirstOrDefaultAsync(e => e.Id == id);
+    }
+
+    public async Task<IReadOnlyList<MediaFile>> GetByIdsAsync(IReadOnlyCollection<Guid> ids)
+    {
+        return await DbSet
+            .Where(e => ids.Contains(e.Id))
+            .ToListAsync();
+    }
 
     public async Task AddAsync(MediaFile entity)
     {
@@ -14,11 +27,6 @@ public class MediaFileRepository: Repository<MediaFile>, IMediaFileRepository
     public async Task AddRangeAsync(IEnumerable<MediaFile> entities)
     {
         await DbSet.AddRangeAsync(entities);
-    }
-
-    public async Task UpdateAsync(MediaFile entity)
-    {
-        DbSet.Update(entity);
     }
 
     public async Task DeleteAsync(Guid id)
