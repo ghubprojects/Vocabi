@@ -14,22 +14,18 @@ public static class FileUtils
         return "application/octet-stream";
     }
 
-    /// <summary>
-    /// Lấy tên file an toàn (tránh null/empty).
-    /// </summary>
-    public static string GetSafeFileName(string filePath)
+    public static string GenerateSafeFileName(string originalFileName)
     {
-        return string.IsNullOrWhiteSpace(filePath)
-            ? "unknown"
-            : Path.GetFileName(filePath);
+        string extension = Path.GetExtension(originalFileName);
+        string randomPart = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
+        string timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+
+        return $"{randomPart}_{timestamp}{extension}";
     }
 
-    /// <summary>
-    /// Kiểm tra file có phải là hình ảnh hay không (jpg, png, gif...).
-    /// </summary>
-    public static bool IsImage(string fileName)
+    public static string GetFileNameFromUrl(string url)
     {
-        var contentType = GetContentType(fileName);
-        return contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase);
+        var uri = new Uri(url);
+        return Path.GetFileName(uri.AbsolutePath);
     }
 }

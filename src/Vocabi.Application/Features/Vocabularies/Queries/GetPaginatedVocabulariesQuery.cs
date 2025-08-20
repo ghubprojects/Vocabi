@@ -8,7 +8,7 @@ using Vocabi.Domain.Aggregates.Vocabularies;
 
 namespace Vocabi.Application.Features.Vocabularies.Queries;
 
-public class GetPaginatedVocabulariesQuery : IRequest<PaginatedData<VocabularyListItemDto>>
+public class GetPaginatedVocabulariesQuery : IRequest<PaginatedData<VocabularyDto>>
 {
     public string SearchWord { get; set; } = string.Empty;
     public int PageIndex { get; set; } = 0;
@@ -16,9 +16,9 @@ public class GetPaginatedVocabulariesQuery : IRequest<PaginatedData<VocabularyLi
 }
 
 public class GetPaginatedVocabEntriesQueryHandler(IMapper mapper, IVocabularyRepository vocabularyRepository) 
-    : IRequestHandler<GetPaginatedVocabulariesQuery, PaginatedData<VocabularyListItemDto>>
+    : IRequestHandler<GetPaginatedVocabulariesQuery, PaginatedData<VocabularyDto>>
 {
-    public async Task<PaginatedData<VocabularyListItemDto>> Handle(GetPaginatedVocabulariesQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedData<VocabularyDto>> Handle(GetPaginatedVocabulariesQuery request, CancellationToken cancellationToken)
     {
         var query = vocabularyRepository.DbSet.AsNoTracking();
 
@@ -27,7 +27,7 @@ public class GetPaginatedVocabEntriesQueryHandler(IMapper mapper, IVocabularyRep
 
         query = query.OrderByDescending(x => x.CreatedAt);
 
-        return await query.ProjectToPaginatedDataAsync<Vocabulary, VocabularyListItemDto>(
+        return await query.ProjectToPaginatedDataAsync<Vocabulary, VocabularyDto>(
             request.PageIndex,
             request.PageSize,
             mapper.ConfigurationProvider);

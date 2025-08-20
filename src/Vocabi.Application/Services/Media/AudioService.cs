@@ -12,6 +12,8 @@ public class AudioService(
 {
     protected override MediaType GetMediaType() => MediaType.Audio;
 
+    protected override string GetFallbackProviderName() => audioProvider.ProviderName;
+
     protected override async Task<IEnumerable<string>?> GetFallbackUrlsAsync(string headword)
     {
         var result = await audioProvider.GetAsync(headword);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Vocabi.Application.Features.Vocabularies.Commands;
 using Vocabi.Application.Features.Vocabularies.DTOs;
 using Vocabi.Application.Features.Vocabularies.Queries;
 using Vocabi.Web.Components.Dialogs;
@@ -11,13 +12,16 @@ public partial class List
 {
     [Inject] protected IJSRuntime JS { get; set; } = default!;
 
-    private FluentDataGrid<VocabularyListItemDto> dataGrid = default!;
-    private readonly PaginationState pagination = new() { ItemsPerPage = 12 };
+    private FluentDataGrid<VocabularyDto> dataGrid = default!;
+    private readonly PaginationState pagination = new() { ItemsPerPage = 20 };
 
-    private IQueryable<VocabularyListItemDto> vocabularyList = default!;
+    private IQueryable<VocabularyDto> vocabularyList = default!;
     private string searchWord = string.Empty;
 
-    private async Task RefreshItemsAsync(GridItemsProviderRequest<VocabularyListItemDto> req)
+    private bool isRefreshingData = false;
+    private bool isExportingToAnki = false;
+
+    private async Task RefreshItemsAsync(GridItemsProviderRequest<VocabularyDto> req)
     {
         await ExecuteWithLoadingAsync(async () =>
         {
@@ -29,7 +33,7 @@ public partial class List
             });
             vocabularyList = result.Items.AsQueryable();
             await pagination.SetTotalItemCountAsync(result.TotalItems);
-        });
+        }, x => isRefreshingData = x);
     }
 
     private async Task RefreshDataAsync()
@@ -38,7 +42,20 @@ public partial class List
         StateHasChanged();
     }
 
-    private async Task OpenDeleteDialogAsync(VocabularyListItemDto model)
+    private async Task ExportToAnkiAsync()
+    {
+        await ExecuteWithLoadingAsync(async () =>
+        {
+            var result = await Mediator.Send(new ExportVocabulariesCommand
+            {
+                //SearchWord = searchWord,
+                //PageIndex = req.StartIndex / req.Count!.Value,
+                //PageSize = req.Count!.Value,
+            });
+        }, x => isExportingToAnki = x);
+    }
+
+    private async Task OpenDeleteDialogAsync(VocabularyDto model)
     {
         var dialog = await DialogService.ShowDialogAsync<DeleteDialog>(model.Word, new DialogParameters
         {

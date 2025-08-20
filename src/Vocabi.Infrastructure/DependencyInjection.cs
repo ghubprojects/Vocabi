@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Vocabi.Application.Contracts.External.Audio;
 using Vocabi.Application.Contracts.External.Dictionary;
+using Vocabi.Application.Contracts.External.Export;
 using Vocabi.Application.Contracts.External.Image;
 using Vocabi.Application.Contracts.Services;
 using Vocabi.Application.Contracts.Storage;
@@ -11,6 +12,7 @@ using Vocabi.Domain.Aggregates.MediaFiles;
 using Vocabi.Domain.Aggregates.Vocabularies;
 using Vocabi.Infrastructure.External.Audio;
 using Vocabi.Infrastructure.External.Dictionary;
+using Vocabi.Infrastructure.External.Export;
 using Vocabi.Infrastructure.External.Image;
 using Vocabi.Infrastructure.Persistence;
 using Vocabi.Infrastructure.Persistence.Repositories;
@@ -39,10 +41,11 @@ public static class DependencyInjection
         services.AddScoped<IFileStorage, LocalFileStorage>();
 
         // Register external providers
-        services.AddScoped<IAudioProvider, GoogleTtsProvider>();
         services.AddScoped<IMainDictionaryProvider, CambridgeProvider>();
         services.AddScoped<IFallbackDictionaryProvider, CovietProvider>();
+        services.AddScoped<IAudioProvider, GoogleTtsProvider>();
         services.AddScoped<IImageProvider, PixabayProvider>();
+        services.AddScoped<IExporter, AnkiExporter>();
 
         return services;
     }

@@ -39,8 +39,21 @@ public class Vocabulary
         _mediaFiles = [];
     }
 
-    public static Vocabulary CreateNew(string word, string partOfSpeech, string pronunciation, string cloze, string definition, string example, string meaning, bool isSyncedToAnki)
+    public static Vocabulary CreateNew(string word, string partOfSpeech, string pronunciation, string cloze, string definition, string example, string meaning)
     {
-        return new Vocabulary(word, partOfSpeech, pronunciation, cloze, definition, example, meaning, isSyncedToAnki);
+        return new Vocabulary(word, partOfSpeech, pronunciation, cloze, definition, example, meaning, false);
+    }
+
+    public void AttachMediaFile(Guid mediaFileId)
+    {
+        _mediaFiles.Add(VocabularyMediaFile.CreateNew(Id, mediaFileId));
+    }
+
+    public void AttachMediaFiles(IEnumerable<Guid> mediaFileIds)
+    {
+        foreach (var id in mediaFileIds)
+        {
+            AttachMediaFile(id);
+        }
     }
 }

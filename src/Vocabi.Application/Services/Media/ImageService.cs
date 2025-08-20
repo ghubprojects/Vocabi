@@ -12,6 +12,8 @@ public class ImageService(
 {
     protected override MediaType GetMediaType() => MediaType.Image;
 
+    protected override string GetFallbackProviderName() => imageProvider.ProviderName;
+
     protected override async Task<IEnumerable<string>?> GetFallbackUrlsAsync(string headword)
     {
         var result = await imageProvider.GetAsync(headword);

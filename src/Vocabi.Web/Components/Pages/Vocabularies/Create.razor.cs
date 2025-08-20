@@ -1,194 +1,204 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.FluentUI.AspNetCore.Components;
+using Vocabi.Application.Features.LookupEntries.Commands;
+using Vocabi.Application.Features.LookupEntries.DTOs;
+using Vocabi.Application.Features.MediaFiles.Commands;
 using Vocabi.Application.Features.Vocabularies.Commands;
-using Vocabi.Application.Features.Vocabularies.DTOs;
+using Vocabi.Domain.Aggregates.MediaFiles;
+using Vocabi.Web.Extensions;
+using Vocabi.Web.Models;
+using Icons = Microsoft.FluentUI.AspNetCore.Components.Icons;
 
 namespace Vocabi.Web.Components.Pages.Vocabularies;
 
 public partial class Create
 {
     private EditContext editContext = default!;
-    protected bool isWordSearching;
-    private readonly VocabularyUpsertDto vocabularyUpsertDto = new();
+    private bool isLookingUp;
+    protected bool isSubmitting;
+
+    private VocabularyFormModel formModel = new();
+    private List<MediaFileInputModel> mediaFileModels = [];
+    private List<LookupEntryDto> lookupEntries = [];
+
     protected override async Task OnInitializedAsync()
     {
-        //await ViewModel.InitializeAsync(ScreenType.Add, VocabService);
-        editContext = new EditContext(vocabularyUpsertDto);
+        editContext = new EditContext(formModel);
+        mediaFileModels = [
+            new MediaFileInputModel
+            {
+                MediaType = MediaType.Audio,
+                MaxFileSizeInKB = 100,
+                Accept = "audio/*",
+                AnchorId = "audio-file-input",
+                Placeholder = "Select an audio file (≤100 KB)",
+                Icon = new Icons.Regular.Size32.Headphones(),
+            },
+            new MediaFileInputModel
+            {
+                MediaType = MediaType.Image,
+                MaxFileSizeInKB = 500,
+                Accept = "image/*",
+                AnchorId = "image-file-input",
+                Placeholder = "Select an image file (≤500 KB)",
+                Icon = new Icons.Regular.Size32.Image(),
+            }
+        ];
     }
 
-    //private async Task SubmitAsync()
-    //{
-    //    if (!_editContext.Validate() || _isSubmitting)
-    //        return;
-
-    //    _isSubmitting = true;
-    //    StateHasChanged();
-
-    //    try
-    //    {
-    //        await VocabService.AddVocabAsync(ViewModel.Detail);
-    //        ToastService.ShowSuccess("Vocab added successfully.");
-    //        ClearForm();
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        ToastService.ShowError($"Error adding vocab: {ex.Message}");
-    //    }
-    //    finally
-    //    {
-    //        _isSubmitting = false;
-    //        StateHasChanged();
-    //    }
-    //}
-
-    //private void ClearForm()
-    //{
-    //    ViewModel.Detail = new VocabDetailViewModel();
-    //    _editContext = new EditContext(ViewModel.Detail);
-
-    //    _lookupResult = new();
-    //    _mediaLookupResult = new();
-
-    //    _availableWordTypes.Clear();
-    //    _availableDefinitions.Clear();
-    //    _availableExamples.Clear();
-    //    _availableMeanings.Clear();
-    //    _availableImages.Clear();
-
-    //    _imageIndex = 0;
-    //}
-
-    private async Task LookupWordAsync()
+    private async Task SubmitAsync()
     {
-        if (string.IsNullOrWhiteSpace(vocabularyUpsertDto.Word))
+        if (!editContext.Validate() || isSubmitting)
+            return;
+
+        await ExecuteWithLoadingAsync(async () =>
+        {
+            var command = new CreateVocabularyCommand
+            {
+                Word = formModel.Word,
+                PartOfSpeech = formModel.PartOfSpeech,
+                Pronunciation = formModel.Pronunciation,
+                Cloze = formModel.Cloze,
+                Definition = formModel.Definition,
+                Example = formModel.Example,
+                Meaning = formModel.Meaning,
+                MediaFileIds = [.. mediaFileModels.Select(x => x.Id)],
+            };
+
+            var result = await Mediator.Send(command);
+            if (result.IsSuccess)
+                Navigation.GoToVocabularyList();
+            else
+                ToastService.ShowError(result.ErrorMessages);
+        }, x => isSubmitting = x);
+    }
+
+    private void ClearForm()
+    {
+        //ViewModel.Detail = new VocabDetailViewModel();
+        //_editContext = new EditContext(ViewModel.Detail);
+
+        //_lookupResult = new();
+        //_mediaLookupResult = new();
+
+        //_availableWordTypes.Clear();
+        //_availableDefinitions.Clear();
+        //_availableExamples.Clear();
+        //_availableMeanings.Clear();
+        //_availableImages.Clear();
+
+        //_imageIndex = 0;
+    }
+
+    private async Task LookupAsync()
+    {
+        if (string.IsNullOrWhiteSpace(formModel.Word))
         {
             ToastService.ShowWarning("Please enter a word first.");
             return;
         }
 
-        isWordSearching = true;
-        StateHasChanged();
+        await ExecuteWithLoadingAsync(async () =>
+        {
+            var result = await Mediator.Send(new LookupWordCommand { Word = formModel.Word });
+            if (result.IsFailure)
+            {
+                ToastService.ShowWarning(result.ErrorMessages);
+                return;
+            }
 
+            lookupEntries = result.Data;
+            var defaultEntry = lookupEntries.First();
+
+            formModel = VocabularyFormModel.FromEntry(defaultEntry);
+
+            foreach (var fileModel in mediaFileModels)
+            {
+                var mediaFile = defaultEntry.MediaFiles.FirstOrDefault(x => x.MediaType == fileModel.MediaType);
+                if (mediaFile is null)
+                    continue;
+
+                fileModel.UpdateFrom(mediaFile);
+            }
+        }, x => isLookingUp = x);
+    }
+
+    private void HandleChangeWordType()
+    {
         try
         {
-            var result = await Mediator.Send(new LookupWordCommand { Word = vocabularyUpsertDto.Word });
+            //ViewModel.Detail.WordType = wordType;
 
-            //var result = await VocabService.LookupWordAsync(ViewModel.Detail.Word);
-            //if (!result.Success)
-            //    ToastService.ShowWarning(result.Error);
-
-            //_lookupResult = result.Data!;
             //if (_lookupResult is null)
             //    return;
 
-            //_availableWordTypes.Clear();
-            //_availableWordTypes.AddRange(_lookupResult.Entries.Select(e => e.WordType).Distinct());
+            //var entry = _lookupResult.Entries.Find(e => e.WordType == ViewModel.Detail.WordType);
+            //if (entry is null)
+            //    return;
+
+            //ViewModel.Detail.Phonetic = entry.Phonetic;
 
             //_availableDefinitions.Clear();
-            //_availableDefinitions.AddRange(
-            //    _lookupResult.Entries.SelectMany(
-            //        e => e.Definitions.Select(d => d.Definition).Distinct()));
+            //_availableDefinitions.AddRange(entry.Definitions.Select(d => d.Definition));
+            //ViewModel.Detail.Definition = _availableDefinitions.First();
 
-            //_availableExamples.Clear();
-            //_availableExamples.AddRange(
-            //    _lookupResult.Entries.SelectMany(e => e.Definitions.SelectMany(d => d.Examples)));
-
-            //_availableMeanings.Clear();
-            //_availableMeanings.AddRange(_lookupResult.Meanings);
-
-            //// Initialize the detail view model with the first entry
-            //var firstEntry = _lookupResult.Entries.First();
-            //ViewModel.Detail.WordType = firstEntry.WordType;
-            //ViewModel.Detail.Phonetic = firstEntry.Phonetic;
-            //ViewModel.Detail.Definition = firstEntry.Definitions.First().Definition;
-            //ViewModel.Detail.Example = firstEntry.Definitions.First().Examples.First();
+            //UpdateExamples();
         }
         catch (Exception e)
         {
-            ToastService.ShowError($"Error during searching word: {e.Message}");
-        }
-        finally
-        {
-            isWordSearching = false;
-            StateHasChanged();
+            ToastService.ShowError($"Error changing word type: {e.Message}");
         }
     }
 
-    //private void HandleChangeWordType()
-    //{
-    //    try
-    //    {
-    //        //ViewModel.Detail.WordType = wordType;
+    private void HandleChangeDefinition()
+    {
+        try
+        {
+            //if (_lookupResult is null)
+            //    return;
 
-    //        if (_lookupResult is null)
-    //            return;
+            //var entry = _lookupResult.Entries.Find(
+            //    e => e.Definitions.Any(d => d.Definition == ViewModel.Detail.Definition));
+            //if (entry is null)
+            //    return;
 
-    //        var entry = _lookupResult.Entries.Find(e => e.WordType == ViewModel.Detail.WordType);
-    //        if (entry is null)
-    //            return;
+            //ViewModel.Detail.WordType = entry.WordType;
+            //ViewModel.Detail.Phonetic = entry.Phonetic;
 
-    //        ViewModel.Detail.Phonetic = entry.Phonetic;
+            //UpdateExamples();
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError($"Error changing definition: {e.Message}");
+        }
+    }
 
-    //        _availableDefinitions.Clear();
-    //        _availableDefinitions.AddRange(entry.Definitions.Select(d => d.Definition));
-    //        ViewModel.Detail.Definition = _availableDefinitions.First();
+    private void HandleChangeExample()
+    {
+        try
+        {
+            //if (_lookupResult is null)
+            //    return;
 
-    //        UpdateExamples();
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        ToastService.ShowError($"Error changing word type: {e.Message}");
-    //    }
-    //}
+            //var entry = _lookupResult.Entries.Find(
+            //    e => e.Definitions.Any(d => d.Examples.Contains(ViewModel.Detail.Example)));
+            //if (entry is null)
+            //    return;
 
-    //private void HandleChangeDefinition()
-    //{
-    //    try
-    //    {
-    //        if (_lookupResult is null)
-    //            return;
+            //ViewModel.Detail.WordType = entry.WordType;
+            //ViewModel.Detail.Phonetic = entry.Phonetic;
 
-    //        var entry = _lookupResult.Entries.Find(
-    //            e => e.Definitions.Any(d => d.Definition == ViewModel.Detail.Definition));
-    //        if (entry is null)
-    //            return;
-
-    //        ViewModel.Detail.WordType = entry.WordType;
-    //        ViewModel.Detail.Phonetic = entry.Phonetic;
-
-    //        UpdateExamples();
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        ToastService.ShowError($"Error changing definition: {e.Message}");
-    //    }
-    //}
-
-    //private void HandleChangeExample()
-    //{
-    //    try
-    //    {
-    //        if (_lookupResult is null)
-    //            return;
-
-    //        var entry = _lookupResult.Entries.Find(
-    //            e => e.Definitions.Any(d => d.Examples.Contains(ViewModel.Detail.Example)));
-    //        if (entry is null)
-    //            return;
-
-    //        ViewModel.Detail.WordType = entry.WordType;
-    //        ViewModel.Detail.Phonetic = entry.Phonetic;
-
-    //        var definition = entry.Definitions.Find(d => d.Examples.Contains(ViewModel.Detail.Example));
-    //        if (definition is not null)
-    //        {
-    //            ViewModel.Detail.Definition = definition.Definition;
-    //        }
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        ToastService.ShowError($"Error changing example: {e.Message}");
-    //    }
-    //}
+            //var definition = entry.Definitions.Find(d => d.Examples.Contains(ViewModel.Detail.Example));
+            //if (definition is not null)
+            //{
+            //    ViewModel.Detail.Definition = definition.Definition;
+            //}
+        }
+        catch (Exception e)
+        {
+            ToastService.ShowError($"Error changing example: {e.Message}");
+        }
+    }
 
     //private void UpdateExamples()
     //{
@@ -214,6 +224,42 @@ public partial class Create
     //        ToastService.ShowError($"Error updating examples: {e.Message}");
     //    }
     //}
+
+    protected async Task HandleFileUploadCompletedAsync(IEnumerable<FluentInputFileEventArgs> files, MediaFileInputModel fileModel)
+    {
+        var file = files.First();
+        ////if (!IsValidFile(file, inputFile))
+        ////    return;
+
+        //var fileName = FileHelper.NormalizeFileName(ViewModel.Detail.Word, Path.GetExtension(file.Name));
+        //var tempFilePath = FileHelper.GetFullTempUploadPath(fileName, Environment.WebRootPath);
+
+        var command = new UploadMediaFileCommand
+        {
+            Stream = file.Stream,
+            Filename = file.Name
+        };
+
+        var result = await Mediator.Send(command);
+        if (result.IsFailure)
+        {
+            ToastService.ShowWarning(result.ErrorMessages);
+            return;
+        }
+
+        fileModel.UpdateFrom(result.Data);
+
+        //inputFile.FilePath = FileHelper.GetRelativePath(tempFilePath, Environment.WebRootPath);
+        //inputFile.FileSource = FileSource.Local;
+        //ToastService.ShowSuccess($"File '{file.Name}' uploaded successfully.");
+    }
+
+    protected void HandleRemoveFile(MediaType type)
+    {
+        //ViewModel.Detail.RemoveFile(fileType);
+        //if (fileType == MediaType.Image)
+        //    _availableImages.Clear();
+    }
 
     //private async Task LookupMediaAsync()
     //{

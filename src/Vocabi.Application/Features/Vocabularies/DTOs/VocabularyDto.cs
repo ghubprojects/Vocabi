@@ -3,7 +3,7 @@ using Vocabi.Domain.Aggregates.Vocabularies;
 
 namespace Vocabi.Application.Features.Vocabularies.DTOs;
 
-public class VocabularyListItemDto
+public class VocabularyDto
 {
     public Guid Id { get; set; }
     public string Word { get; set; } = string.Empty;
@@ -20,7 +20,7 @@ public class VocabularyListItemDto
     {
         public Mapping()
         {
-            CreateMap<Vocabulary, VocabularyListItemDto>();
+            CreateMap<Vocabulary, VocabularyDto>();
         }
     }
 }

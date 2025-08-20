@@ -24,6 +24,11 @@ public class MediaFileEntityTypeConfiguration : IEntityTypeConfiguration<MediaFi
             .IsRequired()
             .HasMaxLength(100);
 
+        builder.OwnsOne(e => e.MediaType, b =>
+        {
+            b.Property(x => x.Value).HasColumnName("MediaType");
+        });
+
         builder.Property(m => m.Size)
             .IsRequired();
 
