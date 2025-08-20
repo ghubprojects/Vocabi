@@ -1,6 +1,6 @@
 ﻿using System.Web;
 
-namespace Vocabi.Web.Common.Helpers;
+namespace Vocabi.Web.Common.Extensions;
 
 public static class RouteExtensions
 {

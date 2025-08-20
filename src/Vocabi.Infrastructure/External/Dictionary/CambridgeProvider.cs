@@ -2,6 +2,7 @@
 using AngleSharp.Dom;
 using Vocabi.Application.Common.Models;
 using Vocabi.Application.Contracts.External.Dictionary;
+using Vocabi.Shared.Extensions;
 
 namespace Vocabi.Infrastructure.External.Dictionary;
 
@@ -9,12 +10,12 @@ public class CambridgeProvider : IMainDictionaryProvider
 {
     public string ProviderName => "Cambridge Dictionary";
 
-    private readonly IBrowsingContext _context;
+    private readonly IBrowsingContext context;
 
     public CambridgeProvider()
     {
         var config = Configuration.Default.WithDefaultLoader();
-        _context = BrowsingContext.New(config);
+        context = BrowsingContext.New(config);
     }
 
     public async Task<Result<List<DictionaryEntryModel>>> LookupAsync(string word)
@@ -22,7 +23,11 @@ public class CambridgeProvider : IMainDictionaryProvider
         try
         {
             var entries = await LookupEntriesAsync(word);
+            if (entries.IsNullOrEmpty())
+                return Result<List<DictionaryEntryModel>>.Failure($"Word '{word}' not found.");
+
             var result = await EnrichWithMeaningAsync(entries, word);
+
             return Result<List<DictionaryEntryModel>>.Success(result);
         }
         catch (Exception ex)
@@ -34,7 +39,7 @@ public class CambridgeProvider : IMainDictionaryProvider
     private async Task<IDocument> GetDocumentAsync(string word, string langPath)
     {
         var url = $"https://dictionary.cambridge.org/dictionary/{langPath}/{Uri.EscapeDataString(word)}";
-        return await _context.OpenAsync(url);
+        return await context.OpenAsync(url);
     }
 
     private async Task<List<DictionaryEntryModel>> LookupEntriesAsync(string word)
@@ -54,9 +59,8 @@ public class CambridgeProvider : IMainDictionaryProvider
         // For single words, fetch the entries from the Cambridge Dictionary
         var document = await GetDocumentAsync(word, "english");
         var entryElements = document.QuerySelectorAll("div.pr.dictionary[data-id='cald4'] div.pr.entry-body__el");
-
-        if (entryElements.Length == 0)
-            return Result<List<DictionaryEntryModel>>.Failure($"Word '{word}' not found.").Data;
+        if (entryElements.IsNullOrEmpty())
+            return [];
 
         var entries = new List<DictionaryEntryModel>();
         foreach (var entryElement in entryElements)
@@ -86,12 +90,12 @@ public class CambridgeProvider : IMainDictionaryProvider
     private static List<DictionaryDefinitionModel> ParseDefinitions(IElement? entryBodyElement)
     {
         var definitionElements = entryBodyElement?.QuerySelectorAll("div.sense-body.dsense_b > div.def-block.ddef_block");
-        if (definitionElements is null || definitionElements.Length == 0)
+        if (definitionElements.IsNullOrEmpty())
             return [];
 
         return [.. definitionElements.Select(definitionElement => new DictionaryDefinitionModel
         {
-            Text = definitionElement.QuerySelector("div.def.ddef_d.db")?.TextContent.Trim() ?? "",
+            Text = definitionElement.QuerySelector("div.def.ddef_d.db")?.TextContent.Trim().TrimEnd(':') ?? "",
             Examples = [.. definitionElement.QuerySelectorAll("div.examp.dexamp > span.eg.deg").Select(e => e.TextContent.Trim())]
         })];
     }

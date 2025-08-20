@@ -67,18 +67,12 @@ namespace Vocabi.Infrastructure.Migrations
                         .HasMaxLength(1024)
                         .HasColumnType("character varying(1024)");
 
-                    b.Property<int>("MediaType")
-                        .HasColumnType("integer");
+                    b.Property<string>("Provider")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
-
-                    b.Property<int>("SourceCategory")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("SourceName")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
 

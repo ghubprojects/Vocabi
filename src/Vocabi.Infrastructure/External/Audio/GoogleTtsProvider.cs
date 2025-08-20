@@ -9,6 +9,6 @@ public class GoogleTtsProvider: IAudioProvider
 
     public async Task<Result<string>> GetAsync(string text, string lang = "en")
     {
-        return Result<string>.Success($"https://translate.google.com/translate_tts?ie=UTF-8&tl={lang}&client=tw-ob&q={Uri.EscapeDataString(text)}");
+        return await Result<string>.SuccessAsync($"https://translate.google.com/translate_tts?ie=UTF-8&tl={lang}&client=tw-ob&q={Uri.EscapeDataString(text)}");
     }
 }

@@ -3,10 +3,8 @@ using Vocabi.Domain.Aggregates.Vocabularies;
 
 namespace Vocabi.Infrastructure.Persistence.Repositories;
 
-public class VocabularyRepository : Repository<Vocabulary>, IVocabularyRepository
+public class VocabularyRepository(ApplicationDbContext context) : Repository<Vocabulary>(context), IVocabularyRepository
 {
-    public VocabularyRepository(ApplicationDbContext context) : base(context) { }
-
     public async Task AddAsync(Vocabulary entity)
     {
         await DbSet.AddAsync(entity);

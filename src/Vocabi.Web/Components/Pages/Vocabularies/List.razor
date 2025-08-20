@@ -1,6 +1,7 @@
 ﻿@page "/vocabularies"
 @rendermode InteractiveServer
-@using Vocabi.Application.Features.Vocabularies.DTOs
+@using Vocabi.Application.Features.Vocabularies.GetPaginatedVocabularies
+@using Vocabi.Shared.Utils
 @inherits BasePage
 
 <PageTitle>Vocabulary List</PageTitle>
@@ -15,8 +16,8 @@
         <FluentStack VerticalAlignment="VerticalAlignment.Center" Width="auto">
             <FluentButton Appearance="Appearance.Accent"
                           IconStart="@(new Icons.Regular.Size16.Add())"
-                          OnClick="Navigation.GoToCreate">
-                Create vocab
+                          OnClick="Navigation.GoToVocabularyCreate">
+                Create
             </FluentButton>
         </FluentStack>
     </FluentStack>
@@ -26,11 +27,11 @@
             <FluentTextField @bind-Value="searchWord" Label="Word" Style="flex:1;" />
         </FluentStack>
         <FluentStack Width="auto">
-            <FluentButton IconStart="@(new Icons.Regular.Size16.Search())" Loading="IsLoading" OnClick="RefreshDataAsync">
+            <FluentButton IconStart="@(new Icons.Regular.Size16.Search())" Loading="isRefreshingData" OnClick="RefreshDataAsync">
                 Search
             </FluentButton>
-            <FluentButton IconStart="@(new Icons.Regular.Size16.ArrowDownload())" Disabled="IsLoading" OnClick="() => { }">
-                Export
+            <FluentButton IconStart="@(new Icons.Regular.Size16.ArrowExport())" Loading="isExportingToAnki" OnClick="ExportToAnkiAsync">
+                Export to Anki
             </FluentButton>
         </FluentStack>
     </FluentStack>
@@ -39,25 +40,25 @@
         <FluentPaginator State="pagination" Style="width:100%;margin-top:0" />
         <FluentDataGrid @ref="dataGrid"
                         Pagination="pagination"
-                        TGridItem="VocabularyListItemDto"
+                        TGridItem="VocabularyDto"
                         Items="vocabularyList"
                         RefreshItems="RefreshItemsAsync"
-                        Loading="IsLoading"
+                        Loading="isRefreshingData"
                         GenerateHeader="GenerateHeaderOption.Sticky"
                         DisplayMode="DataGridDisplayMode.Table"
-                        OnRowDoubleClick="(r) => Navigation.GoToDetail(r.Item!.Id)"
+                        OnRowDoubleClick="(r) => Navigation.GoToVocabularyDetail(r.Item!.Id)"
                         AutoFit="true"
                         ShowHover="true"
                         Style="width:100%;">
             <ChildContent>
                 <PropertyColumn Property="@(c => c.Word)" />
-                <PropertyColumn Property="@(c => c.PartOfSpeech)" />
-                <PropertyColumn Property="@(c => c.Pronunciation)" />
+                <PropertyColumn Property="@(c => c.PartOfSpeech)" Title="Part of speech" />
+                <PropertyColumn Property="@(c => StringUtils.WrapWithSlash(c.Pronunciation))" />
                 <PropertyColumn Property="@(c => c.Cloze)" />
                 <PropertyColumn Property="@(c => c.Meaning)" />
-                <PropertyColumn Title="Synced to Anki" Property="@(c => c.IsSyncedToAnki)" />
-                <TemplateColumn Title="Actions" Align="@Align.End">
-                    <FluentButton IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="() => Navigation.GoToEdit(context.Id)" />
+                <PropertyColumn Property="@(c => c.IsSyncedToAnki)" Title="Exported to Anki" />
+                <TemplateColumn Title="Actions" Align="@Align.Center">
+                    <FluentButton IconEnd="@(new Icons.Regular.Size16.Edit())" OnClick="() => Navigation.GoToVocabularyEdit(context.Id)" />
                     <FluentButton IconEnd="@(new Icons.Regular.Size16.Delete())" OnClick="() => OpenDeleteDialogAsync(context)" />
                 </TemplateColumn>
             </ChildContent>

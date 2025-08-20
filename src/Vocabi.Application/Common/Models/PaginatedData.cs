@@ -5,7 +5,7 @@ public class PaginatedData<T> where T : class
     public int CurrentPage { get; }
     public int TotalItems { get; private set; }
     public int TotalPages { get; }
-    public IEnumerable<T> Items { get; set; }
+    public IReadOnlyList<T> Items { get; set; }
 
     public bool HasPreviousPage => CurrentPage > 1;
     public bool HasNextPage => CurrentPage < TotalPages;
@@ -18,7 +18,7 @@ public class PaginatedData<T> where T : class
         Items = [];
     }
 
-    public PaginatedData(IEnumerable<T> items, int total, int pageIndex, int pageSize)
+    public PaginatedData(IReadOnlyList<T> items, int total, int pageIndex, int pageSize)
     {
         CurrentPage = pageIndex;
         TotalItems = total;

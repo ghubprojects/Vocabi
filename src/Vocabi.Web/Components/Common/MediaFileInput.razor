@@ -1,0 +1,62 @@
+﻿@using Vocabi.Domain.Aggregates.MediaFiles
+@using Vocabi.Shared.Common
+@using static Vocabi.Shared.Common.Enums
+
+<FluentInputFile Mode="InputFileMode.Stream"
+                 Accept="Accept"
+                 AnchorId="AnchorId"
+                 MaximumFileCount="1"
+                 MaximumFileSize="@(MaxFileSizeInKB * Constants.BytesPerKB)"
+                 OnCompleted="HandleFileUploaded"
+                 Style="position:relative;flex:1;padding:36px;border-radius:4px;">
+    <ChildContent>
+        @{
+            var fileSourceStyle = "position:absolute;bottom:8px;right:12px;font-size:12px;font-style:italic;";
+            if (!string.IsNullOrEmpty(UploadedFile.FilePath))
+            {
+                switch (FileType)
+                {
+                    case MediaType.Audio:
+                        <div id="@AnchorId">
+                            <audio controls>
+                                <source src="@UploadedFile.FilePath" />
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                        <FluentLabel Style="@fileSourceStyle">
+                            @UploadedFile.SourceName
+                        </FluentLabel>
+                        break;
+                    case MediaType.Image:
+                        <div id="@AnchorId">
+                            <img src="@UploadedFile.FilePath" style="max-width: 400px;" />
+                        </div>
+                        <FluentLabel Style="@fileSourceStyle">
+                            @UploadedFile.SourceName
+                        </FluentLabel>
+                        // if (_mediaLookupResult.AlternativeImageUrls.Any())
+                        // {
+                        //     <FluentIcon Value="@(new Icons.Regular.Size20.ArrowRepeatAll())"
+                        //                 OnClick="HandleChangeImageAsync"
+                        //                 Style="position:absolute;top:8px;right:32px;" />
+                        // }
+                        break;
+                }
+                <FluentIcon Value="@(new Icons.Regular.Size20.Dismiss())"
+                            OnClick="@(() => HandleRemoveFile(FileType))"
+                            Style="position:absolute;top:8px;right:8px;" />
+            }
+            else
+            {
+                <FluentStack Id="@AnchorId"
+                             Orientation="Orientation.Vertical"
+                             HorizontalAlignment="HorizontalAlignment.Center">
+                    <FluentIcon Value="Icon" />
+                    <FluentLabel>
+                        @Placeholder
+                    </FluentLabel>
+                </FluentStack>
+            }
+        }
+    </ChildContent>
+</FluentInputFile>

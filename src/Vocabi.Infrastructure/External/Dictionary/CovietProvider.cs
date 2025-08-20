@@ -9,12 +9,12 @@ public class CovietProvider : IFallbackDictionaryProvider
 {
     public string ProviderName => "Coviet Dictionary";
 
-    private readonly IBrowsingContext _context;
+    private readonly IBrowsingContext context;
 
     public CovietProvider()
     {
         var config = Configuration.Default.WithDefaultLoader();
-        _context = BrowsingContext.New(config);
+        context = BrowsingContext.New(config);
     }
 
     public async Task<Result<List<string>>> LookupAsync(string word)
@@ -33,7 +33,7 @@ public class CovietProvider : IFallbackDictionaryProvider
     private async Task<IDocument> GetDocumentAsync(string word)
     {
         var url = $"https://tratu.coviet.vn/hoc-tieng-anh/tu-dien/lac-viet/A-V/{Uri.EscapeDataString(word)}.html";
-        return await _context.OpenAsync(url);
+        return await context.OpenAsync(url);
     }
 
     private async Task<List<string>> LookupMeaningsAsync(string word)

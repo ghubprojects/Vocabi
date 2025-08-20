@@ -2,10 +2,8 @@
 
 namespace Vocabi.Infrastructure.Persistence.Repositories;
 
-public class LookupEntryRepository: Repository<LookupEntry>, ILookupEntryRepository
+public class LookupEntryRepository(ApplicationDbContext context) : Repository<LookupEntry>(context), ILookupEntryRepository
 {
-    public LookupEntryRepository(ApplicationDbContext context) : base(context) { }
-
     public async Task AddAsync(LookupEntry entity)
     {
         await DbSet.AddAsync(entity);

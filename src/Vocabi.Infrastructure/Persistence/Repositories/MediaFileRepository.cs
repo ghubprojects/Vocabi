@@ -2,10 +2,8 @@
 
 namespace Vocabi.Infrastructure.Persistence.Repositories;
 
-public class MediaFileRepository: Repository<MediaFile>, IMediaFileRepository
+public class MediaFileRepository(ApplicationDbContext context) : Repository<MediaFile>(context), IMediaFileRepository
 {
-    public MediaFileRepository(ApplicationDbContext context) : base(context) { }
-
     public async Task AddAsync(MediaFile entity)
     {
         await DbSet.AddAsync(entity);

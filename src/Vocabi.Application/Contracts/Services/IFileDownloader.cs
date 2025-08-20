@@ -4,5 +4,8 @@ namespace Vocabi.Application.Contracts.Services;
 
 public interface IFileDownloader
 {
-    Task<Result<List<string>>> DownloadAsync(IEnumerable<string> urls, CancellationToken cancellationToken = default);
+    Task<Result<DownloadedStreamFile>> DownloadAsStreamAsync(string url, CancellationToken cancellationToken);
+    Task<Result<List<DownloadedStreamFile>>> DownloadMultipleAsStreamAsync(IEnumerable<string> urls, CancellationToken cancellationToken);
+    Task<Result<DownloadedBinaryFile>> DownloadAsBytesAsync(string url, CancellationToken cancellationToken);
+    Task<Result<List<DownloadedBinaryFile>>> DownloadMultipleAsBytesAsync(IEnumerable<string> urls, CancellationToken cancellationToken);
 }
