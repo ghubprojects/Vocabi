@@ -34,12 +34,12 @@
                         <FluentLabel Style="@fileSourceStyle">
                             @UploadedFile.SourceName
                         </FluentLabel>
-                        // if (_mediaLookupResult.AlternativeImageUrls.Any())
-                        // {
-                        //     <FluentIcon Value="@(new Icons.Regular.Size20.ArrowRepeatAll())"
-                        //                 OnClick="HandleChangeImageAsync"
-                        //                 Style="position:absolute;top:8px;right:32px;" />
-                        // }
+                        if (AlternativeFiles.Any())
+                        {
+                            <FluentIcon Value="@(new Icons.Regular.Size20.ArrowRepeatAll())"
+                                        OnClick="HandleChangeFile"
+                                        Style="position:absolute;top:8px;right:32px;" />
+                        }
                         break;
                 }
                 <FluentIcon Value="@(new Icons.Regular.Size20.Dismiss())"

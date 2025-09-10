@@ -11,7 +11,7 @@ public record ExportVocabularyFlashcardsCommand(IReadOnlyCollection<Guid> Vocabu
 
 public class ExportVocabularyFlashcardsCommandHandler(
     IVocabularyRepository vocabularyRepository,
-    IFlashcardExporter flashcardPublisher
+    IFlashcardService flashcardService
     ) : IRequestHandler<ExportVocabularyFlashcardsCommand, Result>
 {
     public async Task<Result> Handle(ExportVocabularyFlashcardsCommand request, CancellationToken cancellationToken)

@@ -12,7 +12,7 @@ public class LocalFileStorage : IFileStorage
 
     public LocalFileStorage(ILogger<LocalFileStorage> logger)
     {
-        _rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+        _rootPath = FileUtils.GetUploadPath();
         _logger = logger;
 
         if (!Directory.Exists(_rootPath))

@@ -1,14 +1,11 @@
-﻿namespace Vocabi.Infrastructure.External.Flashcards;
+﻿using Vocabi.Application.Common.Models;
+using Vocabi.Application.Contracts.External.Flashcards;
 
-public interface IAnkiTemplateConfigurator
-{
-    Task EnsureVocabiDeckAsync(CancellationToken cancellationToken = default);
-    Task EnsureVocabiNoteModelAsync(CancellationToken cancellationToken = default);
-}
+namespace Vocabi.Infrastructure.External.Flashcards;
 
-public class AnkiTemplateConfigurator(IAnkiConnectClient ankiConnectClient) : IAnkiTemplateConfigurator
+public class AnkiConnectService(IAnkiConnectClient ankiConnectClient) : IFlashcardService
 {
-    public async Task EnsureVocabiDeckAsync(CancellationToken cancellationToken = default)
+    public async Task EnsureDeckAsync(CancellationToken cancellationToken = default)
     {
         var response = await ankiConnectClient.InvokeAsync<string[]>("deckNames", new { }, cancellationToken);
         if (response.Error is not null)
@@ -19,7 +16,7 @@ public class AnkiTemplateConfigurator(IAnkiConnectClient ankiConnectClient) : IA
             await ankiConnectClient.InvokeAsync<object>("createDeck", new { deck = "VocabiDeck" }, cancellationToken);
     }
 
-    public async Task EnsureVocabiNoteModelAsync(CancellationToken cancellationToken = default)
+    public async Task EnsureNoteModelAsync(CancellationToken cancellationToken = default)
     {
         var response = await ankiConnectClient.InvokeAsync<string[]>("modelNames", new { }, cancellationToken);
         if (response.Error is not null)
@@ -245,5 +242,52 @@ html, body {
             //     }
             // }, ct);
         }
+    }
+
+    public async Task<Result<long?>> ExportAsync(FlashcardNote note, ExportOptions options, CancellationToken cancellationToken = default)
+    {
+        var parameters = new
+        {
+            notes = new[]
+            {
+                new
+                {
+                    deckName = options.DeckName,
+                    modelName = options.ModelName,
+                    fields = new
+                    {
+                        note.Word,
+                        note.PartOfSpeech,
+                        note.Pronunciation,
+                        note.Cloze,
+                        note.Definition,
+                        note.Example,
+                        note.Meaning,
+                        note.Audio,
+                        note.Image
+                    }
+                }
+            }
+        };
+
+        var response = await ankiConnectClient.InvokeAsync<IReadOnlyList<long>>("addNotes", parameters, cancellationToken);
+        if (response.Error is not null)
+            return Result<long?>.Failure(response.Error);
+
+        return Result<long?>.Success(response.Result![0]);
+    }
+
+    public async Task<Result<IReadOnlyList<long>>> ExportAsync(IEnumerable<FlashcardNote> notes, ExportOptions options, CancellationToken cancellationToken = default)
+    {
+        return Result<IReadOnlyList<long>>.Success([]);
+    }
+
+    public async Task<Result<string?>> GetMediaDirectoryPath(CancellationToken cancellationToken = default)
+    {
+        var response = await ankiConnectClient.InvokeAsync<string>("getMediaDirPath", new { }, cancellationToken);
+        if (response.Error is not null)
+            return Result<string?>.Failure(response.Error);
+
+        return Result<string?>.Success(response.Result);
     }
 }

@@ -75,9 +75,4 @@ public class Vocabulary : IAggregateRoot
     {
         Flashcard.MarkAsPending();
     }
-
-    public void MarkFlashcardAsFailed()
-    {
-        Flashcard.MarkAsFailed();
-    }
 }

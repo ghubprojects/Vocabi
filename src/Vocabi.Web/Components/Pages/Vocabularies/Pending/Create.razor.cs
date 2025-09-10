@@ -20,6 +20,7 @@ public partial class Create
 
     private MediaFileDto audioFile = new();
     private MediaFileDto imageFile = new();
+    private List<MediaFileDto> alternativeImageFiles = [];
 
     private bool isSubmitting;
     private bool isLookingUp;
@@ -94,6 +95,9 @@ public partial class Create
             var image = mediaFileDtos.FirstOrDefault(x => FileUtils.GetMediaType(x.ContentType) == MediaType.Image);
             if (image is not null)
                 imageFile = image;
+            if (mediaFileDtos.Count > 1)
+                alternativeImageFiles = [.. mediaFileDtos
+                    .Where(x => FileUtils.GetMediaType(x.ContentType) == MediaType.Image && x.Id != imageFile.Id)];
 
             await InvokeAsync(StateHasChanged);
         },

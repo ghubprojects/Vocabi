@@ -15,8 +15,12 @@ public partial class MediaFileInput
     [Parameter] public Icon Icon { get; set; } = default!;
 
     [Parameter] public MediaFileDto UploadedFile { get; set; } = default!;
+    [Parameter] public List<MediaFileDto> AlternativeFiles { get; set; } = [];
     [Parameter] public EventCallback<FluentInputFileEventArgs> OnFileUploaded { get; set; }
     [Parameter] public EventCallback<MediaType> OnRemoveFile { get; set; }
+
+    private readonly List<MediaFileDto> _files = [];
+    private int fileIndex = 0;
 
     private async Task HandleFileUploaded(IEnumerable<FluentInputFileEventArgs> files)
     {
@@ -28,5 +32,18 @@ public partial class MediaFileInput
     private async Task HandleRemoveFile(MediaType type)
     {
         await OnRemoveFile.InvokeAsync(type);
+        _files.Clear();
+    }
+
+    private void HandleChangeFile()
+    {
+        if (_files.Count == 0)
+        {
+            _files.Add(UploadedFile);
+            _files.AddRange(AlternativeFiles);
+        }
+
+        UploadedFile = _files.ElementAt(fileIndex);
+        fileIndex = (fileIndex + 1) % _files.Count;
     }
 }

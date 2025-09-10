@@ -5,5 +5,5 @@ namespace Vocabi.Domain.Aggregates.LookupEntries;
 public interface ILookupEntryRepository : IRepository<LookupEntry>
 {
     Task AddAsync(LookupEntry entity);
-    Task AddRangeAsync(List<LookupEntry> entities);
+    Task AddRangeAsync(IEnumerable<LookupEntry> entities);
 }

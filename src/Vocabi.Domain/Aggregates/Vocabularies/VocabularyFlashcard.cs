@@ -23,7 +23,7 @@ public class VocabularyFlashcard
 
     internal void MarkAsPending()
     {
-        if (Status != FlashcardStatus.Pending)
+        if (Status == FlashcardStatus.Exported)
         {
             NoteId = null;
             Status = FlashcardStatus.Pending;
@@ -36,14 +36,6 @@ public class VocabularyFlashcard
         {
             NoteId = noteId;
             Status = FlashcardStatus.Exported;
-        }
-    }
-
-    internal void MarkAsFailed()
-    {
-        if (Status == FlashcardStatus.Pending)
-        {
-            Status = FlashcardStatus.Failed;
         }
     }
 }

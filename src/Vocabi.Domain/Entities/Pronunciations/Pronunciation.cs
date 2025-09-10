@@ -1,0 +1,23 @@
+﻿#nullable disable
+
+namespace Vocabi.Domain.Entities.Pronunciations;
+
+public class Pronunciation
+{
+    public Guid Id { get; private set; }
+    public string Word { get; private set; }
+    public string Ipa { get; private set; }
+
+    private Pronunciation() { }
+
+    private Pronunciation(string word, string ipa)
+    {
+        Word = word;
+        Ipa = ipa;
+    }
+
+    public static Pronunciation CreateNew(string word, string ipa)
+    {
+        return new Pronunciation(word, ipa);
+    }
+}

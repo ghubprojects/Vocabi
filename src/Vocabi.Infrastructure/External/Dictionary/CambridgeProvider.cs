@@ -2,6 +2,7 @@
 using AngleSharp.Dom;
 using Vocabi.Application.Common.Models;
 using Vocabi.Application.Contracts.External.Dictionary;
+using Vocabi.Domain.Entities.Pronunciations;
 using Vocabi.Shared.Extensions;
 
 namespace Vocabi.Infrastructure.External.Dictionary;
@@ -10,12 +11,14 @@ public class CambridgeProvider : IMainDictionaryProvider
 {
     public string ProviderName => "Cambridge Dictionary";
 
-    private readonly IBrowsingContext context;
+    private readonly IBrowsingContext _context;
+    private readonly IPronunciationRepository _pronunciationRepository;
 
-    public CambridgeProvider()
+    public CambridgeProvider(IPronunciationRepository pronunciationRepository)
     {
         var config = Configuration.Default.WithDefaultLoader();
-        context = BrowsingContext.New(config);
+        _context = BrowsingContext.New(config);
+        _pronunciationRepository = pronunciationRepository;
     }
 
     public async Task<Result<List<DictionaryEntryModel>>> LookupAsync(string word)
@@ -39,7 +42,7 @@ public class CambridgeProvider : IMainDictionaryProvider
     private async Task<IDocument> GetDocumentAsync(string word, string langPath)
     {
         var url = $"https://dictionary.cambridge.org/dictionary/{langPath}/{Uri.EscapeDataString(word)}";
-        return await context.OpenAsync(url);
+        return await _context.OpenAsync(url);
     }
 
     private async Task<List<DictionaryEntryModel>> LookupEntriesAsync(string word)
@@ -106,8 +109,17 @@ public class CambridgeProvider : IMainDictionaryProvider
         var pronunciations = new List<string>();
         foreach (var word in words)
         {
+            var cached = await _pronunciationRepository.GetAsync(word);
+            if (cached is not null)
+            {
+                pronunciations.Add(cached.Ipa);
+                continue;
+            }
+
             var pronunciation = await GetPronunciationAsync(word);
             pronunciations.Add(pronunciation);
+            await _pronunciationRepository.AddAsync(Pronunciation.CreateNew(word, pronunciation));
+            await _pronunciationRepository.UnitOfWork.SaveChangesAsync();
         }
 
         return string.Join(" ", pronunciations);

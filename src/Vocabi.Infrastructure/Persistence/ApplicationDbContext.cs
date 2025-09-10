@@ -3,6 +3,7 @@ using System.Reflection;
 using Vocabi.Domain.Aggregates.LookupEntries;
 using Vocabi.Domain.Aggregates.MediaFiles;
 using Vocabi.Domain.Aggregates.Vocabularies;
+using Vocabi.Domain.Entities.Pronunciations;
 using Vocabi.Domain.SeedWork;
 
 namespace Vocabi.Infrastructure.Persistence;
@@ -12,6 +13,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Vocabulary> Vocabularies { get; set; }
     public DbSet<LookupEntry> LookupEntries { get; set; }
     public DbSet<MediaFile> MediaFiles { get; set; }
+    public DbSet<Pronunciation> Pronunciations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

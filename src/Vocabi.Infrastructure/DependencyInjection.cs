@@ -10,12 +10,14 @@ using Vocabi.Application.Contracts.Storage;
 using Vocabi.Domain.Aggregates.LookupEntries;
 using Vocabi.Domain.Aggregates.MediaFiles;
 using Vocabi.Domain.Aggregates.Vocabularies;
+using Vocabi.Domain.Entities.Pronunciations;
 using Vocabi.Infrastructure.External.Audio;
 using Vocabi.Infrastructure.External.Dictionary;
 using Vocabi.Infrastructure.External.Flashcards;
 using Vocabi.Infrastructure.External.Image;
 using Vocabi.Infrastructure.Persistence;
 using Vocabi.Infrastructure.Persistence.Repositories;
+using Vocabi.Infrastructure.Persistence.Seed;
 using Vocabi.Infrastructure.Services;
 using Vocabi.Infrastructure.Storage;
 
@@ -29,10 +31,14 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+        // Register seeders
+        services.AddScoped<PronunciationSeeder>();
+
         // Register repositories
         services.AddScoped<IVocabularyRepository, VocabularyRepository>();
         services.AddScoped<ILookupEntryRepository, LookupEntryRepository>();
         services.AddScoped<IMediaFileRepository, MediaFileRepository>();
+        services.AddScoped<IPronunciationRepository, PronunciationRepository>();
 
         // Register services
         services.AddScoped<IFileDownloader, FileDownloader>();
@@ -47,8 +53,7 @@ public static class DependencyInjection
         services.AddScoped<IImageProvider, PixabayProvider>();
 
         services.AddScoped<IAnkiConnectClient, AnkiConnectClient>();
-        services.AddScoped<IAnkiTemplateConfigurator, AnkiTemplateConfigurator>();
-        services.AddScoped<IFlashcardExporter, AnkiConnectExporter>();
+        services.AddScoped<IFlashcardService, AnkiConnectService>();
 
         return services;
     }

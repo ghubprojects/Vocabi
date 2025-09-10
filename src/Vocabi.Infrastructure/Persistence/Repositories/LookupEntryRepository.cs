@@ -9,7 +9,7 @@ public class LookupEntryRepository(ApplicationDbContext context) : Repository<Lo
         await DbSet.AddAsync(entity);
     }
 
-    public async Task AddRangeAsync(List<LookupEntry> entities)
+    public async Task AddRangeAsync(IEnumerable<LookupEntry> entities)
     {
         await DbSet.AddRangeAsync(entities);
     }
