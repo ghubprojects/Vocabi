@@ -42,13 +42,13 @@
                 @(isDeletingMultiple ? "Deleting..." : $"Delete{(selectedItems.Count() > 0 ? $" ({selectedItems.Count()})" : "")}")
             </FluentButton>
             <FluentButton Title="Export selected to Anki"
-                          OnClick="()=>{}"
-                          Loading="isExportingMultipleToAnki"
-                          Disabled="@(isExportingMultipleToAnki || !isAnyItemSelected)"
-                          BackgroundColor="var(--presence-available)"
+                          OnClick="HandleExportMultipleAsync"
+                          Loading="isExportingMultiple"
+                          Disabled="@(isExportingMultiple || !isAnyItemSelected)"
+                          BackgroundColor="#16a34a"
                           Color="var(--neutral-fill-rest)">
                 <FluentIcon Value="@(new Icons.Regular.Size16.ArrowExport())" Color="@Color.Fill" Slot="start" />
-                @(isExportingMultipleToAnki ? "Exporting to Anki..." : $"Export to Anki{(selectedItems.Count() > 0 ? $" ({selectedItems.Count()})" : "")}")
+                @(isExportingMultiple ? "Exporting to Anki..." : $"Export to Anki{(selectedItems.Count() > 0 ? $" ({selectedItems.Count()})" : "")}")
             </FluentButton>
         </FluentStack>
     </FluentStack>
@@ -93,7 +93,7 @@
                                   OnClick="() => HandleExportAsync(context.Id)">
                         <FluentIcon Value="@(new Icons.Regular.Size16.ArrowExport())"
                                     Color="Color.Custom"
-                                    CustomColor="var(--presence-available)" />
+                                    CustomColor="#16a34a" />
                     </FluentButton>
                 </TemplateColumn>
             </ChildContent>

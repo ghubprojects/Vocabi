@@ -1,6 +1,5 @@
 using Microsoft.FluentUI.AspNetCore.Components;
 using Vocabi.Application;
-using Vocabi.Application.Contracts.External.Flashcards;
 using Vocabi.Infrastructure;
 using Vocabi.Infrastructure.Persistence.Seed;
 using Vocabi.Shared.Utils;
@@ -25,10 +24,6 @@ using (var scope = app.Services.CreateScope())
 {
     var pronunciationSeeder = scope.ServiceProvider.GetRequiredService<PronunciationSeeder>();
     await pronunciationSeeder.SeedAsync(FileUtils.GetWwwRootPath("pronunciations.json"));
-
-    var flashcardService = scope.ServiceProvider.GetRequiredService<IFlashcardService>();
-    await flashcardService.EnsureDeckAsync();
-    await flashcardService.EnsureNoteModelAsync();
 }
 
 // Configure the HTTP request pipeline.

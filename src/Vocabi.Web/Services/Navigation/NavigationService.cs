@@ -12,4 +12,6 @@ public class NavigationService(NavigationManager nav) : INavigationService
     public void GoToVocabularyPendingDetail(Guid id) => nav.NavigateTo(Routes.VocabularyPendingDetail.WithQuery(new { id }));
     public void GoToVocabularyExportedList() => nav.NavigateTo(Routes.VocabularyExportedList);
     public void GoToVocabularyExportedDetail(Guid id) => nav.NavigateTo(Routes.VocabularyExportedDetail.WithQuery(new { id }));
+    public void GoToVocabularyFailedList() => nav.NavigateTo(Routes.VocabularyFailedList);
+    public void GoToVocabularyFailedDetail(Guid id) => nav.NavigateTo(Routes.VocabularyFailedDetail.WithQuery(new { id }));
 }

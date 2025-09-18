@@ -4,7 +4,7 @@ using Vocabi.Domain.SeedWork;
 
 namespace Vocabi.Domain.Aggregates.MediaFiles;
 
-public class MediaFile : IAggregateRoot
+public class MediaFile : Entity, IAggregateRoot
 {
     public Guid Id { get; private set; }
     public string FileName { get; private set; }

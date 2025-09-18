@@ -1,6 +1,6 @@
 ﻿using Vocabi.Domain.SeedWork;
 
-namespace Vocabi.Domain.Entities.Pronunciations;
+namespace Vocabi.Domain.Aggregates.Pronunciations;
 
 public interface IPronunciationRepository : IRepository<Pronunciation>
 {

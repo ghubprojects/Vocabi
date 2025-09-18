@@ -4,9 +4,7 @@ namespace Vocabi.Application.Contracts.External.Flashcards;
 
 public interface IFlashcardService
 {
-    Task EnsureDeckAsync(CancellationToken cancellationToken = default);
-    Task EnsureNoteModelAsync(CancellationToken cancellationToken = default);
-    Task<Result<long?>> ExportAsync(FlashcardNote note, ExportOptions options, CancellationToken cancellationToken = default);
-    Task<Result<IReadOnlyList<long>>> ExportAsync(IEnumerable<FlashcardNote> notes, ExportOptions options, CancellationToken cancellationToken = default);
-    Task<Result<string?>> GetMediaDirectoryPath(CancellationToken cancellationToken = default);
+    Task<Result<bool>> IsAvailableAsync();
+    Task<Result<long>> ExportNoteAsync(FlashcardNote note, IEnumerable<string> mediaPaths);
+    Task<Result<long[]>> ExportNotesAsync(IEnumerable<FlashcardNote> notes, IEnumerable<string> mediaPaths);
 }

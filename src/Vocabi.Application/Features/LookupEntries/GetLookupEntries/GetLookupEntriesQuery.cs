@@ -19,7 +19,8 @@ public class GetLookupEntriesQueryHandler(
 {
     public async Task<IReadOnlyList<LookupEntryDto>> Handle(GetLookupEntriesQuery request, CancellationToken cancellationToken)
     {
-        var query = lookupEntryRepository.DbSet
+        var query = lookupEntryRepository
+            .GetQueryableSet()
             .AsNoTracking()
             .Where(e => request.Ids.Contains(e.Id));
 

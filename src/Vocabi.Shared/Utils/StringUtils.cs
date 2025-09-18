@@ -41,8 +41,4 @@ public static class StringUtils
 
         return new string(chars);
     }
-
-    public static string WrapWithSlash(string text) => $"/{text.Trim('/')}/";
-
-    public static string UnwrapSlashes(string text) => text.Trim('/').Trim();
 }

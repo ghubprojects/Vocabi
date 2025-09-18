@@ -20,22 +20,27 @@ public class CreateVocabularyCommandHandler(IVocabularyRepository vocabularyRepo
 {
     public async Task<Result> Handle(CreateVocabularyCommand request, CancellationToken cancellationToken)
     {
-        var vocabulary = Vocabulary.CreateNew(
-            request.Word,
-            request.PartOfSpeech,
-            request.Pronunciation,
-            request.Cloze,
-            request.Definition,
-            request.Example,
-            request.Meaning
-        );
-        vocabulary.AttachMediaFiles(request.MediaFileIds);
-        await vocabularyRepository.AddAsync(vocabulary);
+        try
+        {
+            var vocabulary = Vocabulary.CreateNew(
+                request.Word,
+                request.PartOfSpeech,
+                request.Pronunciation,
+                request.Cloze,
+                request.Definition,
+                request.Example,
+                request.Meaning
+            );
+            vocabulary.AttachMediaFiles(request.MediaFileIds);
 
-        var isSaved = await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-        if (!isSaved)
+            await vocabularyRepository.AddAsync(vocabulary);
+            await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+
+            return Result.Success();
+        }
+        catch (Exception)
+        {
             return Result.Failure("Failed to create new vocabularies.");
-
-        return Result.Success();
+        }
     }
 }

@@ -1,30 +1,38 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vocabi.Domain.Aggregates.Vocabularies;
+using Vocabi.Domain.SeedWork;
 
 namespace Vocabi.Infrastructure.Persistence.Repositories;
 
-public class VocabularyRepository(ApplicationDbContext context) : Repository<Vocabulary>(context), IVocabularyRepository
+public class VocabularyRepository(ApplicationDbContext context) : IVocabularyRepository
 {
+    public IUnitOfWork UnitOfWork => context;
+
+    public IQueryable<Vocabulary> GetQueryableSet()
+    {
+        return context.Set<Vocabulary>();
+    }
+
     public async Task<Vocabulary?> GetByIdAsync(Guid id)
     {
-        return await DbSet
+        return await context.Vocabularies
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task<IReadOnlyList<Vocabulary>> GetByIdsAsync(IReadOnlyCollection<Guid> ids)
+    public async Task<IReadOnlyList<Vocabulary>> GetByIdsAsync(IEnumerable<Guid> ids)
     {
-        return await DbSet
+        return await context.Vocabularies
             .Where(e => ids.Contains(e.Id))
             .ToListAsync();
     }
 
     public async Task AddAsync(Vocabulary entity)
     {
-        await DbSet.AddAsync(entity);
+        await context.Vocabularies.AddAsync(entity);
     }
 
     public void Remove(Vocabulary entity)
     {
-        DbSet.Remove(entity);
+        context.Vocabularies.Remove(entity);
     }
 }

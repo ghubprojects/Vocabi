@@ -2,8 +2,8 @@
 
 namespace Vocabi.Domain.SeedWork;
 
-public interface IRepository<T> where T : class
+public interface IRepository<T> where T : IAggregateRoot
 {
     IUnitOfWork UnitOfWork { get; }
-    DbSet<T> DbSet { get; }
+    IQueryable<T> GetQueryableSet();
 }

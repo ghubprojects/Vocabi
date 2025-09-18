@@ -35,7 +35,7 @@ public partial class List
         StateHasChanged();
     }
 
-    private async Task HandleUnexportAsync(Guid id)
+    private async Task HandleRemoveExportAsync(Guid id)
     {
         //await ExecuteAsync(async () =>
         //{

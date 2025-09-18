@@ -3,5 +3,6 @@
 public enum FlashcardStatus
 {
     Pending,
-    Exported
+    Exported,
+    Failed
 }

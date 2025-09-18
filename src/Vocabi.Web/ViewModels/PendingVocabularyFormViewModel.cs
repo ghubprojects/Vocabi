@@ -54,7 +54,7 @@ public class PendingVocabularyFormViewModel
     {
         Word = entry.Headword;
         PartOfSpeech = entry.PartOfSpeech;
-        Pronunciation = StringUtils.WrapWithSlash(entry.Pronunciation);
+        Pronunciation = FormatterUtils.WrapWithSlashes(entry.Pronunciation);
         Definition = entry.Definitions.FirstOrDefault()?.Text ?? string.Empty;
         Example = entry.Definitions.FirstOrDefault()?.Examples.FirstOrDefault() ?? string.Empty;
         Meaning = entry.Meanings.FirstOrDefault() ?? string.Empty;

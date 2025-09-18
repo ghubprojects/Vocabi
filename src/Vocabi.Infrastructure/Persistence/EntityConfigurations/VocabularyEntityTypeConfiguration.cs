@@ -68,6 +68,10 @@ public class VocabularyEntityTypeConfiguration : IEntityTypeConfiguration<Vocabu
 
             b.Property(f => f.CreatedAt)
             .IsRequired();
+
+            b.Property(f => f.ExportedAt);
+
+            b.Property(f => f.LastTriedAt);
         });
     }
 }

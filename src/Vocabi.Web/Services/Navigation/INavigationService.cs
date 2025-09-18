@@ -8,4 +8,7 @@ public interface INavigationService
     void GoToVocabularyPendingDetail(Guid id);
     void GoToVocabularyExportedList();
     void GoToVocabularyExportedDetail(Guid id);
+    void GoToVocabularyFailedList();
+    void GoToVocabularyFailedDetail(Guid id);
+
 }

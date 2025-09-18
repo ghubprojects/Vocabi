@@ -19,7 +19,8 @@ public class GetMediaFilesQueryHandler(
 {
     public async Task<IReadOnlyList<MediaFileDto>> Handle(GetMediaFilesQuery request, CancellationToken cancellationToken)
     {
-        var query = mediaFileRepository.DbSet
+        var query = mediaFileRepository
+            .GetQueryableSet()
             .AsNoTracking()
             .Where(e => request.Ids.Contains(e.Id));
 

@@ -29,9 +29,15 @@
                     Pending
                 </FluentNavLink>
                 <FluentNavLink Href="@Routes.VocabularyExportedList"
-                               Icon="@(new Icons.Regular.Size20.Archive())"
-                               IconColor="Color.Accent">
+                               Icon="@(new Icons.Regular.Size20.CheckmarkCircle())"
+                               IconColor="Color.Custom"
+                               CustomColor="#16a34a">
                     Exported
+                </FluentNavLink>
+                <FluentNavLink Href="@Routes.VocabularyFailedList"
+                               Icon="@(new Icons.Regular.Size20.ErrorCircle())"
+                               IconColor="Color.Error">
+                    Failed
                 </FluentNavLink>
             </FluentNavGroup>
         </FluentNavMenu>

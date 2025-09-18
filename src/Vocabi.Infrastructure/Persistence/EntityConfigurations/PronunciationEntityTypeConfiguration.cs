@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Vocabi.Domain.Entities.Pronunciations;
+using Vocabi.Domain.Aggregates.Pronunciations;
 
 namespace Vocabi.Infrastructure.Persistence.EntityConfigurations;
 

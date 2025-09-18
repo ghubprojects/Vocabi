@@ -1,8 +1,10 @@
 ﻿#nullable disable
 
-namespace Vocabi.Domain.Entities.Pronunciations;
+using Vocabi.Domain.SeedWork;
 
-public class Pronunciation
+namespace Vocabi.Domain.Aggregates.Pronunciations;
+
+public class Pronunciation : Entity, IAggregateRoot
 {
     public Guid Id { get; private set; }
     public string Word { get; private set; }

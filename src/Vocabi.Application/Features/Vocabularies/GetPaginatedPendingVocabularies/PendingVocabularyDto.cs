@@ -21,7 +21,7 @@ public class PendingVocabularyDto
             CreateMap<Vocabulary, PendingVocabularyDto>()
                 .ForMember(dest => dest.Pronunciation,
                 opt => opt.MapFrom(src => !string.IsNullOrWhiteSpace(src.Pronunciation)
-                ? StringUtils.WrapWithSlash(src.Pronunciation)
+                ? FormatterUtils.WrapWithSlashes(src.Pronunciation)
                 : string.Empty));
         }
     }

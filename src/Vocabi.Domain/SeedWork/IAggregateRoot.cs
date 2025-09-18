@@ -1,5 +1,3 @@
 ﻿namespace Vocabi.Domain.SeedWork;
 
-public interface IAggregateRoot
-{
-}
+public interface IAggregateRoot { }

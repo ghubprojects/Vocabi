@@ -4,7 +4,7 @@ using Vocabi.Domain.SeedWork;
 
 namespace Vocabi.Domain.Aggregates.Vocabularies;
 
-public class Vocabulary : IAggregateRoot
+public class Vocabulary : Entity, IAggregateRoot
 {
     public Guid Id { get; private set; }
     public string Word { get; private set; }
@@ -63,7 +63,12 @@ public class Vocabulary : IAggregateRoot
 
     public void AddFlashcard()
     {
-        Flashcard = VocabularyFlashcard.CreateNew(Id);
+        Flashcard = VocabularyFlashcard.CreateNew();
+    }
+
+    public void RemoveFlashcard()
+    {
+        Flashcard = null;
     }
 
     public void MarkFlashcardAsExported(long noteId)
@@ -71,8 +76,8 @@ public class Vocabulary : IAggregateRoot
         Flashcard.MarkAsExported(noteId);
     }
 
-    public void UnmarkFlashcardAsExported()
+    public void MarkFlashcardAsFailed()
     {
-        Flashcard.MarkAsPending();
+        Flashcard.MarkAsFailed();
     }
 }

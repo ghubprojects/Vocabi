@@ -2,7 +2,7 @@
 using AngleSharp.Dom;
 using Vocabi.Application.Common.Models;
 using Vocabi.Application.Contracts.External.Dictionary;
-using Vocabi.Domain.Entities.Pronunciations;
+using Vocabi.Domain.Aggregates.Pronunciations;
 using Vocabi.Shared.Extensions;
 
 namespace Vocabi.Infrastructure.External.Dictionary;

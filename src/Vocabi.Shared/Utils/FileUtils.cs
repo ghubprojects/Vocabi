@@ -111,7 +111,7 @@ public static class FileUtils
             }
             else
             {
-                Console.WriteLine($"File không tồn tại: {file}");
+                Console.WriteLine($"File not found: {file}");
             }
         }
 

@@ -1,8 +1,10 @@
 ﻿#nullable disable
 
+using Vocabi.Domain.SeedWork;
+
 namespace Vocabi.Domain.Aggregates.LookupEntries;
 
-public class LookupEntryDefinition
+public class LookupEntryDefinition : Entity
 {
     public Guid Id { get; private set; }
     public Guid LookupEntryId { get; private set; }

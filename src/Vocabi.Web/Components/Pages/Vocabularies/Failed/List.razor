@@ -1,16 +1,16 @@
-﻿@page "/vocabularies/exported"
+﻿@page "/vocabularies/failed"
 @rendermode InteractiveServer
-@using Vocabi.Application.Features.Vocabularies.GetPaginatedExportedVocabularies
+@using Vocabi.Application.Features.Vocabularies.GetPaginatedFailedVocabularies
 @using Vocabi.Shared.Utils
 @inherits BasePage
 
-<PageTitle>Vocabulary Exported List</PageTitle>
+<PageTitle>Vocabulary Failed List</PageTitle>
 
 <FluentStack Orientation="Orientation.Vertical">
     <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
         <FluentStack VerticalAlignment="VerticalAlignment.Center">
             <FluentLabel Typo="Typography.H4">
-                Vocabulary Exported List
+                Vocabulary Failed List
             </FluentLabel>
         </FluentStack>
     </FluentStack>
@@ -31,7 +31,7 @@
     <FluentStack Orientation="Orientation.Vertical">
         <FluentDataGrid @ref="dataGrid"
                         Pagination="pagination"
-                        TGridItem="ExportedVocabularyDto"
+                        TGridItem="FailedVocabularyDto"
                         Items="vocabularyList"
                         RefreshItems="RefreshItemsAsync"
                         Loading="isRefreshingData"
@@ -47,11 +47,13 @@
                 <PropertyColumn Property="@(c => c.Pronunciation)" />
                 <PropertyColumn Property="@(c => c.Cloze)" />
                 <PropertyColumn Property="@(c => c.Meaning)" />
-                <PropertyColumn Property="@(c => c.ExportedAt)" Title="Exported time" />
+                <PropertyColumn Property="@(c => c.LastTriedAt)" Title="Last tried time" />
                 <TemplateColumn Title="Actions" Align="@Align.Center">
-                    <FluentButton Title="Remove export"
-                                  OnClick="() => HandleRemoveExportAsync(context.Id)">
-                        <FluentIcon Value="@(new Icons.Regular.Size16.ArrowUndo())" Color="Color.Error" />
+                    <FluentButton Title="Retry export"
+                                  OnClick="() => HandleRetryExportAsync(context.Id)">
+                        <FluentIcon Value="@(new Icons.Regular.Size16.ArrowClockwise())"
+                                    Color="Color.Custom"
+                                    CustomColor="#16a34a" />
                     </FluentButton>
                 </TemplateColumn>
             </ChildContent>

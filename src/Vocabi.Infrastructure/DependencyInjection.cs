@@ -9,8 +9,8 @@ using Vocabi.Application.Contracts.Services.DownloadFile;
 using Vocabi.Application.Contracts.Storage;
 using Vocabi.Domain.Aggregates.LookupEntries;
 using Vocabi.Domain.Aggregates.MediaFiles;
+using Vocabi.Domain.Aggregates.Pronunciations;
 using Vocabi.Domain.Aggregates.Vocabularies;
-using Vocabi.Domain.Entities.Pronunciations;
 using Vocabi.Infrastructure.External.Audio;
 using Vocabi.Infrastructure.External.Dictionary;
 using Vocabi.Infrastructure.External.Flashcards;
@@ -53,7 +53,7 @@ public static class DependencyInjection
         services.AddScoped<IImageProvider, PixabayProvider>();
 
         services.AddScoped<IAnkiConnectClient, AnkiConnectClient>();
-        services.AddScoped<IFlashcardService, AnkiConnectService>();
+        services.AddScoped<IFlashcardService, AnkiService>();
 
         return services;
     }

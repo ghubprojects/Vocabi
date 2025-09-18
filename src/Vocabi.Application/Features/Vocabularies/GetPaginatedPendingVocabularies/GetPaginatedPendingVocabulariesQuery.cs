@@ -21,7 +21,8 @@ public class GetPaginatedPendingVocabulariesQueryHandler(
 {
     public async Task<PaginatedData<PendingVocabularyDto>> Handle(GetPaginatedPendingVocabulariesQuery request, CancellationToken cancellationToken)
     {
-        var query = vocabularyRepository.DbSet
+        var query = vocabularyRepository
+            .GetQueryableSet()
             .AsNoTracking()
             .Where(x => x.Flashcard == null || x.Flashcard.Status == FlashcardStatus.Pending);
 

@@ -4,7 +4,7 @@ using Vocabi.Domain.SeedWork;
 
 namespace Vocabi.Domain.Aggregates.LookupEntries;
 
-public class LookupEntry : IAggregateRoot
+public class LookupEntry : Entity, IAggregateRoot
 {
     public Guid Id { get; private set; }
     public string Headword { get; private set; }

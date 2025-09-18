@@ -1,8 +1,10 @@
 ﻿#nullable disable
 
+using Vocabi.Domain.SeedWork;
+
 namespace Vocabi.Domain.Aggregates.Vocabularies;
 
-public class VocabularyMediaFile
+public class VocabularyMediaFile : Entity
 {
     public Guid Id { get; private set; }
     public Guid VocabularyId { get; private set; }

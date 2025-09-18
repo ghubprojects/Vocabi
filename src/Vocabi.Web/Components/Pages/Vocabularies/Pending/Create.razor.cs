@@ -41,7 +41,7 @@ public partial class Create
             {
                 Word = vocabularyForm.Word,
                 PartOfSpeech = vocabularyForm.PartOfSpeech,
-                Pronunciation = StringUtils.UnwrapSlashes(vocabularyForm.Pronunciation),
+                Pronunciation = FormatterUtils.TrimSlashes(vocabularyForm.Pronunciation),
                 Cloze = vocabularyForm.Cloze,
                 Definition = vocabularyForm.Definition,
                 Example = vocabularyForm.Example,

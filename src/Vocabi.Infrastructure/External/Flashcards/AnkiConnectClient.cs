@@ -4,45 +4,46 @@ using System.Text.Json;
 
 namespace Vocabi.Infrastructure.External.Flashcards;
 
-public class AnkiResponse<T>
-{
-    public T? Result { get; set; }
-    public string? Error { get; set; }
-}
+public sealed record AnkiResponse<T>(T? Result, string? Error);
 
 public interface IAnkiConnectClient
 {
-    Task<AnkiResponse<T>> InvokeAsync<T>(string action, object parameters, CancellationToken cancellationToken);
+    Task<T> InvokeAsync<T>(string action, object? parameters = null, CancellationToken cancellationToken = default);
 }
 
-public class AnkiConnectClient(IHttpClientFactory httpClientFactory) : IAnkiConnectClient
+public class AnkiConnectClient : IAnkiConnectClient
 {
-    private readonly HttpClient httpClient = httpClientFactory.CreateClient();
+    private readonly HttpClient httpClient;
 
-    public async Task<AnkiResponse<T>> InvokeAsync<T>(string action, object parameters, CancellationToken cancellationToken)
+    public AnkiConnectClient(IHttpClientFactory httpClientFactory)
+    {
+        httpClient = httpClientFactory.CreateClient();
+        httpClient.BaseAddress = new Uri("http://localhost:8765");
+    }
+
+    public async Task<T> InvokeAsync<T>(string action, object? parameters = null, CancellationToken cancellationToken = default)
     {
         var payload = new
         {
             action,
             version = 6,
-            @params = parameters
+            @params = parameters ?? new { }
         };
         var json = JsonSerializer.Serialize(payload);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await httpClient.PostAsync("http://127.0.0.1:8765", content, cancellationToken);
+        var response = await httpClient.PostAsync("", content, cancellationToken);
         response.EnsureSuccessStatusCode();
 
-        var responseContent = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<AnkiResponse<T>>(cancellationToken)
+            ?? throw new InvalidOperationException("Invalid response from AnkiConnect (null).");
 
-        var result = new AnkiResponse<T>();
+        if (!string.IsNullOrEmpty(result.Error))
+            throw new InvalidOperationException($"AnkiConnect error: {result.Error}");
 
-        if (responseContent.TryGetProperty("error", out var errorProp) && errorProp.ValueKind != JsonValueKind.Null)
-            result.Error = errorProp.GetString();
+        if (result.Result is null)
+            throw new InvalidOperationException($"AnkiConnect returned null result for action '{action}'.");
 
-        if (responseContent.TryGetProperty("result", out var resultProp) && resultProp.ValueKind != JsonValueKind.Null)
-            result.Result = resultProp.Deserialize<T>();
-
-        return result;
+        return result.Result;
     }
 }

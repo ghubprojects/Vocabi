@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using Vocabi.Domain.Entities.Pronunciations;
+using Vocabi.Domain.Aggregates.Pronunciations;
 
 namespace Vocabi.Infrastructure.Persistence.Seed;
 

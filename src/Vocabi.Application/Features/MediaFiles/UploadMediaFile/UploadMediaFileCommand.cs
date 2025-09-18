@@ -22,25 +22,30 @@ public class UploadMediaFileCommandHandler(
 {
     public async Task<Result<MediaFileDto>> Handle(UploadMediaFileCommand request, CancellationToken cancellationToken)
     {
-        await using var stream = request.Stream;
+        try
+        {
+            await using var stream = request.Stream;
 
-        var saveFileResult = await fileStorage.SaveAsync(stream, request.Filename);
-        if (saveFileResult.IsFailure)
-            return Result<MediaFileDto>.Failure(saveFileResult.Errors);
+            var saveFileResult = await fileStorage.SaveAsync(stream, request.Filename);
+            if (saveFileResult.IsFailure)
+                return Result<MediaFileDto>.Failure(saveFileResult.Errors);
 
-        var filePath = saveFileResult.Data;
-        var mediaFile = MediaFile.CreateNew(
-            Path.GetFileName(filePath),
-            filePath,
-            FileUtils.GetContentType(filePath),
-            stream.Length,
-            "User upload");
+            var filePath = saveFileResult.Data;
+            var mediaFile = MediaFile.CreateNew(
+                Path.GetFileName(filePath),
+                filePath,
+                FileUtils.GetContentType(filePath),
+                stream.Length,
+                "User upload");
 
-        await mediaFileRepository.AddAsync(mediaFile);
-        var isSaved = await mediaFileRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-        if (!isSaved)
+            await mediaFileRepository.AddAsync(mediaFile);
+            await mediaFileRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+
+            return Result<MediaFileDto>.Success(mapper.Map<MediaFileDto>(mediaFile));
+        }
+        catch (Exception)
+        {
             return Result<MediaFileDto>.Failure("Failed to upload media file.");
-
-        return Result<MediaFileDto>.Success(mapper.Map<MediaFileDto>(mediaFile));
+        }
     }
 }

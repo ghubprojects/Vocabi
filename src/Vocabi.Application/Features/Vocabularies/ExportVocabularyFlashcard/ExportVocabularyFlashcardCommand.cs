@@ -5,7 +5,6 @@ using Vocabi.Application.Common.Models;
 using Vocabi.Application.Contracts.External.Flashcards;
 using Vocabi.Domain.Aggregates.MediaFiles;
 using Vocabi.Domain.Aggregates.Vocabularies;
-using Vocabi.Shared.Utils;
 
 namespace Vocabi.Application.Features.Vocabularies.ExportVocabularyFlashcard;
 
@@ -20,35 +19,41 @@ public class ExportVocabularyFlashcardCommandHandler(
 {
     public async Task<Result> Handle(ExportVocabularyFlashcardCommand request, CancellationToken cancellationToken)
     {
-        // Get vocabulary 
-        var vocabulary = await vocabularyRepository.GetByIdAsync(request.VocabularyId);
-        if (vocabulary is null)
-            return Result.Failure("No vocabulary found to export.");
-        var mediaFiles = await mediaFileRepository.GetByIdsAsync([.. vocabulary.MediaFiles.Select(x => x.MediaFileId)]);
+        try
+        {
+            // Get vocabulary
+            var vocabulary = await vocabularyRepository.GetByIdAsync(request.VocabularyId);
 
-        // Export flashcard
-        var flashcardNote = mapper.Map<FlashcardNote>((vocabulary, mediaFiles));
-        var options = new ExportOptions("VocabiDeck", "VocabiNote");
-        var exportResult = await flashcardService.ExportAsync(flashcardNote, options, cancellationToken);
-        if (exportResult.IsFailure || exportResult.Data is null)
-            return Result.Failure($"Failed to export vocabulary flashcard: {exportResult.ErrorMessages}");
+            if (vocabulary is null)
+                return Result.Failure("No vocabulary found to export.");
 
-        // Copy media files
-        var getMediaDirPathResult = await flashcardService.GetMediaDirectoryPath(cancellationToken);
-        if (getMediaDirPathResult.IsFailure || getMediaDirPathResult.Data is null)
-            return Result.Failure($"Failed to get Anki media directory path: {getMediaDirPathResult.ErrorMessages}");
-        await FileUtils.CopyFilesAsync(
-            mediaFiles.Select(x => FileUtils.GetWwwRootPath(x.FilePath)),
-            getMediaDirPathResult.Data);
+            if (vocabulary.Flashcard is not null && vocabulary.Flashcard.Status == FlashcardStatus.Exported)
+                return Result.Failure($"Vocabulary '{vocabulary.Word}' has already been exported.");
 
-        // Save changes
-        vocabulary.AddFlashcard();
-        vocabulary.MarkFlashcardAsExported(exportResult.Data.Value);
-        var isSaved = await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-        if (!isSaved)
+            // Export
+            var mediaFileIds = vocabulary.MediaFiles.Select(x => x.MediaFileId);
+            var mediaFiles = await mediaFileRepository.GetByIdsAsync(mediaFileIds);
+            var flashcardNote = mapper.Map<FlashcardNote>((vocabulary, mediaFiles));
+
+            if (vocabulary.Flashcard is null)
+                vocabulary.AddFlashcard();
+
+            var exportResult = await flashcardService.ExportNoteAsync(flashcardNote, mediaFiles.Select(x => x.FilePath));
+            if (exportResult.IsFailure)
+            {
+                vocabulary.MarkFlashcardAsFailed();
+                await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+                return Result.Failure($"Failed to export '{vocabulary.Word}': {exportResult.ErrorMessages}");
+            }
+
+            vocabulary.MarkFlashcardAsExported(exportResult.Data);
+            await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            return Result.Success();
+        }
+        catch (Exception)
+        {
             return Result.Failure("Failed to export vocabulary flashcard.");
-
-        return Result.Success();
+        }
     }
 }
 

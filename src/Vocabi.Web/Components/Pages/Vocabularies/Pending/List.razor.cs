@@ -1,5 +1,6 @@
 ﻿using Microsoft.FluentUI.AspNetCore.Components;
 using Vocabi.Application.Features.Vocabularies.ExportVocabularyFlashcard;
+using Vocabi.Application.Features.Vocabularies.ExportVocabularyFlashcards;
 using Vocabi.Application.Features.Vocabularies.GetPaginatedPendingVocabularies;
 using Vocabi.Web.Components.Dialogs;
 using Vocabi.Web.ViewModels;
@@ -19,7 +20,7 @@ public partial class List
     private bool isRefreshingData = false;
     private bool isAnyItemSelected => selectedItems.Any();
     private bool isDeletingMultiple = false;
-    private bool isExportingMultipleToAnki = false;
+    private bool isExportingMultiple = false;
 
     private async Task RefreshItemsAsync(GridItemsProviderRequest<PendingVocabularyListItemViewModel> req)
     {
@@ -88,5 +89,24 @@ public partial class List
             else
                 ToastService.ShowError(result.ErrorMessages);
         });
+    }
+
+    private async Task HandleExportMultipleAsync()
+    {
+        if (!isAnyItemSelected)
+            return;
+
+        await ExecuteWithLoadingAsync(async () =>
+        {
+            var result = await Mediator.Send(new ExportVocabularyFlashcardsCommand(selectedItems.Select(x => x.Id)));
+            if (result.IsSuccess)
+            {
+                ToastService.ShowSuccess("Selected vocabularies exported to Anki successfully.");
+                await RefreshDataAsync();
+            }
+            else
+                ToastService.ShowError(result.ErrorMessages);
+        },
+        x => isExportingMultiple = x);
     }
 }

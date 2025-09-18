@@ -16,4 +16,9 @@ public static class Routes
     private const string VocabularyExported = Vocabulary + "/exported";
     public const string VocabularyExportedList = VocabularyExported;
     public const string VocabularyExportedDetail = VocabularyExported + "/details";
+
+    // Vocabulary failed
+    private const string VocabularyFailed = Vocabulary + "/failed";
+    public const string VocabularyFailedList = VocabularyFailed;
+    public const string VocabularyFailedDetail = VocabularyFailed + "/details";
 }
