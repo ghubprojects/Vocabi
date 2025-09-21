@@ -21,7 +21,7 @@ public class FlashcardNote
     {
         public Mapping()
         {
-            CreateMap<(Vocabulary vocabulary, IReadOnlyList<MediaFile> mediaFiles), FlashcardNote>()
+            CreateMap<(Vocabulary vocabulary, List<MediaFile> mediaFiles), FlashcardNote>()
                 .ForMember(dest => dest.Word, opt => opt.MapFrom(src => src.vocabulary.Word))
                 .ForMember(dest => dest.PartOfSpeech, opt => opt.MapFrom(src => src.vocabulary.PartOfSpeech))
                 .ForMember(dest => dest.Pronunciation, opt => opt.MapFrom(src => FormatterUtils.WrapWithSlashes(src.vocabulary.Pronunciation)))

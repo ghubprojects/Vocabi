@@ -1,9 +1,8 @@
 ﻿using Microsoft.FluentUI.AspNetCore.Components;
-using Vocabi.Application.Features.Vocabularies.ExportVocabularyFlashcard;
-using Vocabi.Application.Features.Vocabularies.ExportVocabularyFlashcards;
-using Vocabi.Application.Features.Vocabularies.GetPaginatedPendingVocabularies;
+using Vocabi.Application.Features.Vocabularies.Commands;
+using Vocabi.Application.Features.Vocabularies.Queries;
 using Vocabi.Web.Components.Dialogs;
-using Vocabi.Web.ViewModels;
+using Vocabi.Web.ViewModels.Vocabularies.Pending;
 
 namespace Vocabi.Web.Components.Pages.Vocabularies.Pending;
 

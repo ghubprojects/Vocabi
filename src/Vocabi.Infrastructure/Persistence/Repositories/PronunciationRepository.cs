@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vocabi.Domain.Aggregates.Pronunciations;
-using Vocabi.Domain.Aggregates.Vocabularies;
 using Vocabi.Domain.SeedWork;
 
 namespace Vocabi.Infrastructure.Persistence.Repositories;

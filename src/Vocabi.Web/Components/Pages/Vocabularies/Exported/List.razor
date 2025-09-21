@@ -1,6 +1,6 @@
 ﻿@page "/vocabularies/exported"
 @rendermode InteractiveServer
-@using Vocabi.Application.Features.Vocabularies.GetPaginatedExportedVocabularies
+@using Vocabi.Web.ViewModels.Vocabularies.Exported
 @using Vocabi.Shared.Utils
 @inherits BasePage
 
@@ -15,24 +15,31 @@
         </FluentStack>
     </FluentStack>
 
-    <FluentToolbar Style="width:100%">
-        <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
-            <FluentStack VerticalAlignment="VerticalAlignment.Center">
-                <FluentTextField @bind-Value="searchWord" Placeholder="Search word" Style="flex:1;" />
-            </FluentStack>
-            <FluentStack Width="auto">
-                <FluentButton IconStart="@(new Icons.Regular.Size16.Search())" Loading="isRefreshingData" OnClick="RefreshDataAsync">
-                    Search
-                </FluentButton>
-            </FluentStack>
+    <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
+        <FluentSearch @bind-Value="searchWord"
+                      @bind-Value:after="RefreshDataAsync"
+                      Immediate="true"
+                      ImmediateDelay="500"
+                      Placeholder="Search for word"
+                      Style="flex:1;" />
+        <FluentStack Width="auto">
+            <FluentButton Title="Remove export selected to Anki"
+                          OnClick="HandleRemoveExportMultipleAsync"
+                          Loading="isRemovingExportMultiple"
+                          Disabled="@(isRemovingExportMultiple || !isAnyItemSelected)"
+                          BackgroundColor="var(--error)"
+                          Color="var(--neutral-fill-rest)">
+                <FluentIcon Value="@(new Icons.Regular.Size16.ArrowUndo())" Color="@Color.Fill" Slot="start" />
+                @(isRemovingExportMultiple ? "Removing export..." : $"Remove export{(selectedItems.Count() > 0 ? $" ({selectedItems.Count()})" : "")}")
+            </FluentButton>
         </FluentStack>
-    </FluentToolbar>
+    </FluentStack>
 
-    <FluentStack Orientation="Orientation.Vertical">
+    <FluentStack Orientation="Orientation.Vertical" Style="padding-top:10px">
         <FluentDataGrid @ref="dataGrid"
                         Pagination="pagination"
-                        TGridItem="ExportedVocabularyDto"
-                        Items="vocabularyList"
+                        TGridItem="ExportedVocabularyListItemViewModel"
+                        Items="dataGridItems"
                         RefreshItems="RefreshItemsAsync"
                         Loading="isRefreshingData"
                         GenerateHeader="GenerateHeaderOption.Sticky"
@@ -42,6 +49,10 @@
                         ShowHover="true"
                         Style="width:100%;">
             <ChildContent>
+                <SelectColumn TGridItem="ExportedVocabularyListItemViewModel"
+                              SelectMode="DataGridSelectMode.Multiple"
+                              SelectFromEntireRow="false"
+                              @bind-SelectedItems="selectedItems" />
                 <PropertyColumn Property="@(c => c.Word)" />
                 <PropertyColumn Property="@(c => c.PartOfSpeech)" Title="Part of speech" />
                 <PropertyColumn Property="@(c => c.Pronunciation)" />

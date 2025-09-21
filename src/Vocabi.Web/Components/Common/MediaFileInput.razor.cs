@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
-using Vocabi.Application.Features.MediaFiles.GetMediaFiles;
+using Vocabi.Application.Features.MediaFiles.DTOs;
 using static Vocabi.Shared.Common.Enums;
 
 namespace Vocabi.Web.Components.Common;

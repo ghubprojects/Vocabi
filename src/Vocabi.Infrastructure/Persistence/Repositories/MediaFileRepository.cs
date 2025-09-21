@@ -19,7 +19,7 @@ public class MediaFileRepository(ApplicationDbContext context) : IMediaFileRepos
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task<IReadOnlyList<MediaFile>> GetByIdsAsync(IEnumerable<Guid> ids)
+    public async Task<List<MediaFile>> GetByIdsAsync(IEnumerable<Guid> ids)
     {
         return await context.MediaFiles
             .Where(e => ids.Contains(e.Id))

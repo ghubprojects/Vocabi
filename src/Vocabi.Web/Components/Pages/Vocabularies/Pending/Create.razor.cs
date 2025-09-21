@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.FluentUI.AspNetCore.Components;
-using Vocabi.Application.Features.LookupEntries.CreateLookupEntries;
-using Vocabi.Application.Features.LookupEntries.GetLookupEntries;
-using Vocabi.Application.Features.MediaFiles.GetMediaFiles;
-using Vocabi.Application.Features.MediaFiles.UploadMediaFile;
-using Vocabi.Application.Features.Vocabularies.CreateVocabulary;
+using Vocabi.Application.Features.LookupEntries.Commands;
+using Vocabi.Application.Features.LookupEntries.DTOs;
+using Vocabi.Application.Features.LookupEntries.Queries;
+using Vocabi.Application.Features.MediaFiles.Commands;
+using Vocabi.Application.Features.MediaFiles.DTOs;
+using Vocabi.Application.Features.MediaFiles.Queries;
+using Vocabi.Application.Features.Vocabularies.Commands;
 using Vocabi.Shared.Utils;
-using Vocabi.Web.ViewModels;
+using Vocabi.Web.ViewModels.Vocabularies.Pending;
 using static Vocabi.Shared.Common.Enums;
 
 namespace Vocabi.Web.Components.Pages.Vocabularies.Pending;

@@ -1,6 +1,6 @@
 ﻿@page "/vocabularies/failed"
 @rendermode InteractiveServer
-@using Vocabi.Application.Features.Vocabularies.GetPaginatedFailedVocabularies
+@using Vocabi.Web.ViewModels.Vocabularies.Failed
 @using Vocabi.Shared.Utils
 @inherits BasePage
 
@@ -15,24 +15,31 @@
         </FluentStack>
     </FluentStack>
 
-    <FluentToolbar Style="width:100%">
-        <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
-            <FluentStack VerticalAlignment="VerticalAlignment.Center">
-                <FluentTextField @bind-Value="searchWord" Placeholder="Search word" Style="flex:1;" />
-            </FluentStack>
-            <FluentStack Width="auto">
-                <FluentButton IconStart="@(new Icons.Regular.Size16.Search())" Loading="isRefreshingData" OnClick="RefreshDataAsync">
-                    Search
-                </FluentButton>
-            </FluentStack>
+    <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
+        <FluentSearch @bind-Value="searchWord"
+                      @bind-Value:after="RefreshDataAsync"
+                      Immediate="true"
+                      ImmediateDelay="500"
+                      Placeholder="Search for word"
+                      Style="flex:1;" />
+        <FluentStack Width="auto">
+            <FluentButton Title="Retry export selected to Anki"
+                          OnClick="HandleRetryExportMultipleAsync"
+                          Loading="isRetryingExportMultiple"
+                          Disabled="@(isRetryingExportMultiple || !isAnyItemSelected)"
+                          BackgroundColor="#16a34a"
+                          Color="var(--neutral-fill-rest)">
+                <FluentIcon Value="@(new Icons.Regular.Size16.ArrowExport())" Color="@Color.Fill" Slot="start" />
+                @(isRetryingExportMultiple ? "Retrying export..." : $"Retry export{(selectedItems.Count() > 0 ? $" ({selectedItems.Count()})" : "")}")
+            </FluentButton>
         </FluentStack>
-    </FluentToolbar>
+    </FluentStack>
 
-    <FluentStack Orientation="Orientation.Vertical">
+    <FluentStack Orientation="Orientation.Vertical" Style="padding-top:10px">
         <FluentDataGrid @ref="dataGrid"
                         Pagination="pagination"
-                        TGridItem="FailedVocabularyDto"
-                        Items="vocabularyList"
+                        TGridItem="FailedVocabularyListItemViewModel"
+                        Items="dataGridItems"
                         RefreshItems="RefreshItemsAsync"
                         Loading="isRefreshingData"
                         GenerateHeader="GenerateHeaderOption.Sticky"
@@ -42,6 +49,10 @@
                         ShowHover="true"
                         Style="width:100%;">
             <ChildContent>
+                <SelectColumn TGridItem="FailedVocabularyListItemViewModel"
+                              SelectMode="DataGridSelectMode.Multiple"
+                              SelectFromEntireRow="false"
+                              @bind-SelectedItems="selectedItems" />
                 <PropertyColumn Property="@(c => c.Word)" />
                 <PropertyColumn Property="@(c => c.PartOfSpeech)" Title="Part of speech" />
                 <PropertyColumn Property="@(c => c.Pronunciation)" />

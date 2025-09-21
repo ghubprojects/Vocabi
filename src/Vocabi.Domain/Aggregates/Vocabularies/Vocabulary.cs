@@ -61,9 +61,31 @@ public class Vocabulary : Entity, IAggregateRoot
         }
     }
 
-    public void AddFlashcard()
+    public void EnsureFlashcardCreated()
+    {
+        if (Flashcard is null)
+            AddFlashcard();
+    }
+
+    private void AddFlashcard()
     {
         Flashcard = VocabularyFlashcard.CreateNew();
+    }
+
+    public void MarkFlashcardAsExported(long noteId)
+    {
+        if (Flashcard is null)
+            AddFlashcard();
+
+        Flashcard.MarkAsExported(noteId);
+    }
+
+    public void MarkFlashcardAsFailed()
+    {
+        if (Flashcard is null)
+            AddFlashcard();
+
+        Flashcard.MarkAsFailed();
     }
 
     public void RemoveFlashcard()
@@ -71,13 +93,15 @@ public class Vocabulary : Entity, IAggregateRoot
         Flashcard = null;
     }
 
-    public void MarkFlashcardAsExported(long noteId)
-    {
-        Flashcard.MarkAsExported(noteId);
-    }
+    public bool HasFlashcard()
+        => Flashcard is not null;
 
-    public void MarkFlashcardAsFailed()
-    {
-        Flashcard.MarkAsFailed();
-    }
+    public bool HasExportedFlashcard()
+        => Flashcard is { Status: FlashcardStatus.Exported, NoteId: not null };
+
+    public bool HasFailedFlashcard()
+        => Flashcard is { Status: FlashcardStatus.Failed };
+
+    public bool HasPendingFlashcard()
+        => Flashcard is { Status: FlashcardStatus.Pending };
 }

@@ -8,7 +8,7 @@ public sealed record AnkiResponse<T>(T? Result, string? Error);
 
 public interface IAnkiConnectClient
 {
-    Task<T> InvokeAsync<T>(string action, object? parameters = null, CancellationToken cancellationToken = default);
+    Task<T?> InvokeAsync<T>(string action, object? parameters = null, CancellationToken cancellationToken = default);
 }
 
 public class AnkiConnectClient : IAnkiConnectClient
@@ -21,7 +21,7 @@ public class AnkiConnectClient : IAnkiConnectClient
         httpClient.BaseAddress = new Uri("http://localhost:8765");
     }
 
-    public async Task<T> InvokeAsync<T>(string action, object? parameters = null, CancellationToken cancellationToken = default)
+    public async Task<T?> InvokeAsync<T>(string action, object? parameters = null, CancellationToken cancellationToken = default)
     {
         var payload = new
         {
@@ -40,9 +40,6 @@ public class AnkiConnectClient : IAnkiConnectClient
 
         if (!string.IsNullOrEmpty(result.Error))
             throw new InvalidOperationException($"AnkiConnect error: {result.Error}");
-
-        if (result.Result is null)
-            throw new InvalidOperationException($"AnkiConnect returned null result for action '{action}'.");
 
         return result.Result;
     }

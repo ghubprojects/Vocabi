@@ -1,7 +1,6 @@
 ﻿@page "/vocabularies/pending"
 @rendermode InteractiveServer
-@using Vocabi.Application.Features.Vocabularies.GetPaginatedPendingVocabularies
-@using Vocabi.Web.ViewModels
+@using Vocabi.Web.ViewModels.Vocabularies.Pending
 @using Vocabi.Shared.Utils
 @inherits BasePage
 
@@ -24,13 +23,12 @@
     </FluentStack>
 
     <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
-        <FluentStack VerticalAlignment="VerticalAlignment.Center">
-            <FluentTextField @bind-Value="searchWord" Placeholder="Search word" Style="flex:1;" />
-            <FluentButton Title="Search"
-                          OnClick="RefreshDataAsync"
-                          Loading="isRefreshingData"
-                          IconStart="@(new Icons.Regular.Size16.Search())" />
-        </FluentStack>
+        <FluentSearch @bind-Value="searchWord"
+                      @bind-Value:after="RefreshDataAsync"
+                      Immediate="true"
+                      ImmediateDelay="500"
+                      Placeholder="Search for word"
+                      Style="flex:1;" />
         <FluentStack Width="auto">
             <FluentButton Title="Delete selected"
                           OnClick="()=>{}"
@@ -48,13 +46,12 @@
                           BackgroundColor="#16a34a"
                           Color="var(--neutral-fill-rest)">
                 <FluentIcon Value="@(new Icons.Regular.Size16.ArrowExport())" Color="@Color.Fill" Slot="start" />
-                @(isExportingMultiple ? "Exporting to Anki..." : $"Export to Anki{(selectedItems.Count() > 0 ? $" ({selectedItems.Count()})" : "")}")
+                @(isExportingMultiple ? "Exporting..." : $"Export{(selectedItems.Count() > 0 ? $" ({selectedItems.Count()})" : "")}")
             </FluentButton>
         </FluentStack>
     </FluentStack>
 
-    <FluentStack Orientation="Orientation.Vertical">
-        <FluentPaginator State="pagination" Style="width:100%;margin-top:0" />
+    <FluentStack Orientation="Orientation.Vertical" Style="padding-top:10px">
         <FluentDataGrid @ref="dataGrid"
                         Pagination="pagination"
                         TGridItem="PendingVocabularyListItemViewModel"
@@ -107,5 +104,6 @@
                 </FluentStack>
             </EmptyContent>
         </FluentDataGrid>
+        <FluentPaginator State="pagination" Style="width:100%;margin-top:0" />
     </FluentStack>
 </FluentStack>

@@ -258,6 +258,7 @@ html, body {
         }
     }
 
+    #region Export Methods
     public async Task<Result<long>> ExportNoteAsync(FlashcardNote note, IEnumerable<string> mediaPaths)
     {
         var result = await ExportNotesAsync([note], mediaPaths);
@@ -275,6 +276,9 @@ html, body {
     {
         try
         {
+            if (notes.IsNullOrEmpty())
+                return Result<long[]>.Failure("No valid notes provided for export.");
+
             await EnsureInitializedAsync();
             var successNoteIds = await AddNotesAsync(notes);
             await CopyMediaFilesAsync(mediaPaths);
@@ -316,4 +320,38 @@ html, body {
         var mediaPath = await client.InvokeAsync<string>("getMediaDirPath");
         await FileUtils.CopyFilesAsync(filePaths.Select(FileUtils.GetWwwRootPath), mediaPath);
     }
+    #endregion
+
+    #region Unexport Methods
+    public async Task<Result> UnexportNoteAsync(long noteId)
+    {
+        var result = await UnexportNotesAsync([noteId]);
+        if (result.IsFailure)
+            return Result.Failure(result.Errors);
+
+        return Result.Success();
+    }
+
+    public async Task<Result> UnexportNotesAsync(IEnumerable<long> noteIds)
+    {
+        try
+        {
+            if (noteIds.IsNullOrEmpty())
+                return Result<long[]>.Failure("No valid note IDs provided for deletion.");
+
+            await DeleteNotesAsync(noteIds);
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(ex.Message);
+        }
+    }
+
+    private async Task DeleteNotesAsync(IEnumerable<long> noteIds)
+    {
+        var payload = new { notes = noteIds };
+        await client.InvokeAsync<long[]>("deleteNotes", payload);
+    }
+    #endregion
 }

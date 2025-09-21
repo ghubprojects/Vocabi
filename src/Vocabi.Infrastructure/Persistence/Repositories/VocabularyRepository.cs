@@ -19,7 +19,7 @@ public class VocabularyRepository(ApplicationDbContext context) : IVocabularyRep
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task<IReadOnlyList<Vocabulary>> GetByIdsAsync(IEnumerable<Guid> ids)
+    public async Task<List<Vocabulary>> GetByIdsAsync(IEnumerable<Guid> ids)
     {
         return await context.Vocabularies
             .Where(e => ids.Contains(e.Id))
