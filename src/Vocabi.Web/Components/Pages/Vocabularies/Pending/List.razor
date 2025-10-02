@@ -1,5 +1,6 @@
 ﻿@page "/vocabularies/pending"
 @rendermode InteractiveServer
+@using Vocabi.Web.Common.Enums
 @using Vocabi.Web.ViewModels.Vocabularies.Pending
 @using Vocabi.Shared.Utils
 @inherits BasePage
@@ -87,7 +88,9 @@
                         <FluentIcon Value="@(new Icons.Regular.Size16.Delete())" Color="Color.Error" />
                     </FluentButton>
                     <FluentButton Title="Export"
-                                  OnClick="() => HandleExportAsync(context.Id)">
+                                  OnClick="() => HandleExportAsync(context.Id)"
+                                  Loading="IsLoading(context.Id, RowAction.Export)"
+                                  Disabled="IsLoading(context.Id, RowAction.Export) || (isExportingMultiple && selectedItems.Contains(context))">
                         <FluentIcon Value="@(new Icons.Regular.Size16.ArrowExport())"
                                     Color="Color.Custom"
                                     CustomColor="#16a34a" />

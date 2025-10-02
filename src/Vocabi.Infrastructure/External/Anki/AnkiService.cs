@@ -1,13 +1,16 @@
-﻿using Vocabi.Application.Common.Models;
+﻿using System.Text.Json;
+using Vocabi.Application.Common.Models;
 using Vocabi.Application.Contracts.External.Flashcards;
+using Vocabi.Infrastructure.External.Anki.Requests;
 using Vocabi.Shared.Extensions;
 using Vocabi.Shared.Utils;
 
-namespace Vocabi.Infrastructure.External.Flashcards;
+namespace Vocabi.Infrastructure.External.Anki;
 
 public class AnkiService(IAnkiConnectClient client) : IFlashcardService
 {
-    private bool _isInitialized;
+    private bool isInitialized;
+    private string cachedMediaPath;
 
     private const string DefaultDeck = "VocabiDeck";
     private const string DefaultNoteModel = "VocabiNoteModel";
@@ -15,27 +18,30 @@ public class AnkiService(IAnkiConnectClient client) : IFlashcardService
     #region Initialization
     private async Task EnsureInitializedAsync()
     {
-        if (_isInitialized)
+        if (isInitialized)
             return;
 
-        await EnsureDeckExistsAsync(DefaultDeck);
-        await EnsureModelExistsAsync(DefaultNoteModel);
+        var results = await client.InvokeMultiAsync(
+            new AnkiRequest("deckNames"),
+            new AnkiRequest("modelNames")
+        );
 
-        _isInitialized = true;
-    }
+        if (results.IsNullOrEmpty())
+            throw new InvalidOperationException("Failed to initialize AnkiService: invalid response from AnkiConnect.");
 
-    private async Task EnsureDeckExistsAsync(string deckName)
-    {
-        var decks = await client.InvokeAsync<List<string>>("deckNames");
-        if (!decks.Contains(deckName))
-            await client.InvokeAsync<object>("createDeck", new { deck = deckName });
-    }
+        if (results.Any(r => r.Error is not null))
+            throw new InvalidOperationException($"Failed to initialize AnkiService: {string.Join("; ", results.Where(r => r.Error is not null).Select(r => r.Error))}");
 
-    private async Task EnsureModelExistsAsync(string modelName)
-    {
-        var models = await client.InvokeAsync<List<string>>("modelNames");
-        if (!models.Contains(modelName))
-            await CreateModelAsync(modelName);
+        var decks = results[0].Result.Deserialize<string[]>() ?? [];
+        var models = results[1].Result.Deserialize<string[]>() ?? [];
+
+        if (!decks.Contains(DefaultDeck))
+            await client.InvokeAsync(new AnkiRequest("createDeck", new { deck = DefaultDeck }));
+
+        if (!models.Contains(DefaultNoteModel))
+            await CreateModelAsync(DefaultNoteModel);
+
+        isInitialized = true;
     }
 
     private async Task CreateModelAsync(string modelName)
@@ -229,19 +235,24 @@ html, body {
 }
 ";
 
-        await client.InvokeAsync<object>("createModel", new
-        {
-            modelName,
-            inOrderFields = new[] { "Word", "PartOfSpeech", "Pronunciation", "Audio", "Meaning", "Example", "Cloze", "Image" },
-            cardTemplates = new[]
+        var request = new AnkiRequest(
+            "createModel",
+            new
             {
+                modelName,
+                inOrderFields = new[] { "Word", "PartOfSpeech", "Pronunciation", "Audio", "Meaning", "Example", "Cloze", "Image" },
+                cardTemplates = new[]
+                {
                     new {
-                        Name = "Card",
+                        Name = "VocabiCard",
                         Front = frontTemplate,
                         Back = backTemplate }
                 },
-            css
-        });
+                css
+            }
+        );
+
+        await client.InvokeAsync(request);
     }
     #endregion
 
@@ -249,7 +260,8 @@ html, body {
     {
         try
         {
-            var version = await client.InvokeAsync<int>("version");
+            var result = await client.InvokeAsync(new AnkiRequest("version"));
+            var version = result?.Deserialize<int>();
             return Result<bool>.Success(version > 0);
         }
         catch (Exception ex)
@@ -280,8 +292,12 @@ html, body {
                 return Result<long[]>.Failure("No valid notes provided for export.");
 
             await EnsureInitializedAsync();
-            var successNoteIds = await AddNotesAsync(notes);
-            await CopyMediaFilesAsync(mediaPaths);
+
+            var addNotesTask = AddNotesAsync(notes);
+            var copyMediaFilesTask = CopyMediaFilesAsync(mediaPaths);
+            await Task.WhenAll(addNotesTask, copyMediaFilesTask);
+
+            var successNoteIds = addNotesTask.Result;
             return Result<long[]>.Success(successNoteIds);
         }
         catch (Exception ex)
@@ -312,13 +328,21 @@ html, body {
                 }
             })
         };
-        return await client.InvokeAsync<long[]>("addNotes", payload);
+        var result = await client.InvokeAsync(new AnkiRequest("addNotes", payload));
+        var noteIds = result?.Deserialize<long[]>() ?? [];
+        return noteIds;
     }
 
     private async Task CopyMediaFilesAsync(IEnumerable<string> filePaths)
     {
-        var mediaPath = await client.InvokeAsync<string>("getMediaDirPath");
-        await FileUtils.CopyFilesAsync(filePaths.Select(FileUtils.GetWwwRootPath), mediaPath);
+        if (string.IsNullOrEmpty(cachedMediaPath))
+        {
+            var result = await client.InvokeAsync(new AnkiRequest("getMediaDirPath"));
+            cachedMediaPath = result?.Deserialize<string>()
+                ?? throw new InvalidOperationException("Failed to get Anki media directory path.");
+        }
+
+        await FileUtils.CopyFilesAsync(filePaths.Select(FileUtils.GetWwwRootPath), cachedMediaPath);
     }
     #endregion
 
@@ -351,7 +375,7 @@ html, body {
     private async Task DeleteNotesAsync(IEnumerable<long> noteIds)
     {
         var payload = new { notes = noteIds };
-        await client.InvokeAsync<long[]>("deleteNotes", payload);
+        await client.InvokeAsync(new AnkiRequest("deleteNotes", payload));
     }
     #endregion
 }

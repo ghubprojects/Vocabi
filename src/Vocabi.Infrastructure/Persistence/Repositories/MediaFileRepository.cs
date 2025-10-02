@@ -16,7 +16,7 @@ public class MediaFileRepository(ApplicationDbContext context) : IMediaFileRepos
     public async Task<MediaFile?> GetByIdAsync(Guid id)
     {
         return await context.MediaFiles
-            .FirstOrDefaultAsync(e => e.Id == id);
+            .FindAsync(id);
     }
 
     public async Task<List<MediaFile>> GetByIdsAsync(IEnumerable<Guid> ids)

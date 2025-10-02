@@ -93,28 +93,25 @@ public static class FileUtils
         if (!Directory.Exists(destinationFolder))
             Directory.CreateDirectory(destinationFolder);
 
-        var tasks = new List<Task>();
-
-        foreach (var file in sourceFiles)
-        {
-            if (File.Exists(file))
+        var copyTasks = sourceFiles
+            .Where(File.Exists)
+            .Select(async file =>
             {
-                string fileName = Path.GetFileName(file);
-                string destPath = Path.Combine(destinationFolder, fileName);
-
-                tasks.Add(Task.Run(async () =>
+                try
                 {
+                    var fileName = Path.GetFileName(file);
+                    var destPath = Path.Combine(destinationFolder, fileName);
+
                     using var sourceStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 8192, useAsync: true);
                     using var destinationStream = new FileStream(destPath, overwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write, FileShare.None, 8192, useAsync: true);
                     await sourceStream.CopyToAsync(destinationStream);
-                }));
-            }
-            else
-            {
-                Console.WriteLine($"File not found: {file}");
-            }
-        }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error copying file '{file}': {ex.Message}");
+                }
+            });
 
-        await Task.WhenAll(tasks);
+        await Task.WhenAll(copyTasks);
     }
 }

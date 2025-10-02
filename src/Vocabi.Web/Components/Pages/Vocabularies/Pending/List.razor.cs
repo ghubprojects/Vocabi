@@ -1,6 +1,7 @@
 ﻿using Microsoft.FluentUI.AspNetCore.Components;
 using Vocabi.Application.Features.Vocabularies.Commands;
 using Vocabi.Application.Features.Vocabularies.Queries;
+using Vocabi.Web.Common.Enums;
 using Vocabi.Web.Components.Dialogs;
 using Vocabi.Web.ViewModels.Vocabularies.Pending;
 
@@ -17,9 +18,6 @@ public partial class List
     private string searchWord = string.Empty;
 
     private bool isRefreshingData = false;
-    private bool isAnyItemSelected => selectedItems.Any();
-    private bool isDeletingMultiple = false;
-    private bool isExportingMultiple = false;
 
     private async Task RefreshItemsAsync(GridItemsProviderRequest<PendingVocabularyListItemViewModel> req)
     {
@@ -43,6 +41,12 @@ public partial class List
         await dataGrid.RefreshDataAsync(true);
         StateHasChanged();
     }
+
+    #region === Single Row Actions ===
+    private readonly Dictionary<string, bool> loadingStates = [];
+
+    private bool IsLoading(Guid id, RowAction action)
+       => loadingStates.TryGetValue($"{id}-{action}", out var isLoading) && isLoading;
 
     private void HandleDoubleClickRow(FluentDataGridRow<PendingVocabularyListItemViewModel> row)
     {
@@ -77,7 +81,7 @@ public partial class List
 
     private async Task HandleExportAsync(Guid id)
     {
-        await ExecuteAsync(async () =>
+        await ExecuteWithLoadingAsync(async () =>
         {
             var result = await Mediator.Send(new ExportVocabularyFlashcardCommand(id));
             if (result.IsSuccess)
@@ -87,8 +91,15 @@ public partial class List
             }
             else
                 ToastService.ShowError(result.ErrorMessages);
-        });
+        },
+        x => loadingStates[$"{id}-{RowAction.Export}"] = x);
     }
+    #endregion
+
+    #region === Multiple Row Actions ===
+    private bool isAnyItemSelected => selectedItems.Any();
+    private bool isDeletingMultiple = false;
+    private bool isExportingMultiple = false;
 
     private async Task HandleExportMultipleAsync()
     {
@@ -108,4 +119,5 @@ public partial class List
         },
         x => isExportingMultiple = x);
     }
+    #endregion
 }

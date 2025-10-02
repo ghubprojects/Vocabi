@@ -16,7 +16,7 @@ public class VocabularyRepository(ApplicationDbContext context) : IVocabularyRep
     public async Task<Vocabulary?> GetByIdAsync(Guid id)
     {
         return await context.Vocabularies
-            .FirstOrDefaultAsync(e => e.Id == id);
+            .FindAsync(id);
     }
 
     public async Task<List<Vocabulary>> GetByIdsAsync(IEnumerable<Guid> ids)
