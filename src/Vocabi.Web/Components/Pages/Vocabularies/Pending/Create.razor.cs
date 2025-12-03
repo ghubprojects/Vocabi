@@ -8,7 +8,7 @@ using Vocabi.Application.Features.MediaFiles.DTOs;
 using Vocabi.Application.Features.MediaFiles.Queries;
 using Vocabi.Application.Features.Vocabularies.Commands;
 using Vocabi.Shared.Utils;
-using Vocabi.Web.ViewModels.Vocabularies.Pending;
+using Vocabi.Web.ViewModels.Vocabularies;
 using static Vocabi.Shared.Common.Enums;
 
 namespace Vocabi.Web.Components.Pages.Vocabularies.Pending;
@@ -17,7 +17,7 @@ public partial class Create
 {
     private EditContext editContext = default!;
 
-    private PendingVocabularyFormViewModel vocabularyForm = new();
+    private VocabularyFormViewModel vocabularyForm = new();
     private IReadOnlyList<LookupEntryDto> lookupEntryDtos = [];
 
     private MediaFileDto audioFile = new();

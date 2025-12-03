@@ -1,17 +1,18 @@
 ﻿using Microsoft.FluentUI.AspNetCore.Components;
 using Vocabi.Application.Features.Vocabularies.Commands;
 using Vocabi.Application.Features.Vocabularies.Queries;
-using Vocabi.Web.ViewModels.Vocabularies.Failed;
+using Vocabi.Domain.Aggregates.Vocabularies;
+using Vocabi.Web.ViewModels.Vocabularies;
 
 namespace Vocabi.Web.Components.Pages.Vocabularies.Failed;
 
 public partial class List
 {
-    private FluentDataGrid<FailedVocabularyListItemViewModel> dataGrid = default!;
+    private FluentDataGrid<VocabularyListItemViewModel> dataGrid = default!;
     private readonly PaginationState pagination = new() { ItemsPerPage = 20 };
 
-    private IQueryable<FailedVocabularyListItemViewModel> dataGridItems = default!;
-    private IEnumerable<FailedVocabularyListItemViewModel> selectedItems = [];
+    private IQueryable<VocabularyListItemViewModel> dataGridItems = default!;
+    private IEnumerable<VocabularyListItemViewModel> selectedItems = [];
 
     private string searchWord = string.Empty;
 
@@ -19,18 +20,19 @@ public partial class List
     private bool isAnyItemSelected => selectedItems.Any();
     private bool isRetryingExportMultiple = false;
 
-    private async Task RefreshItemsAsync(GridItemsProviderRequest<FailedVocabularyListItemViewModel> req)
+    private async Task RefreshItemsAsync(GridItemsProviderRequest<VocabularyListItemViewModel> req)
     {
         await ExecuteWithLoadingAsync(async () =>
         {
-            var result = await Mediator.Send(new GetPaginatedFailedVocabulariesQuery()
+            var result = await Mediator.Send(new GetPagedVocabulariesQuery()
             {
                 SearchWord = searchWord,
+                Status = ExportStatus.Failed,
                 PageIndex = req.StartIndex / req.Count!.Value,
                 PageSize = req.Count!.Value,
             });
 
-            dataGridItems = Mapper.Map<IReadOnlyList<FailedVocabularyListItemViewModel>>(result.Items).AsQueryable();
+            dataGridItems = Mapper.Map<IReadOnlyList<VocabularyListItemViewModel>>(result.Items).AsQueryable();
             await pagination.SetTotalItemCountAsync(result.TotalItems);
         },
         x => isRefreshingData = x);

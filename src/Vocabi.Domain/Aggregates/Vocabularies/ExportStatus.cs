@@ -1,8 +1,9 @@
 ﻿namespace Vocabi.Domain.Aggregates.Vocabularies;
 
-public enum FlashcardStatus
+public enum ExportStatus
 {
     Pending,
-    Exported,
+    InProgress,
+    Completed,
     Failed
 }

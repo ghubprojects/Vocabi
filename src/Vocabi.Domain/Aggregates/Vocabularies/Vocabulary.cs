@@ -97,11 +97,11 @@ public class Vocabulary : Entity, IAggregateRoot
         => Flashcard is not null;
 
     public bool HasExportedFlashcard()
-        => Flashcard is { Status: FlashcardStatus.Exported, NoteId: not null };
+        => Flashcard is { Status: ExportStatus.Completed, NoteId: not null };
 
     public bool HasFailedFlashcard()
-        => Flashcard is { Status: FlashcardStatus.Failed };
+        => Flashcard is { Status: ExportStatus.Failed };
 
     public bool HasPendingFlashcard()
-        => Flashcard is { Status: FlashcardStatus.Pending };
+        => Flashcard is { Status: ExportStatus.Pending };
 }

@@ -1,6 +1,6 @@
 ﻿@page "/vocabularies/exported"
 @rendermode InteractiveServer
-@using Vocabi.Web.ViewModels.Vocabularies.Exported
+@using Vocabi.Web.ViewModels.Vocabularies
 @using Vocabi.Shared.Utils
 @inherits BasePage
 
@@ -38,18 +38,18 @@
     <FluentStack Orientation="Orientation.Vertical" Style="padding-top:10px">
         <FluentDataGrid @ref="dataGrid"
                         Pagination="pagination"
-                        TGridItem="ExportedVocabularyListItemViewModel"
+                        TGridItem="VocabularyListItemViewModel"
                         Items="dataGridItems"
                         RefreshItems="RefreshItemsAsync"
                         Loading="isRefreshingData"
                         GenerateHeader="GenerateHeaderOption.Sticky"
                         DisplayMode="DataGridDisplayMode.Table"
-                        OnRowDoubleClick="(r) => Navigation.GoToVocabularyPendingDetail(r.Item!.Id)"
+                        OnRowDoubleClick="(r) => Navigation.GoToVocabularyDetail(r.Item!.Id)"
                         AutoFit="true"
                         ShowHover="true"
                         Style="width:100%;">
             <ChildContent>
-                <SelectColumn TGridItem="ExportedVocabularyListItemViewModel"
+                <SelectColumn TGridItem="VocabularyListItemViewModel"
                               SelectMode="DataGridSelectMode.Multiple"
                               SelectFromEntireRow="false"
                               @bind-SelectedItems="selectedItems" />

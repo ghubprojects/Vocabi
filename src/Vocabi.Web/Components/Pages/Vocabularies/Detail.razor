@@ -1,0 +1,94 @@
+﻿@page "/vocabularies/detail/{Id:guid}"
+@rendermode InteractiveServer
+@using Vocabi.Domain.Aggregates.MediaFiles
+@using Vocabi.Shared
+@using Vocabi.Shared.Common
+@using Vocabi.Web.Components.Common
+@using static Vocabi.Shared.Common.Enums
+@inherits BasePage
+
+<PageTitle>Detail Vocabulary</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
+        <FluentStack VerticalAlignment="VerticalAlignment.Center">
+            <FluentLabel Typo="Typography.H4">
+                Detail Vocabulary
+            </FluentLabel>
+            <FluentIcon Value="@(new Icons.Regular.Size16.Info())" />
+        </FluentStack>
+    </FluentStack>
+
+    <FluentEditForm EditContext="editContext" style="width:100%">
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+            <FluentStack VerticalAlignment="VerticalAlignment.Bottom">
+                <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0" Style="flex:1;">
+                    <FluentTextField @bind-Value="@vocabularyForm.Word"
+                                     Name="word" Label="Word"
+                                     ReadOnly />
+                </FluentStack>
+            </FluentStack>
+
+            <FluentStack>
+                <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0">
+                    <FluentTextField @bind-Value="vocabularyForm.PartOfSpeech"
+                                     Name="PartOfSpeech" Label="Part of speech"
+                                     ReadOnly />
+                </FluentStack>
+                <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0">
+                    <FluentTextField @bind-Value="vocabularyForm.Pronunciation"
+                                     Name="Pronunciation" Label="Pronunciation"
+                                     ReadOnly />
+                </FluentStack>
+            </FluentStack>
+
+            <FluentStack>
+                <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0">
+                    <FluentTextField @bind-Value="vocabularyForm.Meaning"
+                                     Name="Meaning" Label="Meaning"
+                                     ReadOnly />
+                </FluentStack>
+                <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0">
+                    <FluentTextField @bind-Value="vocabularyForm.Cloze"
+                                     Name="Cloze" Label="Cloze"
+                                     ReadOnly />
+                </FluentStack>
+            </FluentStack>
+
+            <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0">
+                <FluentTextField @bind-Value="vocabularyForm.Definition"
+                                 Name="Definition" Label="Definition"
+                                 ReadOnly />
+            </FluentStack>
+
+            <FluentStack Orientation="Orientation.Vertical" HorizontalAlignment="HorizontalAlignment.Stretch" VerticalGap="0">
+                <FluentTextField @bind-Value="vocabularyForm.Example"
+                                 Name="Example" Label="Example"
+                                 ReadOnly />
+            </FluentStack>
+
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="6">
+                <FluentLabel>
+                    Attachments
+                </FluentLabel>
+                <FluentStack VerticalAlignment="VerticalAlignment.Stretch">
+                    <MediaFileInput FileType="MediaType.Audio"
+                                    MaxFileSizeInKB="100"
+                                    Accept="audio/*"
+                                    AnchorId="audio-file-input"
+                                    Placeholder="Select an audio file (≤100 KB)"
+                                    Icon="new Icons.Regular.Size32.Headphones()"
+                                    UploadedFile="audioFile" />
+
+                    <MediaFileInput FileType="MediaType.Image"
+                                    MaxFileSizeInKB="2000"
+                                    Accept="image/*"
+                                    AnchorId="image-file-input"
+                                    Placeholder="Select an image file (≤2 MB)"
+                                    Icon="new Icons.Regular.Size32.Image()"
+                                    UploadedFile="imageFile" />
+                </FluentStack>
+            </FluentStack>
+        </FluentStack>
+    </FluentEditForm>
+</FluentStack>

@@ -7,7 +7,7 @@ namespace Vocabi.Application.Common.Extensions;
 
 public static class QueryableExtensions
 {
-    public static async Task<PaginatedData<TResult>> ProjectToPaginatedDataAsync<TSource, TResult>(
+    public static async Task<PagedResult<TResult>> ProjectToPagedResultAsync<TSource, TResult>(
         this IQueryable<TSource> source,
         int pageIndex,
         int pageSize,
@@ -23,6 +23,6 @@ public static class QueryableExtensions
             .ProjectTo<TResult>(configuration)
             .ToListAsync(cancellationToken);
 
-        return new PaginatedData<TResult>(items, count, pageIndex, pageSize);
+        return new PagedResult<TResult>(items, count, pageIndex, pageSize);
     }
 }

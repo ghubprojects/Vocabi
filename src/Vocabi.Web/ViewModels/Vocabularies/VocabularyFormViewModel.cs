@@ -2,9 +2,9 @@
 using Vocabi.Application.Features.LookupEntries.DTOs;
 using Vocabi.Shared.Utils;
 
-namespace Vocabi.Web.ViewModels.Vocabularies.Exported;
+namespace Vocabi.Web.ViewModels.Vocabularies;
 
-public class ExportedVocabularyFormViewModel
+public class VocabularyFormViewModel
 {
     private string _word = string.Empty;
     private string _cloze = string.Empty;

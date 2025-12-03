@@ -1,7 +1,7 @@
 ﻿@page "/vocabularies/pending"
 @rendermode InteractiveServer
 @using Vocabi.Web.Common.Enums
-@using Vocabi.Web.ViewModels.Vocabularies.Pending
+@using Vocabi.Web.ViewModels.Vocabularies
 @using Vocabi.Shared.Utils
 @inherits BasePage
 
@@ -55,7 +55,7 @@
     <FluentStack Orientation="Orientation.Vertical" Style="padding-top:10px">
         <FluentDataGrid @ref="dataGrid"
                         Pagination="pagination"
-                        TGridItem="PendingVocabularyListItemViewModel"
+                        TGridItem="VocabularyListItemViewModel"
                         Items="@dataGridItems"
                         RefreshItems="RefreshItemsAsync"
                         Loading="isRefreshingData"
@@ -66,7 +66,7 @@
                         ShowHover="true"
                         Style="width:100%;">
             <ChildContent>
-                <SelectColumn TGridItem="PendingVocabularyListItemViewModel"
+                <SelectColumn TGridItem="VocabularyListItemViewModel"
                               SelectMode="DataGridSelectMode.Multiple"
                               SelectFromEntireRow="false"
                               @bind-SelectedItems="selectedItems" />
@@ -77,7 +77,7 @@
                 <PropertyColumn Property="@(c => c.Meaning)" />
                 <TemplateColumn Title="Actions" Align="@Align.Center">
                     <FluentButton Title="View"
-                                  OnClick="() => Navigation.GoToVocabularyPendingDetail(context.Id)"
+                                  OnClick="() => Navigation.GoToVocabularyDetail(context.Id)"
                                   IconEnd="@(new Icons.Regular.Size20.Eye())" />
                     <FluentButton Title="Edit"
                                   OnClick="() => Navigation.GoToVocabularyPendingEdit(context.Id)">
