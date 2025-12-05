@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Vocabi.Application.Behaviors;
 using Vocabi.Application.Services;
 using Vocabi.Application.Services.Media;
 
@@ -14,6 +16,12 @@ public static class DependencyInjection
 
         // AutoMapper configuration
         services.AddAutoMapper(cfg => { }, Assembly.GetExecutingAssembly());
+
+        // Mediator behaviors
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionMappingBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>)); // transaction for commands
 
         // Register services
         services.AddScoped<IMediaService, AudioService>();
