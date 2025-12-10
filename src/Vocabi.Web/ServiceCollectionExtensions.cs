@@ -1,11 +1,12 @@
-﻿using System.Reflection;
+﻿using Serilog;
+using System.Reflection;
 using Vocabi.Web.Services.Navigation;
 
 namespace Vocabi.Web;
 
-public static class DependencyInjection
+public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddUIServices(this IServiceCollection services)
+    public static IServiceCollection AddWebServices(this IServiceCollection services)
     {
         // AutoMapper configuration
         services.AddAutoMapper(cfg => { }, Assembly.GetExecutingAssembly());

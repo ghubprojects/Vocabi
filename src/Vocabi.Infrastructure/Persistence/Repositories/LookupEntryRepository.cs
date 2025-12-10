@@ -3,7 +3,7 @@ using Vocabi.Domain.SeedWork;
 
 namespace Vocabi.Infrastructure.Persistence.Repositories;
 
-public class LookupEntryRepository(ApplicationDbContext context) : ILookupEntryRepository
+public class LookupEntryRepository(AppDbContext context) : ILookupEntryRepository
 {
     public IUnitOfWork UnitOfWork => context;
 

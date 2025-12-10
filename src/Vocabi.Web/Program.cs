@@ -1,4 +1,5 @@
 using Microsoft.FluentUI.AspNetCore.Components;
+using Serilog;
 using Vocabi.Application;
 using Vocabi.Infrastructure;
 using Vocabi.Infrastructure.Persistence.Seed;
@@ -8,15 +9,22 @@ using Vocabi.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add Serilog logging
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddFluentUIComponents();
 
 builder.Services
-    .AddApplicationServices()
-    .AddInfrastructureServices(builder.Configuration)
-    .AddUIServices();
+    .AddApplicationServices(builder.Configuration)
+    .AddInfrastructureServices(builder.Configuration, builder.Environment)
+    .AddWebServices();
 
 var app = builder.Build();
 

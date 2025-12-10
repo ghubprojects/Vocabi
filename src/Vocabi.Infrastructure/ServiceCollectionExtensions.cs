@@ -1,12 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Vocabi.Application.Contracts.External.Audio;
 using Vocabi.Application.Contracts.External.Dictionary;
 using Vocabi.Application.Contracts.External.Flashcards;
 using Vocabi.Application.Contracts.External.Image;
-using Vocabi.Application.Contracts.Services.DownloadFile;
+using Vocabi.Application.Contracts.Persistence;
 using Vocabi.Application.Contracts.Storage;
+using Vocabi.Application.Services.Identity;
+using Vocabi.Application.Services.Interfaces;
+using Vocabi.Application.Services.Interfaces.DownloadFile;
 using Vocabi.Domain.Aggregates.LookupEntries;
 using Vocabi.Domain.Aggregates.MediaFiles;
 using Vocabi.Domain.Aggregates.Pronunciations;
@@ -19,17 +23,17 @@ using Vocabi.Infrastructure.Persistence;
 using Vocabi.Infrastructure.Persistence.Repositories;
 using Vocabi.Infrastructure.Persistence.Seed;
 using Vocabi.Infrastructure.Services;
+using Vocabi.Infrastructure.Services.Identity;
 using Vocabi.Infrastructure.Storage;
 
 namespace Vocabi.Infrastructure;
 
-public static class DependencyInjection
+public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration, IHostEnvironment env)
     {
-        // DbContext configuration
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        services.AddSettings(configuration)
+            .AddDatabase(configuration);
 
         // Register seeders
         services.AddScoped<PronunciationSeeder>();
@@ -55,6 +59,28 @@ public static class DependencyInjection
         services.AddScoped<IAnkiConnectClient, AnkiConnectClient>();
         services.AddScoped<IFlashcardService, AnkiService>();
 
+        services.AddScoped<IPerformanceRedactor, DefaultPerformanceRedactor>();
+
+        // TODO: Enable when authentication is implemented
+        //services.AddHttpContextAccessor();
+        if (env.IsDevelopment())
+            services.AddScoped<ICurrentUserAccessor, DevHttpContextCurrentUserAccessor>();
+        else
+            services.AddScoped<ICurrentUserAccessor, HttpContextCurrentUserAccessor>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddSettings(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<PixabaySettings>(configuration.GetSection(nameof(PixabaySettings)));
+        return services;
+    }
+
+    private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
         return services;
     }
 }

@@ -1,7 +1,7 @@
-﻿using FluentValidation;
+﻿using FluentResults;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Vocabi.Application.Common.Models;
 using Vocabi.Application.Contracts.External.Flashcards;
 using Vocabi.Domain.Aggregates.Vocabularies;
 using Vocabi.Shared.Extensions;
@@ -24,7 +24,7 @@ public class UnexportVocabularyFlashcardsCommandHandler(
             var vocabularies = await vocabularyRepository.GetByIdsAsync(request.VocabularyIds);
 
             if (vocabularies.IsNullOrEmpty())
-                return Result.Failure("No vocabularies found to unexport.");
+                return Result.Fail("No vocabularies found to unexport.");
 
             // Pick only exported ones
             var exportedVocabs = vocabularies
@@ -32,15 +32,15 @@ public class UnexportVocabularyFlashcardsCommandHandler(
                 .ToList();
 
             if (exportedVocabs.Count == 0)
-                return Result.Failure("None of the selected vocabularies have been exported.");
+                return Result.Fail("None of the selected vocabularies have been exported.");
 
             // Unexport flashcards
             var noteIds = exportedVocabs.Select(v => v.Flashcard.NoteId!.Value).ToList();
             var unexportResult = await flashcardService.UnexportNotesAsync(noteIds);
-            if (unexportResult.IsFailure)
+            if (unexportResult.IsFailed)
             {
-                logger.LogWarning("Failed to unexport multiple vocabularies. Errors={Errors}", unexportResult.ErrorMessages);
-                return Result.Failure($"Failed to unexport vocabularies. Errors: {unexportResult.ErrorMessages}");
+                logger.LogWarning("Failed to unexport multiple vocabularies. Errors={Errors}", unexportResult.Errors);
+                return Result.Fail($"Failed to unexport vocabularies. Errors: {unexportResult.Errors}");
             }
 
             // Update entities
@@ -48,12 +48,12 @@ public class UnexportVocabularyFlashcardsCommandHandler(
             await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
             logger.LogInformation("Successfully unexported {Count} vocabulary flashcards.", exportedVocabs.Count);
-            return Result.Success();
+            return Result.Ok();
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Unexpected error while unexporting multiple vocabulary flashcards.");
-            return Result.Failure("Unexpected error while unexporting vocabularies.");
+            return Result.Fail("Unexpected error while unexporting vocabularies.");
         }
     }
 }

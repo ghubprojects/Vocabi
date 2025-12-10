@@ -2,6 +2,7 @@
 using Vocabi.Application.Features.Vocabularies.Commands;
 using Vocabi.Application.Features.Vocabularies.Queries;
 using Vocabi.Domain.Aggregates.Vocabularies;
+using Vocabi.Shared.Extensions;
 using Vocabi.Web.ViewModels.Vocabularies;
 
 namespace Vocabi.Web.Components.Pages.Vocabularies.Exported;
@@ -55,7 +56,7 @@ public partial class List
                 await RefreshDataAsync();
             }
             else
-                ToastService.ShowError(result.ErrorMessages);
+                ToastService.ShowError(result.GetErrorMessages());
         });
     }
 
@@ -73,7 +74,7 @@ public partial class List
                 await RefreshDataAsync();
             }
             else
-                ToastService.ShowError(result.ErrorMessages);
+                ToastService.ShowError(result.GetErrorMessages());
         },
         x => isRemovingExportMultiple = x);
     }

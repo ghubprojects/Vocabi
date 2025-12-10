@@ -1,41 +1,46 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FluentResults;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
-using Vocabi.Application.Common.Models;
 using Vocabi.Application.Contracts.External.Image;
 
 namespace Vocabi.Infrastructure.External.Image;
 
-public class PixabayProvider(HttpClient httpClient, IConfiguration configuration) : IImageProvider
+public class PixabayProvider(HttpClient httpClient, IOptions<PixabaySettings> options) : IImageProvider
 {
     public string ProviderName => "Pixabay API";
 
-    private readonly string apiKey = configuration["Pixabay:ApiKey"] ?? throw new ArgumentNullException("Pixabay API key not configured");
+    private readonly PixabaySettings _settings = options.Value;
 
-    public async Task<Result<IReadOnlyList<string>>> GetAsync(string keyword, int limit = 5, CancellationToken cancellationToken = default)
+    public async Task<Result<IReadOnlyList<string>>> GetAsync(string keyword, CancellationToken cancellationToken = default)
     {
         try
         {
-            var url = $"https://pixabay.com/api/?key={apiKey}&q={Uri.EscapeDataString(keyword)}&per_page={limit}&image_type=photo";
+            var url = BuildRequest(keyword);
             var response = await httpClient.GetFromJsonAsync<PixabayResponse>(url, cancellationToken);
 
             if (response?.Hits == null || response.Hits.Count == 0)
-                return Result<IReadOnlyList<string>>.Failure("No images found");
+                return Result.Fail("No images found");
 
-            return Result<IReadOnlyList<string>>.Success([.. response.Hits.Select(h => h.LargeImageURL)]);
+            return Result.Ok<IReadOnlyList<string>>([.. response.Hits.Select(h => h.LargeImageURL)]);
         }
         catch (Exception ex)
         {
-            return Result<IReadOnlyList<string>>.Failure(ex.Message);
+            return Result.Fail(ex.Message);
         }
     }
 
-    private class PixabayResponse
+    private string BuildRequest(string query)
     {
-        public List<PixabayHit> Hits { get; set; } = new();
-    }
+        var dict = new Dictionary<string, string?>
+        {
+            ["key"] = _settings.ApiKey,
+            ["q"] = query,
+            ["lang"] = _settings.Language,
+            ["image_type"] = _settings.ImageType,
+            ["per_page"] = _settings.PerPage.ToString()
+        };
 
-    private class PixabayHit
-    {
-        public string LargeImageURL { get; set; } = string.Empty;
+        return QueryHelpers.AddQueryString(_settings.BaseUrl, dict);
     }
 }

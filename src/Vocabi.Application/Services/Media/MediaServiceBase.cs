@@ -1,5 +1,5 @@
-﻿using Vocabi.Application.Contracts.Services.DownloadFile;
-using Vocabi.Application.Contracts.Storage;
+﻿using Vocabi.Application.Contracts.Storage;
+using Vocabi.Application.Services.Interfaces.DownloadFile;
 using Vocabi.Domain.Aggregates.MediaFiles;
 using Vocabi.Shared.Extensions;
 using Vocabi.Shared.Utils;
@@ -20,21 +20,21 @@ public abstract class MediaServiceBase(IFileDownloader fileDownloader, IFileStor
         var providerName = !string.IsNullOrWhiteSpace(initialUrl) ? initialProvider : GetFallbackProviderName();
 
         var downloadResult = await fileDownloader.DownloadMultipleAsStreamAsync(urls, cancellationToken);
-        if (downloadResult.IsFailure)
+        if (downloadResult.IsFailed)
             return [];
 
         var mediaFiles = new List<MediaFile>();
-        var downloadedStreamFiles = downloadResult.Data;
+        var downloadedStreamFiles = downloadResult.Value;
         foreach (var file in downloadedStreamFiles)
         {
             var stream = file.Content;
             await using (stream)
             {
                 var saveResult = await fileStorage.SaveAsync(stream, file.FileName);
-                if (saveResult.IsFailure)
+                if (saveResult.IsFailed)
                     continue;
 
-                var savedFilePath = saveResult.Data;
+                var savedFilePath = saveResult.Value;
                 var mediaFile = MediaFile.CreateNew(
                     Path.GetFileName(savedFilePath),
                     savedFilePath,

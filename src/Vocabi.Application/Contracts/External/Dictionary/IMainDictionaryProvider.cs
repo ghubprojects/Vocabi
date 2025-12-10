@@ -1,4 +1,4 @@
-﻿using Vocabi.Application.Common.Models;
+﻿using FluentResults;
 
 namespace Vocabi.Application.Contracts.External.Dictionary;
 

@@ -5,7 +5,7 @@ namespace Vocabi.Infrastructure.Persistence.Extensions;
 
 public static class MediatorExtension
 {
-    public static async Task DispatchDomainEventsAsync(this IMediator mediator, ApplicationDbContext context)
+    public static async Task DispatchDomainEventsAsync(this IMediator mediator, AppDbContext context)
     {
         var domainEntities = context.ChangeTracker
             .Entries<Entity>()

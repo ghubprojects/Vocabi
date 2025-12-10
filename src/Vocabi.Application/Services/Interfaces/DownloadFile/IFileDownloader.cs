@@ -1,6 +1,6 @@
-﻿using Vocabi.Application.Common.Models;
+﻿using FluentResults;
 
-namespace Vocabi.Application.Contracts.Services.DownloadFile;
+namespace Vocabi.Application.Services.Interfaces.DownloadFile;
 
 public interface IFileDownloader
 {

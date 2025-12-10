@@ -2,6 +2,7 @@
 using Vocabi.Application.Features.Vocabularies.Commands;
 using Vocabi.Application.Features.Vocabularies.Queries;
 using Vocabi.Domain.Aggregates.Vocabularies;
+using Vocabi.Shared.Extensions;
 using Vocabi.Web.Common.Enums;
 using Vocabi.Web.Components.Dialogs;
 using Vocabi.Web.ViewModels.Vocabularies;
@@ -92,7 +93,7 @@ public partial class List
                 await RefreshDataAsync();
             }
             else
-                ToastService.ShowError(result.ErrorMessages);
+                ToastService.ShowError(result.GetErrorMessages());
         },
         x => loadingStates[$"{id}-{RowAction.Export}"] = x);
     }
@@ -117,7 +118,7 @@ public partial class List
                 await RefreshDataAsync();
             }
             else
-                ToastService.ShowError(result.ErrorMessages);
+                ToastService.ShowError(result.GetErrorMessages());
         },
         x => isExportingMultiple = x);
     }

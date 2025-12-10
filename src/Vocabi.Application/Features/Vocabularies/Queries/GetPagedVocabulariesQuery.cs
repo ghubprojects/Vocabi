@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Vocabi.Application.Common.Extensions;
 using Vocabi.Application.Common.Models;
 using Vocabi.Application.Features.Vocabularies.DTOs;
@@ -8,7 +9,7 @@ using Vocabi.Domain.Aggregates.Vocabularies;
 
 namespace Vocabi.Application.Features.Vocabularies.Queries;
 
-public class GetPagedVocabulariesQuery : IRequest<PagedResult<VocabularyDto>>
+public class GetPagedVocabulariesQuery : IRequest<PagedData<VocabularyDto>>
 {
     public string SearchWord { get; init; } = string.Empty;
     public ExportStatus Status { get; init; } = ExportStatus.Pending;
@@ -18,11 +19,14 @@ public class GetPagedVocabulariesQuery : IRequest<PagedResult<VocabularyDto>>
 
 public class GetPagedVocabulariesQueryHandler(
     IVocabularyRepository vocabularyRepository,
-    IMapper mapper
-    ) : IRequestHandler<GetPagedVocabulariesQuery, PagedResult<VocabularyDto>>
+    IMapper mapper,
+    ILogger<GetPagedVocabulariesQueryHandler> logger
+    ) : IRequestHandler<GetPagedVocabulariesQuery, PagedData<VocabularyDto>>
 {
-    public async Task<PagedResult<VocabularyDto>> Handle(GetPagedVocabulariesQuery request, CancellationToken cancellationToken)
+    public async Task<PagedData<VocabularyDto>> Handle(GetPagedVocabulariesQuery request, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Handling GetPagedVocabulariesQuery: {@Request}", request);
+
         var query = vocabularyRepository
             .GetQueryableSet()
             .AsNoTracking();

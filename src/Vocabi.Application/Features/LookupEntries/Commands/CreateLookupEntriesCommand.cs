@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Vocabi.Application.Common.Models;
 using Vocabi.Application.Services;
 using Vocabi.Application.Services.Media;
@@ -24,11 +25,11 @@ public class LookupWordCommandHandler(
         {
             // Lookup the word using the dictionaries
             var dictionaryLookupResult = await dictionaryLookupService.LookupAsync(request.Word);
-            if (dictionaryLookupResult.IsFailure)
-                return Result<IReadOnlyList<Guid>>.Failure(dictionaryLookupResult.Errors);
+            if (dictionaryLookupResult.IsFailed)
+                return Result.Fail(dictionaryLookupResult.Errors);
 
             // Handle data from the dictionary lookup
-            var dictionaryEntryModels = dictionaryLookupResult.Data;
+            var dictionaryEntryModels = dictionaryLookupResult.Value;
             var mediaLookup = new Dictionary<string, List<Guid>>();
             var lookupEntries = new List<LookupEntry>();
 
@@ -57,11 +58,11 @@ public class LookupWordCommandHandler(
             await lookupEntryRepository.AddRangeAsync(lookupEntries);
             await lookupEntryRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
-            return Result<IReadOnlyList<Guid>>.Success([.. lookupEntries.Select(e => e.Id)]);
+            return Result.Ok<IReadOnlyList<Guid>>([.. lookupEntries.Select(e => e.Id)]);
         }
         catch (Exception)
         {
-            return Result<IReadOnlyList<Guid>>.Failure("Failed to create new lookup entries.");
+            return Result.Fail("Failed to create new lookup entries.");
         }
     }
 }
