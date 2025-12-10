@@ -1,7 +1,7 @@
-﻿using FluentValidation;
+﻿using FluentResults;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Vocabi.Application.Common.Models;
 using Vocabi.Application.Contracts.External.Flashcards;
 using Vocabi.Domain.Aggregates.Vocabularies;
 
@@ -23,18 +23,18 @@ public class UnexportVocabularyFlashcardCommandHandler(
             var vocabulary = await vocabularyRepository.GetByIdAsync(request.VocabularyId);
 
             if (vocabulary is null)
-                return Result.Failure($"Vocabulary with Id '{request.VocabularyId}' not found.");
+                return Result.Fail($"Vocabulary with Id '{request.VocabularyId}' not found.");
 
             // Validate vocabulary
             if (!vocabulary.HasExportedFlashcard())
-                return Result.Failure($"Vocabulary '{vocabulary.Word}' has not been exported yet.");
+                return Result.Fail($"Vocabulary '{vocabulary.Word}' has not been exported yet.");
 
             // Unexport flashcard
             var unexportResult = await flashcardService.UnexportNoteAsync(vocabulary.Flashcard.NoteId!.Value);
-            if (unexportResult.IsFailure)
+            if (unexportResult.IsFailed)
             {
-                logger.LogWarning("Failed to unexport vocabulary flashcard. Word={Word}, Errors={Errors}", vocabulary.Word, unexportResult.ErrorMessages);
-                return Result.Failure($"Failed to unexport vocabulary '{vocabulary.Word}'. Errors: {unexportResult.ErrorMessages}");
+                logger.LogWarning("Failed to unexport vocabulary flashcard. Word={Word}, Errors={Errors}", vocabulary.Word, unexportResult.Errors);
+                return Result.Fail($"Failed to unexport vocabulary '{vocabulary.Word}'. Errors: {unexportResult.Errors}");
             }
 
             // Update entity
@@ -42,12 +42,12 @@ public class UnexportVocabularyFlashcardCommandHandler(
             await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
             logger.LogInformation("Successfully unexported flashcard. Word={Word}", vocabulary.Word);
-            return Result.Success();
+            return Result.Ok();
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Unexpected error while unexporting vocabulary flashcard. VocabularyId={VocabularyId}", request.VocabularyId);
-            return Result.Failure("Unexpected error while unexporting vocabulary.");
+            return Result.Fail("Unexpected error while unexporting vocabulary.");
         }
     }
 }

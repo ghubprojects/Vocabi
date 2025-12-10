@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentResults;
+using MediatR;
 using Vocabi.Application.Common.Models;
 using Vocabi.Domain.Aggregates.Vocabularies;
 
@@ -36,11 +37,11 @@ public class CreateVocabularyCommandHandler(IVocabularyRepository vocabularyRepo
             await vocabularyRepository.AddAsync(vocabulary);
             await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
-            return Result.Success();
+            return Result.Ok();
         }
         catch (Exception)
         {
-            return Result.Failure("Failed to create new vocabularies.");
+            return Result.Fail("Failed to create new vocabularies.");
         }
     }
 }

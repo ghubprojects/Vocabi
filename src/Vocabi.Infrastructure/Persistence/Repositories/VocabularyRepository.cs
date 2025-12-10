@@ -4,7 +4,7 @@ using Vocabi.Domain.SeedWork;
 
 namespace Vocabi.Infrastructure.Persistence.Repositories;
 
-public class VocabularyRepository(ApplicationDbContext context) : IVocabularyRepository
+public class VocabularyRepository(AppDbContext context) : IVocabularyRepository
 {
     public IUnitOfWork UnitOfWork => context;
 

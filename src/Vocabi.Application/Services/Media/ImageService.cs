@@ -1,6 +1,6 @@
 ﻿using Vocabi.Application.Contracts.External.Image;
-using Vocabi.Application.Contracts.Services.DownloadFile;
 using Vocabi.Application.Contracts.Storage;
+using Vocabi.Application.Services.Interfaces.DownloadFile;
 using Vocabi.Domain.Aggregates.MediaFiles;
 using static Vocabi.Shared.Common.Enums;
 
@@ -20,6 +20,6 @@ public class ImageService(
     protected override async Task<IEnumerable<string>?> GetFallbackUrlsAsync(string headword)
     {
         var result = await imageProvider.GetAsync(headword);
-        return result.IsSuccess ? result.Data : null;
+        return result.IsSuccess ? result.Value : null;
     }
 }

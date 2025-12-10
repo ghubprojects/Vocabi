@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Vocabi.Application.Common.Models;
+﻿using FluentResults;
+using Microsoft.Extensions.Logging;
 using Vocabi.Application.Contracts.Storage;
 using Vocabi.Shared.Utils;
 
@@ -31,12 +31,12 @@ public class LocalFileStorage : IFileStorage
             await stream.CopyToAsync(fileStream);
 
             var relativeFilePath = Path.Combine("uploads", subFolder ?? string.Empty, uniqueFileName);
-            return Result<string>.Success(relativeFilePath);
+            return Result.Ok(relativeFilePath);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to save file {FileName}", fileName);
-            return Result<string>.Failure(ex.Message);
+            return Result.Fail(ex.Message);
         }
     }
 
@@ -48,15 +48,15 @@ public class LocalFileStorage : IFileStorage
             var filePath = Path.Combine(folder, fileName);
 
             if (!File.Exists(filePath))
-                return await Result.FailureAsync($"File not found: {filePath}");
+                return Result.Fail($"File not found: {filePath}");
 
             File.Delete(filePath);
-            return await Result.SuccessAsync();
+            return Result.Ok();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to delete file {FileName}", fileName);
-            return await Result.FailureAsync(ex.Message);
+            return Result.Fail(ex.Message);
         }
     }
 

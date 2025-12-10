@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using FluentResults;
 using MediatR;
-using Vocabi.Application.Common.Models;
 using Vocabi.Application.Contracts.Storage;
 using Vocabi.Application.Features.MediaFiles.DTOs;
 using Vocabi.Domain.Aggregates.MediaFiles;
@@ -27,10 +27,10 @@ public class UploadMediaFileCommandHandler(
             await using var stream = request.Stream;
 
             var saveFileResult = await fileStorage.SaveAsync(stream, request.Filename);
-            if (saveFileResult.IsFailure)
-                return Result<MediaFileDto>.Failure(saveFileResult.Errors);
+            if (saveFileResult.IsFailed)
+                return Result.Fail(saveFileResult.Errors);
 
-            var filePath = saveFileResult.Data;
+            var filePath = saveFileResult.Value;
             var mediaFile = MediaFile.CreateNew(
                 Path.GetFileName(filePath),
                 filePath,
@@ -41,11 +41,11 @@ public class UploadMediaFileCommandHandler(
             await mediaFileRepository.AddAsync(mediaFile);
             await mediaFileRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
-            return Result<MediaFileDto>.Success(mapper.Map<MediaFileDto>(mediaFile));
+            return Result.Ok(mapper.Map<MediaFileDto>(mediaFile));
         }
         catch (Exception)
         {
-            return Result<MediaFileDto>.Failure("Failed to upload media file.");
+            return Result.Fail("Failed to upload media file.");
         }
     }
 }

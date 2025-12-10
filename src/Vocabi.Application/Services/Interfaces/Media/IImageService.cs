@@ -1,8 +1,8 @@
 ﻿using Vocabi.Domain.Aggregates.MediaFiles;
 
-namespace Vocabi.Application.Contracts.Services.Media;
+namespace Vocabi.Application.Services.Interfaces.Media;
 
-public interface IAudioService
+public interface IImageService
 {
     Task<List<Guid>> DownloadOrFallbackAsync(string headword, string url, string providerName, CancellationToken cancellationToken);
 }

@@ -4,7 +4,7 @@ using Vocabi.Domain.SeedWork;
 
 namespace Vocabi.Infrastructure.Persistence.Repositories;
 
-public class PronunciationRepository(ApplicationDbContext context) : IPronunciationRepository
+public class PronunciationRepository(AppDbContext context) : IPronunciationRepository
 {
     public IUnitOfWork UnitOfWork => context;
 

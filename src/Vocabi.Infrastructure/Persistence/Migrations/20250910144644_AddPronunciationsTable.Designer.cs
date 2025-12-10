@@ -11,7 +11,7 @@ using Vocabi.Infrastructure.Persistence;
 
 namespace Vocabi.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20250910144644_AddPronunciationsTable")]
     partial class AddPronunciationsTable
     {

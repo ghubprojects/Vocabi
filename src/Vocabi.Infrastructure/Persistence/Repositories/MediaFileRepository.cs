@@ -4,7 +4,7 @@ using Vocabi.Domain.SeedWork;
 
 namespace Vocabi.Infrastructure.Persistence.Repositories;
 
-public class MediaFileRepository(ApplicationDbContext context) : IMediaFileRepository
+public class MediaFileRepository(AppDbContext context) : IMediaFileRepository
 {
     public IUnitOfWork UnitOfWork => context;
 

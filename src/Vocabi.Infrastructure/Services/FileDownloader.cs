@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
-using Vocabi.Application.Common.Models;
-using Vocabi.Application.Contracts.Services.DownloadFile;
+﻿using FluentResults;
+using Microsoft.Extensions.Logging;
+using Vocabi.Application.Services.Interfaces.DownloadFile;
 using Vocabi.Shared.Utils;
 
 namespace Vocabi.Infrastructure.Services;
@@ -42,17 +42,17 @@ public class FileDownloader(HttpClient httpClient, ILogger<FileDownloader> logge
     private async Task<Result<T>> DownloadAsync<T>(string url, Func<string, Task<T>> downloader)
     {
         if (string.IsNullOrWhiteSpace(url))
-            return Result<T>.Failure("URL is null or empty.");
+            return Result.Fail("URL is null or empty.");
 
         try
         {
             var result = await downloader(url);
-            return Result<T>.Success(result);
+            return Result.Ok(result);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to download file from {Url}", url);
-            return Result<T>.Failure($"Failed to download from {url}: {ex.Message}");
+            return Result.Fail($"Failed to download from {url}: {ex.Message}");
         }
     }
 
@@ -61,7 +61,7 @@ public class FileDownloader(HttpClient httpClient, ILogger<FileDownloader> logge
         Func<string, Task<Result<T>>> downloader)
     {
         if (urls is null || !urls.Any())
-            return Result<List<T>>.Failure("No URLs provided.");
+            return Result.Fail("No URLs provided.");
 
         try
         {
@@ -69,19 +69,19 @@ public class FileDownloader(HttpClient httpClient, ILogger<FileDownloader> logge
             var results = await Task.WhenAll(tasks);
 
             var successful = results
-                .Where(x => x.IsSuccess && x.Data is not null)
-                .Select(x => x.Data!)
+                .Where(x => x.IsSuccess && x.Value is not null)
+                .Select(x => x.Value!)
                 .ToList();
 
             if (successful.Count == 0)
-                return Result<List<T>>.Failure("No files could be downloaded.");
+                return Result.Fail("No files could be downloaded.");
 
-            return Result<List<T>>.Success(successful);
+            return Result.Ok(successful);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Unexpected error while downloading multiple files.");
-            return Result<List<T>>.Failure(ex.Message);
+            return Result.Fail(ex.Message);
         }
     }
 }

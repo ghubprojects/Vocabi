@@ -11,7 +11,7 @@ using Vocabi.Infrastructure.Persistence;
 
 namespace Vocabi.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20250909153748_FlattenVocabularyFlashcardsTable")]
     partial class FlattenVocabularyFlashcardsTable
     {

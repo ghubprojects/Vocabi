@@ -1,6 +1,6 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
-using Vocabi.Application.Common.Models;
+using FluentResults;
 using Vocabi.Application.Contracts.External.Dictionary;
 using Vocabi.Domain.Aggregates.Pronunciations;
 using Vocabi.Shared.Extensions;
@@ -27,15 +27,15 @@ public class CambridgeProvider : IMainDictionaryProvider
         {
             var entries = await LookupEntriesAsync(word);
             if (entries.IsNullOrEmpty())
-                return Result<List<DictionaryEntryModel>>.Failure($"Word '{word}' not found.");
+                return Result.Fail($"Word '{word}' not found.");
 
             var result = await EnrichWithMeaningAsync(entries, word);
 
-            return Result<List<DictionaryEntryModel>>.Success(result);
+            return Result.Ok(result);
         }
         catch (Exception ex)
         {
-            return Result<List<DictionaryEntryModel>>.Failure(ex.Message);
+            return Result.Fail(ex.Message);
         }
     }
 

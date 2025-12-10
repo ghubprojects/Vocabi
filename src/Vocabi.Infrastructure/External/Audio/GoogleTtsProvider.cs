@@ -1,14 +1,22 @@
-﻿using Vocabi.Application.Common.Models;
+﻿using FluentResults;
+using Microsoft.AspNetCore.WebUtilities;
 using Vocabi.Application.Contracts.External.Audio;
 
 namespace Vocabi.Infrastructure.External.Audio;
 
-public class GoogleTtsProvider: IAudioProvider
+public class GoogleTtsProvider : IAudioProvider
 {
     public string ProviderName => "Google TTS";
 
-    public async Task<Result<string>> GetAsync(string text, string lang = "en")
-    {
-        return await Result<string>.SuccessAsync($"https://translate.google.com/translate_tts?ie=UTF-8&tl={lang}&client=tw-ob&q={Uri.EscapeDataString(text)}");
-    }
+    public const string BaseUrl = "https://translate.google.com/translate_tts";
+
+    public Result<string> Get(string text, string lang = "en")
+        => Result.Ok(
+            QueryHelpers.AddQueryString(BaseUrl, new Dictionary<string, string?>
+            {
+                ["ie"] = "UTF-8",
+                ["tl"] = lang,
+                ["client"] = "tw-ob",
+                ["q"] = text
+            }));
 }

@@ -1,6 +1,6 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
-using Vocabi.Application.Common.Models;
+using FluentResults;
 using Vocabi.Application.Contracts.External.Dictionary;
 
 namespace Vocabi.Infrastructure.External.Dictionary;
@@ -22,11 +22,11 @@ public class CovietProvider : IFallbackDictionaryProvider
         try
         {
             var result = await LookupMeaningsAsync(word);
-            return Result<List<string>>.Success(result);
+            return Result.Ok(result);
         }
         catch (Exception ex)
         {
-            return Result<List<string>>.Failure(ex.Message);
+            return Result.Fail(ex.Message);
         }
     }
 
@@ -42,7 +42,7 @@ public class CovietProvider : IFallbackDictionaryProvider
         var meaningElements = document.QuerySelectorAll("div#divContent div.m > span");
 
         if (meaningElements.Length == 0)
-            return Result<List<string>>.Failure($"Word '{word}' not found.").Data;
+            return [];
 
         return [.. meaningElements.Select(el => el.TextContent.Trim())];
     }

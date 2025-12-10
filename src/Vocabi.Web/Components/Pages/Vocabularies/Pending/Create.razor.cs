@@ -7,6 +7,7 @@ using Vocabi.Application.Features.MediaFiles.Commands;
 using Vocabi.Application.Features.MediaFiles.DTOs;
 using Vocabi.Application.Features.MediaFiles.Queries;
 using Vocabi.Application.Features.Vocabularies.Commands;
+using Vocabi.Shared.Extensions;
 using Vocabi.Shared.Utils;
 using Vocabi.Web.ViewModels.Vocabularies;
 using static Vocabi.Shared.Common.Enums;
@@ -55,7 +56,7 @@ public partial class Create
             if (result.IsSuccess)
                 Navigation.GoToVocabularyPendingList();
             else
-                ToastService.ShowError(result.ErrorMessages);
+                ToastService.ShowError(result.GetErrorMessages());
         }, x => isSubmitting = x);
     }
 
@@ -79,13 +80,13 @@ public partial class Create
         await ExecuteWithLoadingAsync(async () =>
         {
             var result = await Mediator.Send(new CreateLookupEntriesCommand { Word = vocabularyForm.Word });
-            if (result.IsFailure)
+            if (result.IsFailed)
             {
-                ToastService.ShowWarning(result.ErrorMessages);
+                ToastService.ShowWarning(result.GetErrorMessages());
                 return;
             }
 
-            lookupEntryDtos = await Mediator.Send(new GetLookupEntriesQuery { Ids = result.Data });
+            lookupEntryDtos = await Mediator.Send(new GetLookupEntriesQuery { Ids = result.Value });
             var defaultEntry = lookupEntryDtos[0];
 
             vocabularyForm.UpdateFromEntry(defaultEntry);
@@ -253,17 +254,17 @@ public partial class Create
         };
 
         var result = await Mediator.Send(command);
-        if (result.IsFailure)
+        if (result.IsFailed)
         {
-            ToastService.ShowWarning(result.ErrorMessages);
+            ToastService.ShowWarning(result.GetErrorMessages());
             return;
         }
 
         //fileModel.UpdateFrom(result.Data);
-        if (FileUtils.GetMediaType(result.Data.ContentType) == MediaType.Audio)
-            audioFile = result.Data;
-        else if (FileUtils.GetMediaType(result.Data.ContentType) == MediaType.Image)
-            imageFile = result.Data;
+        if (FileUtils.GetMediaType(result.Value.ContentType) == MediaType.Audio)
+            audioFile = result.Value;
+        else if (FileUtils.GetMediaType(result.Value.ContentType) == MediaType.Image)
+            imageFile = result.Value;
 
 
         //inputFile.FilePath = FileHelper.GetRelativePath(tempFilePath, Environment.WebRootPath);

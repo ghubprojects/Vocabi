@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using FluentResults;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Vocabi.Application.Common.Models;
 using Vocabi.Application.Contracts.External.Flashcards;
 using Vocabi.Domain.Aggregates.MediaFiles;
 using Vocabi.Domain.Aggregates.Vocabularies;
@@ -28,7 +28,7 @@ public class ExportVocabularyFlashcardsCommandHandler(
             var vocabularies = await vocabularyRepository.GetByIdsAsync(request.VocabularyIds);
             
             if (vocabularies.IsNullOrEmpty())
-                return Result.Failure("No vocabularies found to export.");
+                return Result.Fail("No vocabularies found to export.");
 
             // Validate vocabularies
             var validVocabs = vocabularies
@@ -36,7 +36,7 @@ public class ExportVocabularyFlashcardsCommandHandler(
                .ToList();
 
             if (validVocabs.Count == 0)
-                return Result.Failure("All selected vocabularies have already been exported.");
+                return Result.Fail("All selected vocabularies have already been exported.");
 
             // Prepare flashcard note
             var allMediaFileIds = validVocabs.SelectMany(v => v.MediaFiles.Select(m => m.MediaFileId)).Distinct();
@@ -57,17 +57,17 @@ public class ExportVocabularyFlashcardsCommandHandler(
 
             // Export flashcards
             var exportResult = await flashcardService.ExportNotesAsync(flashcardNotes, mediaPaths.Distinct());
-            if (exportResult.IsFailure)
+            if (exportResult.IsFailed)
             {
                 validVocabs.ForEach(x => x.MarkFlashcardAsFailed());
                 await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
-                logger.LogWarning("Failed to export multiple vocabulary flashcards. Errors={Errors}", exportResult.ErrorMessages);
-                return Result.Failure($"Failed to export vocabularies. Errors: {exportResult.ErrorMessages}");
+                logger.LogWarning("Failed to export multiple vocabulary flashcards. Errors={Errors}", exportResult.Errors);
+                return Result.Fail($"Failed to export vocabularies. Errors: {exportResult.Errors}");
             }
 
             // Mark success
-            var noteIds = exportResult.Data;
+            var noteIds = exportResult.Value;
             for (int i = 0; i < validVocabs.Count; i++)
             {
                 if (i < noteIds.Length)
@@ -78,12 +78,12 @@ public class ExportVocabularyFlashcardsCommandHandler(
             await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
             logger.LogInformation("Successfully exported {Count} vocabulary flashcards.", noteIds.Length);
-            return Result.Success();
+            return Result.Ok();
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Unexpected error while exporting multiple vocabulary flashcards.");
-            return Result.Failure("Unexpected error while exporting vocabularies.");
+            return Result.Fail("Unexpected error while exporting vocabularies.");
         }
     }
 }

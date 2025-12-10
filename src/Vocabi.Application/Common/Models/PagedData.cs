@@ -1,6 +1,6 @@
 ﻿namespace Vocabi.Application.Common.Models;
 
-public class PagedResult<T> where T : class
+public class PagedData<T> where T : class
 {
     public int CurrentPage { get; }
     public int TotalItems { get; private set; }
@@ -10,7 +10,7 @@ public class PagedResult<T> where T : class
     public bool HasPreviousPage => CurrentPage > 1;
     public bool HasNextPage => CurrentPage < TotalPages;
 
-    public PagedResult()
+    public PagedData()
     {
         CurrentPage = 0;
         TotalItems = 0;
@@ -18,7 +18,7 @@ public class PagedResult<T> where T : class
         Items = [];
     }
 
-    public PagedResult(IReadOnlyList<T> items, int total, int pageIndex, int pageSize)
+    public PagedData(IReadOnlyList<T> items, int total, int pageIndex, int pageSize)
     {
         CurrentPage = pageIndex;
         TotalItems = total;

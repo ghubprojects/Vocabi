@@ -8,34 +8,33 @@ namespace Vocabi.Infrastructure.External.Anki;
 
 public class AnkiConnectClient : IAnkiConnectClient
 {
-    private readonly HttpClient httpClient;
+    private readonly HttpClient _http;
 
-    public AnkiConnectClient(IHttpClientFactory httpClientFactory)
+    public AnkiConnectClient(HttpClient http)
     {
-        httpClient = httpClientFactory.CreateClient();
-        httpClient.BaseAddress = new Uri("http://localhost:8765");
+        _http = http;
+        _http.BaseAddress ??= new Uri("http://localhost:8765");
     }
 
-    public async Task<JsonElement?> InvokeAsync(AnkiRequest request)
-        => await SendAsync<JsonElement?>(request);
+    public Task<JsonElement?> InvokeAsync(AnkiRequest request)
+        => SendAsync<JsonElement?>(request);
 
-    public async Task<List<AnkiResponse<JsonElement>>?> InvokeMultiAsync(params AnkiRequest[] requests)
-        => await SendAsync<List<AnkiResponse<JsonElement>>?>(new AnkiMultiRequest(requests));
+    public Task<List<AnkiResponse<JsonElement>>?> InvokeMultiAsync(params AnkiRequest[] requests)
+        => SendAsync<List<AnkiResponse<JsonElement>>?>(new AnkiMultiRequest(requests));
 
     private async Task<T?> SendAsync<T>(AnkiBaseRequest request)
     {
         var json = JsonSerializer.Serialize(request, request.GetType());
-        using var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await _http.PostAsync("", new StringContent(json, Encoding.UTF8, "application/json"));
 
-        var response = await httpClient.PostAsync("", content);
         response.EnsureSuccessStatusCode();
 
-        var result = await response.Content.ReadFromJsonAsync<AnkiResponse<T>>()
+        var envelope = await response.Content.ReadFromJsonAsync<AnkiResponse<T>>()
             ?? throw new InvalidOperationException("Invalid response from AnkiConnect (null).");
 
-        if (!string.IsNullOrEmpty(result.Error))
-            throw new InvalidOperationException($"AnkiConnect error: {result.Error}");
+        if (!string.IsNullOrEmpty(envelope.Error))
+            throw new InvalidOperationException($"AnkiConnect error: {envelope.Error}");
 
-        return result.Result;
+        return envelope.Result;
     }
 }
