@@ -1,0 +1,33 @@
+﻿@using System.Net
+@using Vocabi.Domain.Exceptions
+@rendermode InteractiveServer
+
+<FluentDialog>
+    <FluentDialogHeader>
+        <FluentStack VerticalAlignment="VerticalAlignment.Center">
+            <FluentIcon Value="@(new Icons.Regular.Size32.DismissCircle())" Color="@Color.Error" />
+            <FluentLabel Typo="Typography.PaneHeader">
+                Error
+            </FluentLabel>
+        </FluentStack>
+    </FluentDialogHeader>
+
+    <FluentDialogBody>
+        <FluentStack VerticalGap="12" Orientation="Orientation.Vertical">
+            <FluentLabel Typo="Typography.H6">
+                @Message
+            </FluentLabel>
+            <FluentLabel Typo="Typography.Body">
+                For more information, contact your system administrator.
+            </FluentLabel>
+        </FluentStack>
+    </FluentDialogBody>
+
+    <FluentDialogFooter>
+        <FluentStack HorizontalAlignment="HorizontalAlignment.Center" S>
+            <FluentButton Appearance="Appearance.Accent" OnClick="HandleRefresh">
+                Refresh
+            </FluentButton>
+        </FluentStack>
+    </FluentDialogFooter>
+</FluentDialog>

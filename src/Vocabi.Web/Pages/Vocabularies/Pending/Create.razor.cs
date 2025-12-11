@@ -9,16 +9,16 @@ using Vocabi.Application.Features.MediaFiles.Queries;
 using Vocabi.Application.Features.Vocabularies.Commands;
 using Vocabi.Shared.Extensions;
 using Vocabi.Shared.Utils;
-using Vocabi.Web.ViewModels.Vocabularies;
+using Vocabi.Web.Models.Vocabularies;
 using static Vocabi.Shared.Common.Enums;
 
-namespace Vocabi.Web.Components.Pages.Vocabularies.Pending;
+namespace Vocabi.Web.Pages.Vocabularies.Pending;
 
 public partial class Create
 {
     private EditContext editContext = default!;
 
-    private VocabularyFormViewModel vocabularyForm = new();
+    private VocabularyFormModel vocabularyForm = new();
     private IReadOnlyList<LookupEntryDto> lookupEntryDtos = [];
 
     private MediaFileDto audioFile = new();
@@ -55,9 +55,8 @@ public partial class Create
             var result = await Mediator.Send(command);
             if (result.IsSuccess)
                 Navigation.GoToVocabularyPendingList();
-            else
-                ToastService.ShowError(result.GetErrorMessages());
-        }, x => isSubmitting = x);
+        },
+        x => isSubmitting = x);
     }
 
     private void ClearForm()
@@ -111,20 +110,20 @@ public partial class Create
     {
         try
         {
-            //ViewModel.Detail.WordType = wordType;
+            //Model.Detail.WordType = wordType;
 
             //if (_lookupResult is null)
             //    return;
 
-            //var entry = _lookupResult.Entries.Find(e => e.WordType == ViewModel.Detail.WordType);
+            //var entry = _lookupResult.Entries.Find(e => e.WordType == Model.Detail.WordType);
             //if (entry is null)
             //    return;
 
-            //ViewModel.Detail.Phonetic = entry.Phonetic;
+            //Model.Detail.Phonetic = entry.Phonetic;
 
             //_availableDefinitions.Clear();
             //_availableDefinitions.AddRange(entry.Definitions.Select(d => d.Definition));
-            //ViewModel.Detail.Definition = _availableDefinitions.First();
+            //Model.Detail.Definition = _availableDefinitions.First();
 
             //UpdateExamples();
         }
@@ -142,12 +141,12 @@ public partial class Create
             //    return;
 
             //var entry = _lookupResult.Entries.Find(
-            //    e => e.Definitions.Any(d => d.Definition == ViewModel.Detail.Definition));
+            //    e => e.Definitions.Any(d => d.Definition == Model.Detail.Definition));
             //if (entry is null)
             //    return;
 
-            //ViewModel.Detail.WordType = entry.WordType;
-            //ViewModel.Detail.Phonetic = entry.Phonetic;
+            //Model.Detail.WordType = entry.WordType;
+            //Model.Detail.Phonetic = entry.Phonetic;
 
             //UpdateExamples();
         }
@@ -165,17 +164,17 @@ public partial class Create
             //    return;
 
             //var entry = _lookupResult.Entries.Find(
-            //    e => e.Definitions.Any(d => d.Examples.Contains(ViewModel.Detail.Example)));
+            //    e => e.Definitions.Any(d => d.Examples.Contains(Model.Detail.Example)));
             //if (entry is null)
             //    return;
 
-            //ViewModel.Detail.WordType = entry.WordType;
-            //ViewModel.Detail.Phonetic = entry.Phonetic;
+            //Model.Detail.WordType = entry.WordType;
+            //Model.Detail.Phonetic = entry.Phonetic;
 
-            //var definition = entry.Definitions.Find(d => d.Examples.Contains(ViewModel.Detail.Example));
+            //var definition = entry.Definitions.Find(d => d.Examples.Contains(Model.Detail.Example));
             //if (definition is not null)
             //{
-            //    ViewModel.Detail.Definition = definition.Definition;
+            //    Model.Detail.Definition = definition.Definition;
             //}
         }
         catch (Exception e)
@@ -192,16 +191,16 @@ public partial class Create
     //            return;
 
     //        var entry = _lookupResult.Entries.Find(
-    //            e => e.Definitions.Any(d => d.Definition == ViewModel.Detail.Definition));
+    //            e => e.Definitions.Any(d => d.Definition == Model.Detail.Definition));
     //        if (entry is null)
     //            return;
 
     //        _availableExamples.Clear();
     //        _availableExamples.AddRange(
     //            entry.Definitions
-    //            .Where(d => d.Definition == ViewModel.Detail.Definition)
+    //            .Where(d => d.Definition == Model.Detail.Definition)
     //            .SelectMany(d => d.Examples));
-    //        ViewModel.Detail.Example = _availableExamples.First();
+    //        Model.Detail.Example = _availableExamples.First();
     //    }
     //    catch (Exception e)
     //    {
@@ -215,7 +214,7 @@ public partial class Create
     //    ////if (!IsValidFile(file, inputFile))
     //    ////    return;
 
-    //    //var fileName = FileHelper.NormalizeFileName(ViewModel.Detail.Word, Path.GetExtension(file.Name));
+    //    //var fileName = FileHelper.NormalizeFileName(Model.Detail.Word, Path.GetExtension(file.Name));
     //    //var tempFilePath = FileHelper.GetFullTempUploadPath(fileName, Environment.WebRootPath);
 
     //    var command = new UploadMediaFileCommand
@@ -244,7 +243,7 @@ public partial class Create
         ////if (!IsValidFile(file, inputFile))
         ////    return;
 
-        //var fileName = FileHelper.NormalizeFileName(ViewModel.Detail.Word, Path.GetExtension(file.Name));
+        //var fileName = FileHelper.NormalizeFileName(Model.Detail.Word, Path.GetExtension(file.Name));
         //var tempFilePath = FileHelper.GetFullTempUploadPath(fileName, Environment.WebRootPath);
 
         var command = new UploadMediaFileCommand
@@ -274,7 +273,7 @@ public partial class Create
 
     protected void HandleRemoveFile(MediaType type)
     {
-        //ViewModel.Detail.RemoveFile(fileType);
+        //Model.Detail.RemoveFile(fileType);
         //if (fileType == MediaType.Image)
         //    _availableImages.Clear();
         switch (type)

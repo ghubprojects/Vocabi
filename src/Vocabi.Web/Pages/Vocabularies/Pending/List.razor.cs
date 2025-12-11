@@ -2,26 +2,25 @@
 using Vocabi.Application.Features.Vocabularies.Commands;
 using Vocabi.Application.Features.Vocabularies.Queries;
 using Vocabi.Domain.Aggregates.Vocabularies;
-using Vocabi.Shared.Extensions;
 using Vocabi.Web.Common.Enums;
 using Vocabi.Web.Components.Dialogs;
-using Vocabi.Web.ViewModels.Vocabularies;
+using Vocabi.Web.Models.Vocabularies;
 
-namespace Vocabi.Web.Components.Pages.Vocabularies.Pending;
+namespace Vocabi.Web.Pages.Vocabularies.Pending;
 
 public partial class List
 {
-    private FluentDataGrid<VocabularyListItemViewModel> dataGrid = default!;
+    private FluentDataGrid<VocabularyItemModel> dataGrid = default!;
     private readonly PaginationState pagination = new() { ItemsPerPage = 20 };
 
-    private IQueryable<VocabularyListItemViewModel> dataGridItems = default!;
-    private IEnumerable<VocabularyListItemViewModel> selectedItems = [];
+    private IQueryable<VocabularyItemModel> dataGridItems = default!;
+    private IEnumerable<VocabularyItemModel> selectedItems = [];
 
     private string searchWord = string.Empty;
 
     private bool isRefreshingData = false;
 
-    private async Task RefreshItemsAsync(GridItemsProviderRequest<VocabularyListItemViewModel> req)
+    private async Task RefreshItemsAsync(GridItemsProviderRequest<VocabularyItemModel> req)
     {
         await ExecuteWithLoadingAsync(async () =>
         {
@@ -33,7 +32,7 @@ public partial class List
                 PageSize = req.Count!.Value,
             });
 
-            dataGridItems = Mapper.Map<IReadOnlyList<VocabularyListItemViewModel>>(result.Items).AsQueryable();
+            dataGridItems = Mapper.Map<IReadOnlyList<VocabularyItemModel>>(result.Items).AsQueryable();
             await pagination.SetTotalItemCountAsync(result.TotalItems);
         },
         x => isRefreshingData = x);
@@ -46,39 +45,39 @@ public partial class List
     }
 
     #region Single Row Actions
+
     private readonly Dictionary<string, bool> loadingStates = [];
 
     private bool IsLoading(Guid id, RowAction action)
        => loadingStates.TryGetValue($"{id}-{action}", out var isLoading) && isLoading;
 
-    private void HandleDoubleClickRow(FluentDataGridRow<VocabularyListItemViewModel> row)
+    private void HandleDoubleClickRow(FluentDataGridRow<VocabularyItemModel> row)
     {
         if (row.Item is not null)
             Navigation.GoToVocabularyDetail(row.Item.Id);
     }
 
-    private async Task OpenDeleteDialogAsync(VocabularyListItemViewModel model)
+    private async Task OpenDeleteDialogAsync(VocabularyItemModel model)
     {
-        var dialog = await DialogService.ShowDialogAsync<DeleteDialog>(model.Word, new DialogParameters
-        {
-            Title = $"Confirm Delete",
-            Width = "480px",
-            Height = "240px",
-        });
+        var dialogParams = new DialogParameters { Title = $"Confirm Delete" };
+        var dialog = await DialogService.ShowDialogAsync<DeleteDialog>(model.Word, dialogParams);
 
-        var result = await dialog.Result;
-        if (!result.Cancelled && result.Data is not null)
+        var dialogResult = await dialog.Result;
+        if (!dialogResult.Cancelled && dialogResult.Data is not null)
         {
-            try
+            await ExecuteWithLoadingAsync(async () =>
             {
-                //await VocabService.DeleteVocabAsync(model);
+                var result = await Mediator.Send(new DeleteVocabularyCommand(model.Id));
+                if (result.IsFailed)
+                {
+                    foreach (var error in result.Errors)
+                        ToastService.ShowError(error.Message);
+                }
+
                 ToastService.ShowSuccess("Vocab deleted successfully.");
                 await RefreshDataAsync();
-            }
-            catch (Exception e)
-            {
-                ToastService.ShowError(e.Message);
-            }
+            },
+            x => loadingStates[$"{model.Id}-{RowAction.Delete}"] = x);
         }
     }
 
@@ -92,14 +91,14 @@ public partial class List
                 ToastService.ShowSuccess("Vocabulary exported to Anki successfully.");
                 await RefreshDataAsync();
             }
-            else
-                ToastService.ShowError(result.GetErrorMessages());
         },
         x => loadingStates[$"{id}-{RowAction.Export}"] = x);
     }
+
     #endregion
 
     #region Multiple Row Actions
+
     private bool isAnyItemSelected => selectedItems.Any();
     private bool isDeletingMultiple = false;
     private bool isExportingMultiple = false;
@@ -117,10 +116,9 @@ public partial class List
                 ToastService.ShowSuccess("Selected vocabularies exported to Anki successfully.");
                 await RefreshDataAsync();
             }
-            else
-                ToastService.ShowError(result.GetErrorMessages());
         },
         x => isExportingMultiple = x);
     }
+
     #endregion
 }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Vocabi.Web.Services.Navigation;
 
-namespace Vocabi.Web.Components.Pages;
+namespace Vocabi.Web.Pages;
 
 public abstract class BasePage : ComponentBase
 {
@@ -15,21 +15,6 @@ public abstract class BasePage : ComponentBase
     [Inject] protected IMapper Mapper { get; private set; } = default!;
     [Inject] protected ILogger<BasePage> Logger { get; private set; } = default!;
 
-    protected async Task ExecuteAsync(Func<Task> action)
-    {
-        ArgumentNullException.ThrowIfNull(action);
-
-        try
-        {
-            await action();
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Unexpected error occurred.");
-            ToastService.ShowError("Unexpected error occurred.");
-        }
-    }
-
     protected async Task ExecuteWithLoadingAsync(Func<Task> action, Action<bool> setLoading)
     {
         ArgumentNullException.ThrowIfNull(action);
@@ -39,11 +24,6 @@ public abstract class BasePage : ComponentBase
         try
         {
             await action();
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Unexpected error occurred.");
-            ToastService.ShowError("Unexpected error occurred.");
         }
         finally
         {

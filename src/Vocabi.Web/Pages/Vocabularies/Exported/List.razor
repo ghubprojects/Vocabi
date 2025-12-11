@@ -1,0 +1,81 @@
+﻿@page "/vocabularies/exported"
+@rendermode InteractiveServer
+@using Vocabi.Web.Models.Vocabularies
+@using Vocabi.Shared.Utils
+@inherits BasePage
+
+<PageTitle>Vocabulary Exported List</PageTitle>
+
+<FluentStack Orientation="Orientation.Vertical">
+    <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
+        <FluentStack VerticalAlignment="VerticalAlignment.Center">
+            <FluentLabel Typo="Typography.H4">
+                Vocabulary Exported List
+            </FluentLabel>
+        </FluentStack>
+    </FluentStack>
+
+    <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
+        <FluentSearch @bind-Value="searchWord"
+                      @bind-Value:after="RefreshDataAsync"
+                      Immediate="true"
+                      ImmediateDelay="500"
+                      Placeholder="Search for word"
+                      Style="flex:1;" />
+        <FluentStack Width="auto">
+            <FluentButton Title="Remove export selected to Anki"
+                          OnClick="HandleRemoveExportMultipleAsync"
+                          Loading="isRemovingExportMultiple"
+                          Disabled="@(isRemovingExportMultiple || !isAnyItemSelected)"
+                          BackgroundColor="var(--error)"
+                          Color="var(--neutral-fill-rest)">
+                <FluentIcon Value="@(new Icons.Regular.Size16.ArrowUndo())" Color="@Color.Fill" Slot="start" />
+                @(isRemovingExportMultiple ? "Removing export..." : $"Remove export{(selectedItems.Count() > 0 ? $" ({selectedItems.Count()})" : "")}")
+            </FluentButton>
+        </FluentStack>
+    </FluentStack>
+
+    <FluentStack Orientation="Orientation.Vertical" Style="padding-top:10px">
+        <FluentDataGrid @ref="dataGrid"
+                        Pagination="pagination"
+                        TGridItem="VocabularyItemModel"
+                        Items="dataGridItems"
+                        RefreshItems="RefreshItemsAsync"
+                        Loading="isRefreshingData"
+                        GenerateHeader="GenerateHeaderOption.Sticky"
+                        DisplayMode="DataGridDisplayMode.Table"
+                        OnRowDoubleClick="(r) => Navigation.GoToVocabularyDetail(r.Item!.Id)"
+                        AutoFit="true"
+                        ShowHover="true"
+                        Style="width:100%;">
+            <ChildContent>
+                <SelectColumn TGridItem="VocabularyItemModel"
+                              SelectMode="DataGridSelectMode.Multiple"
+                              SelectFromEntireRow="false"
+                              @bind-SelectedItems="selectedItems" />
+                <PropertyColumn Property="@(c => c.Word)" />
+                <PropertyColumn Property="@(c => c.PartOfSpeech)" Title="Part of speech" />
+                <PropertyColumn Property="@(c => c.Pronunciation)" />
+                <PropertyColumn Property="@(c => c.Cloze)" />
+                <PropertyColumn Property="@(c => c.Meaning)" />
+                <PropertyColumn Property="@(c => c.ExportedAt)" Title="Exported time" />
+                <TemplateColumn Title="Actions" Align="@Align.Center">
+                    <FluentButton Title="Remove export"
+                                  OnClick="() => HandleRemoveExportAsync(context.Id)">
+                        <FluentIcon Value="@(new Icons.Regular.Size16.ArrowUndo())" Color="Color.Error" />
+                    </FluentButton>
+                </TemplateColumn>
+            </ChildContent>
+            <EmptyContent>
+                <FluentStack Orientation="Orientation.Horizontal"
+                             VerticalAlignment="VerticalAlignment.Center"
+                             HorizontalAlignment="HorizontalAlignment.Center"
+                             HorizontalGap="10">
+                    <FluentIcon Value="@(new Icons.Filled.Size24.Crown())" Color="@Color.Accent" />
+                    <div>Nothing to see here. Carry on!</div>
+                </FluentStack>
+            </EmptyContent>
+        </FluentDataGrid>
+        <FluentPaginator State="pagination" Style="width:100%;margin-top:0" />
+    </FluentStack>
+</FluentStack>

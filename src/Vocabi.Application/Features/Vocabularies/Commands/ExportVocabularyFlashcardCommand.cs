@@ -21,8 +21,9 @@ public class ExportVocabularyFlashcardCommandHandler(
 {
     public async Task<Result> Handle(ExportVocabularyFlashcardCommand request, CancellationToken cancellationToken)
     {
-        try
-        {
+        //try
+        //{
+
             // Load vocabulary
             var vocabulary = await vocabularyRepository.GetByIdAsync(request.VocabularyId);
             
@@ -57,12 +58,12 @@ public class ExportVocabularyFlashcardCommandHandler(
             logger.LogInformation("Exported vocabulary flashcard successfully. Word={Word}, FlashcardId={FlashcardId}",
               vocabulary.Word, exportResult.Value);
             return Result.Ok();
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Unexpected error while exporting vocabulary flashcard. VocabularyId={VocabularyId}", request.VocabularyId);
-            return Result.Fail("Unexpected error while exporting vocabulary.");
-        }
+        //}
+        //catch (Exception ex)
+        //{
+        //    logger.LogError(ex, "Unexpected error while exporting vocabulary flashcard. VocabularyId={VocabularyId}", request.VocabularyId);
+        //    return Result.Fail("Unexpected error while exporting vocabulary.");
+        //}
     }
 }
 

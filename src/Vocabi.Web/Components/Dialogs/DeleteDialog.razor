@@ -2,7 +2,7 @@
 
 <FluentDialogHeader ShowDismiss="true">
     <FluentStack VerticalAlignment="VerticalAlignment.Center">
-        <FluentIcon Value="@(new Icons.Regular.Size24.Delete())" />
+        <FluentIcon Value="@(new Icons.Regular.Size32.Delete())" Color="@Color.Error" />
         <FluentLabel Typo="Typography.PaneHeader">
             @Dialog.Instance.Parameters.Title
         </FluentLabel>
@@ -10,7 +10,9 @@
 </FluentDialogHeader>
 
 <FluentDialogBody>
-    <p>Are you sure you want to delete <strong>@Content</strong>?</p>
+    <FluentLabel Typo="Typography.Body">
+        Are you sure you want to delete <strong>@Content</strong>?
+    </FluentLabel>
 </FluentDialogBody>
 
 <FluentDialogFooter>

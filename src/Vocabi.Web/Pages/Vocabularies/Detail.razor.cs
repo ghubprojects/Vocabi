@@ -4,7 +4,7 @@ using Vocabi.Application.Features.MediaFiles.DTOs;
 using Vocabi.Application.Features.Vocabularies.DTOs;
 using Vocabi.Application.Features.Vocabularies.Queries;
 
-namespace Vocabi.Web.Components.Pages.Vocabularies;
+namespace Vocabi.Web.Pages.Vocabularies;
 
 public partial class Detail
 {

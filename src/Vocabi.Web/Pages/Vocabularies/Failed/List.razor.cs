@@ -3,37 +3,37 @@ using Vocabi.Application.Features.Vocabularies.Commands;
 using Vocabi.Application.Features.Vocabularies.Queries;
 using Vocabi.Domain.Aggregates.Vocabularies;
 using Vocabi.Shared.Extensions;
-using Vocabi.Web.ViewModels.Vocabularies;
+using Vocabi.Web.Models.Vocabularies;
 
-namespace Vocabi.Web.Components.Pages.Vocabularies.Exported;
+namespace Vocabi.Web.Pages.Vocabularies.Failed;
 
 public partial class List
 {
-    private FluentDataGrid<VocabularyListItemViewModel> dataGrid = default!;
+    private FluentDataGrid<VocabularyItemModel> dataGrid = default!;
     private readonly PaginationState pagination = new() { ItemsPerPage = 20 };
 
-    private IQueryable<VocabularyListItemViewModel> dataGridItems = default!;
-    private IEnumerable<VocabularyListItemViewModel> selectedItems = [];
+    private IQueryable<VocabularyItemModel> dataGridItems = default!;
+    private IEnumerable<VocabularyItemModel> selectedItems = [];
 
     private string searchWord = string.Empty;
 
     private bool isRefreshingData = false;
     private bool isAnyItemSelected => selectedItems.Any();
-    private bool isRemovingExportMultiple = false;
+    private bool isRetryingExportMultiple = false;
 
-    private async Task RefreshItemsAsync(GridItemsProviderRequest<VocabularyListItemViewModel> req)
+    private async Task RefreshItemsAsync(GridItemsProviderRequest<VocabularyItemModel> req)
     {
         await ExecuteWithLoadingAsync(async () =>
         {
             var result = await Mediator.Send(new GetPagedVocabulariesQuery()
             {
                 SearchWord = searchWord,
-                Status = ExportStatus.Completed,
+                Status = ExportStatus.Failed,
                 PageIndex = req.StartIndex / req.Count!.Value,
                 PageSize = req.Count!.Value,
             });
 
-            dataGridItems = Mapper.Map<IReadOnlyList<VocabularyListItemViewModel>>(result.Items).AsQueryable();
+            dataGridItems = Mapper.Map<IReadOnlyList<VocabularyItemModel>>(result.Items).AsQueryable();
             await pagination.SetTotalItemCountAsync(result.TotalItems);
         },
         x => isRefreshingData = x);
@@ -45,14 +45,14 @@ public partial class List
         StateHasChanged();
     }
 
-    private async Task HandleRemoveExportAsync(Guid id)
+    private async Task HandleRetryExportAsync(Guid id)
     {
         await ExecuteAsync(async () =>
         {
-            var result = await Mediator.Send(new UnexportVocabularyFlashcardCommand(id));
+            var result = await Mediator.Send(new ExportVocabularyFlashcardCommand(id));
             if (result.IsSuccess)
             {
-                ToastService.ShowSuccess("Vocabulary unexported to Anki successfully.");
+                ToastService.ShowSuccess("Vocabulary exported to Anki successfully.");
                 await RefreshDataAsync();
             }
             else
@@ -60,22 +60,22 @@ public partial class List
         });
     }
 
-    private async Task HandleRemoveExportMultipleAsync()
+    private async Task HandleRetryExportMultipleAsync()
     {
         if (!isAnyItemSelected)
             return;
 
         await ExecuteWithLoadingAsync(async () =>
         {
-            var result = await Mediator.Send(new UnexportVocabularyFlashcardsCommand(selectedItems.Select(x => x.Id)));
+            var result = await Mediator.Send(new ExportVocabularyFlashcardsCommand(selectedItems.Select(x => x.Id)));
             if (result.IsSuccess)
             {
-                ToastService.ShowSuccess("Selected vocabularies unexported to Anki successfully.");
+                ToastService.ShowSuccess("Selected vocabularies exported to Anki successfully.");
                 await RefreshDataAsync();
             }
             else
                 ToastService.ShowError(result.GetErrorMessages());
         },
-        x => isRemovingExportMultiple = x);
+        x => isRetryingExportMultiple = x);
     }
 }

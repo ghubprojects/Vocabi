@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Vocabi.Application.Features.Vocabularies.DTOs;
 
-namespace Vocabi.Web.ViewModels.Vocabularies;
+namespace Vocabi.Web.Models.Vocabularies;
 
-public class VocabularyListItemViewModel
+public class VocabularyItemModel
 {
     public Guid Id { get; set; }
     public string Word { get; set; } = string.Empty;
@@ -22,7 +22,7 @@ public class VocabularyListItemViewModel
     {
         public Mapping()
         {
-            CreateMap<VocabularyDto, VocabularyListItemViewModel>()
+            CreateMap<VocabularyDto, VocabularyItemModel>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => FormatDateTime(src.ExportedAt)))
                 .ForMember(dest => dest.ExportedAt, opt => opt.MapFrom(src => FormatDateTime(src.ExportedAt)))
                 .ForMember(dest => dest.LastTriedAt, opt => opt.MapFrom(src => FormatDateTime(src.LastTriedAt)));
