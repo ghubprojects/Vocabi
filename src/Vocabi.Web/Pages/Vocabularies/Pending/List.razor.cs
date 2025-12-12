@@ -72,6 +72,7 @@ public partial class List
                 {
                     foreach (var error in result.Errors)
                         ToastService.ShowError(error.Message);
+                    return;
                 }
 
                 ToastService.ShowSuccess("Vocab deleted successfully.");
@@ -86,11 +87,15 @@ public partial class List
         await ExecuteWithLoadingAsync(async () =>
         {
             var result = await Mediator.Send(new ExportVocabularyFlashcardCommand(id));
-            if (result.IsSuccess)
+            if (result.IsFailed)
             {
-                ToastService.ShowSuccess("Vocabulary exported to Anki successfully.");
-                await RefreshDataAsync();
+                foreach (var error in result.Errors)
+                    ToastService.ShowError(error.Message);
+                return;
             }
+
+            ToastService.ShowSuccess("Vocabulary exported to Anki successfully.");
+            await RefreshDataAsync();
         },
         x => loadingStates[$"{id}-{RowAction.Export}"] = x);
     }
@@ -111,11 +116,15 @@ public partial class List
         await ExecuteWithLoadingAsync(async () =>
         {
             var result = await Mediator.Send(new ExportVocabularyFlashcardsCommand(selectedItems.Select(x => x.Id)));
-            if (result.IsSuccess)
+            if (result.IsFailed)
             {
-                ToastService.ShowSuccess("Selected vocabularies exported to Anki successfully.");
-                await RefreshDataAsync();
+                foreach (var error in result.Errors)
+                    ToastService.ShowError(error.Message);
+                return;
             }
+
+            ToastService.ShowSuccess("Selected vocabularies exported to Anki successfully.");
+            await RefreshDataAsync();
         },
         x => isExportingMultiple = x);
     }

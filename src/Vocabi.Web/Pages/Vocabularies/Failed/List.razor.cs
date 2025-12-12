@@ -50,13 +50,15 @@ public partial class List
         await ExecuteAsync(async () =>
         {
             var result = await Mediator.Send(new ExportVocabularyFlashcardCommand(id));
-            if (result.IsSuccess)
+            if (result.IsFailed)
             {
-                ToastService.ShowSuccess("Vocabulary exported to Anki successfully.");
-                await RefreshDataAsync();
+                foreach (var error in result.Errors)
+                    ToastService.ShowError(error.Message);
+                return;
             }
-            else
-                ToastService.ShowError(result.GetErrorMessages());
+
+            ToastService.ShowSuccess("Vocabulary exported to Anki successfully.");
+                await RefreshDataAsync();
         });
     }
 

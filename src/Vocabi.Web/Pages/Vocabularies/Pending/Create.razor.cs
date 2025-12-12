@@ -53,8 +53,14 @@ public partial class Create
             };
 
             var result = await Mediator.Send(command);
-            if (result.IsSuccess)
-                Navigation.GoToVocabularyPendingList();
+            if (result.IsFailed)
+            {
+                foreach (var error in result.Errors)
+                    ToastService.ShowError(error.Message);
+                return;
+            }
+
+            Navigation.GoToVocabularyPendingList();
         },
         x => isSubmitting = x);
     }
@@ -81,7 +87,8 @@ public partial class Create
             var result = await Mediator.Send(new CreateLookupEntriesCommand { Word = vocabularyForm.Word });
             if (result.IsFailed)
             {
-                ToastService.ShowWarning(result.GetErrorMessages());
+                foreach (var error in result.Errors)
+                    ToastService.ShowError(error.Message);
                 return;
             }
 
