@@ -12,12 +12,19 @@ using Vocabi.Application.Features.MediaFiles.Queries;
 using Vocabi.Application.Features.Vocabularies.Commands;
 using Vocabi.Shared.Extensions;
 using Vocabi.Shared.Utils;
+<<<<<<<< HEAD:src/Vocabi.Web/Pages/Vocabularies/Create.razor.cs
 using Vocabi.Web.Common.Helpers;
 using Vocabi.Web.Services.Navigation;
 using Vocabi.Web.ViewModels.Vocabularies;
 using static Vocabi.Shared.Common.Enums;
 
 namespace Vocabi.Web.Pages.Vocabularies;
+========
+using Vocabi.Web.Models.Vocabularies;
+using static Vocabi.Shared.Common.Enums;
+
+namespace Vocabi.Web.Pages.Vocabularies.Pending;
+>>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/Vocabi.Web/Pages/Vocabularies/Pending/Create.razor.cs
 
 public partial class Create
 {
@@ -30,7 +37,11 @@ public partial class Create
 
     private EditContext editContext = default!;
 
+<<<<<<<< HEAD:src/Vocabi.Web/Pages/Vocabularies/Create.razor.cs
     private VocabularyDetailViewModel vocabularyForm = new();
+========
+    private VocabularyFormModel vocabularyForm = new();
+>>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/Vocabi.Web/Pages/Vocabularies/Pending/Create.razor.cs
     private IReadOnlyList<LookupEntryDto> lookupEntryDtos = [];
 
     private MediaFileDto audioFile = new();
@@ -65,6 +76,7 @@ public partial class Create
         //        MediaFileIds = [audioFile.Id, imageFile.Id]
         //    };
 
+<<<<<<<< HEAD:src/Vocabi.Web/Pages/Vocabularies/Create.razor.cs
         //    var result = await Mediator.Send(command);
         //    if (result.IsFailed)
         //    {
@@ -76,6 +88,19 @@ public partial class Create
         //    Navigation.GoToVocabularyPendingList();
         //},
         //x => isSubmitting = x);
+========
+            var result = await Mediator.Send(command);
+            if (result.IsFailed)
+            {
+                foreach (var error in result.Errors)
+                    ToastService.ShowError(error.Message);
+                return;
+            }
+
+            Navigation.GoToVocabularyPendingList();
+        },
+        x => isSubmitting = x);
+>>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/Vocabi.Web/Pages/Vocabularies/Pending/Create.razor.cs
     }
 
     private void ClearForm()
@@ -95,6 +120,7 @@ public partial class Create
             return;
         }
 
+<<<<<<<< HEAD:src/Vocabi.Web/Pages/Vocabularies/Create.razor.cs
         // TODO: Use ExecuteAsync
         //await ExecuteWithLoadingAsync(async () =>
         //{
@@ -105,6 +131,17 @@ public partial class Create
         //            ToastService.ShowError(error.Message);
         //        return;
         //    }
+========
+        await ExecuteWithLoadingAsync(async () =>
+        {
+            var result = await Mediator.Send(new CreateLookupEntriesCommand { Word = vocabularyForm.Word });
+            if (result.IsFailed)
+            {
+                foreach (var error in result.Errors)
+                    ToastService.ShowError(error.Message);
+                return;
+            }
+>>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/Vocabi.Web/Pages/Vocabularies/Pending/Create.razor.cs
 
         //    lookupEntryDtos = await Mediator.Send(new GetLookupEntriesQuery { Ids = result.Value });
         //    var defaultEntry = lookupEntryDtos[0];

@@ -5,9 +5,13 @@ using Vocabi.Application.Features.Vocabularies.DTOs;
 using Vocabi.Shared.Utils;
 using Vocabi.Web.ViewModels.MediaFiles;
 
-namespace Vocabi.Web.ViewModels.Vocabularies;
+namespace Vocabi.Web.Models.Vocabularies;
 
+<<<<<<<< HEAD:src/Vocabi.Web/Models/Vocabularies/VocabularyDetailViewModel.cs
 public class VocabularyDetailViewModel
+========
+public class VocabularyFormModel
+>>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/Vocabi.Web/Models/Vocabularies/VocabularyFormModel.cs
 {
     public Guid Id { get; set; }
 
