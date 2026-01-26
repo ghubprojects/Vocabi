@@ -9,11 +9,11 @@
     <link rel="stylesheet" href="@Assets["Vocabi.Web.styles.css"]" />
     <ImportMap />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <HeadOutlet />
+    <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 
 <body>
-    <Routes />
+    <Routes @rendermode="InteractiveServer" />
     <script src="_framework/blazor.web.js"></script>
 </body>
 

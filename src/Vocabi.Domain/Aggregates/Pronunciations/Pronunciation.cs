@@ -18,7 +18,7 @@ public class Pronunciation : Entity, IAggregateRoot
         Ipa = ipa;
     }
 
-    public static Pronunciation CreateNew(string word, string ipa)
+    public static Pronunciation Create(string word, string ipa)
     {
         return new Pronunciation(word, ipa);
     }

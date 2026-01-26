@@ -118,7 +118,7 @@ public class CambridgeProvider : IMainDictionaryProvider
 
             var pronunciation = await GetPronunciationAsync(word);
             pronunciations.Add(pronunciation);
-            await _pronunciationRepository.AddAsync(Pronunciation.CreateNew(word, pronunciation));
+            await _pronunciationRepository.AddAsync(Pronunciation.Create(word, pronunciation));
             await _pronunciationRepository.UnitOfWork.SaveChangesAsync();
         }
 

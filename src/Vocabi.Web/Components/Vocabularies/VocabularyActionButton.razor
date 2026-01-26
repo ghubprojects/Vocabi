@@ -1,0 +1,25 @@
+﻿<FluentButton OnClick="@OnClick"
+              Loading="@IsLoading"
+              Disabled="@Disabled"
+              BackgroundColor="@BackgroundColor"
+              Color="@Color">
+    <FluentIcon Value="@Icon" Color="@Microsoft.FluentUI.AspNetCore.Components.Color.Fill" Slot="start" />
+    @ButtonText
+</FluentButton>
+
+@code {
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public string BackgroundColor { get; set; } = "var(--neutral-fill-rest)";
+    [Parameter] public string Color { get; set; } = "var(--neutral-fill-rest)";
+    [Parameter] public Icon Icon { get; set; } // e.g., new Icons.Regular.Size16.Delete()
+    [Parameter] public int SelectedCount { get; set; } = 0;
+    [Parameter] public string ActionText { get; set; } = "";
+
+    private string ButtonText => IsLoading
+        ? $"{ActionText}..."
+        : SelectedCount > 0
+            ? $"{ActionText} ({SelectedCount})"
+            : ActionText;
+}

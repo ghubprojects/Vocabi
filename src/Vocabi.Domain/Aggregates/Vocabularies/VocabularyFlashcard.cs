@@ -18,7 +18,7 @@ public class VocabularyFlashcard : Entity
         CreatedAt = DateTime.UtcNow;
     }
 
-    internal static VocabularyFlashcard CreateNew()
+    internal static VocabularyFlashcard Create()
     {
         return new();
     }

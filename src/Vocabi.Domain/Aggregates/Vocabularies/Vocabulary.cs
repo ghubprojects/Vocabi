@@ -1,34 +1,34 @@
-﻿#nullable disable
-
-using Vocabi.Domain.SeedWork;
+﻿using Vocabi.Domain.SeedWork;
 
 namespace Vocabi.Domain.Aggregates.Vocabularies;
 
 public class Vocabulary : Entity, IAggregateRoot
 {
     public Guid Id { get; private set; }
-    public string Word { get; private set; }
-    public string PartOfSpeech { get; private set; }
-    public string Pronunciation { get; private set; }
-    public string Cloze { get; private set; }
-    public string Definition { get; private set; }
-    public string Example { get; private set; }
-    public string Meaning { get; private set; }
+    public string Word { get; private set; } = string.Empty;
+    public string? PartOfSpeech { get; private set; }
+    public string? Pronunciation { get; private set; }
+    public string? Cloze { get; private set; }
+    public string? Definition { get; private set; }
+    public string? Example { get; private set; }
+    public string? Meaning { get; private set; }
     public DateTime CreatedAt { get; private set; }
 
-    // Media files
-    private readonly List<VocabularyMediaFile> _mediaFiles;
+    private readonly List<VocabularyMediaFile> _mediaFiles = [];
     public IReadOnlyCollection<VocabularyMediaFile> MediaFiles => _mediaFiles.AsReadOnly();
 
-    // Flashcards
-    public VocabularyFlashcard Flashcard { get; private set; }
+    public VocabularyFlashcard? Flashcard { get; private set; }
 
-    private Vocabulary()
-    {
-        _mediaFiles = [];
-    }
+    private Vocabulary() { }
 
-    private Vocabulary(string word, string partOfSpeech, string pronunciation, string cloze, string definition, string example, string meaning)
+    private Vocabulary(
+        string word, 
+        string partOfSpeech, 
+        string pronunciation, 
+        string cloze, 
+        string definition, 
+        string example, 
+        string meaning)
     {
         Id = Guid.NewGuid();
         Word = word;
@@ -39,26 +39,37 @@ public class Vocabulary : Entity, IAggregateRoot
         Example = example;
         Meaning = meaning;
         CreatedAt = DateTime.UtcNow;
-
-        _mediaFiles = [];
     }
 
-    public static Vocabulary CreateNew(string word, string partOfSpeech, string pronunciation, string cloze, string definition, string example, string meaning)
+    public static Vocabulary Create(
+       string word,
+       string partOfSpeech,
+       string pronunciation,
+       string cloze,
+       string definition,
+       string example,
+       string meaning,
+       IEnumerable<Guid>? mediaFileIds = null)
     {
-        return new Vocabulary(word, partOfSpeech, pronunciation, cloze, definition, example, meaning);
+        var vocabulary = new Vocabulary(
+            word,
+            partOfSpeech,
+            pronunciation,
+            cloze,
+            definition,
+            example,
+            meaning);
+
+        if (mediaFileIds != null)
+            vocabulary.AttachMediaFiles(mediaFileIds);
+
+        return vocabulary;
     }
 
-    public void AttachMediaFile(Guid mediaFileId)
+    private void AttachMediaFiles(IEnumerable<Guid> mediaFileIds)
     {
-        _mediaFiles.Add(VocabularyMediaFile.CreateNew(Id, mediaFileId));
-    }
-
-    public void AttachMediaFiles(IEnumerable<Guid> mediaFileIds)
-    {
-        foreach (var id in mediaFileIds)
-        {
-            AttachMediaFile(id);
-        }
+        foreach (var mediaFileId in mediaFileIds)
+            _mediaFiles.Add(VocabularyMediaFile.Create(Id, mediaFileId));
     }
 
     public void EnsureFlashcardCreated()
@@ -69,7 +80,7 @@ public class Vocabulary : Entity, IAggregateRoot
 
     private void AddFlashcard()
     {
-        Flashcard = VocabularyFlashcard.CreateNew();
+        Flashcard = VocabularyFlashcard.Create();
     }
 
     public void MarkFlashcardAsExported(long noteId)

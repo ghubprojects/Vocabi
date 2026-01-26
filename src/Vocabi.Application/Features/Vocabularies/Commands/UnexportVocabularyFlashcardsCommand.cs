@@ -18,43 +18,35 @@ public class UnexportVocabularyFlashcardsCommandHandler(
 {
     public async Task<Result> Handle(UnexportVocabularyFlashcardsCommand request, CancellationToken cancellationToken)
     {
-        try
+        // Load vocabularies
+        var vocabularies = await vocabularyRepository.GetByIdsAsync(request.VocabularyIds);
+
+        if (vocabularies.IsNullOrEmpty())
+            return Result.Fail("No vocabularies found to unexport.");
+
+        // Pick only exported ones
+        var exportedVocabs = vocabularies
+            .Where(x => x.HasExportedFlashcard())
+            .ToList();
+
+        if (exportedVocabs.Count == 0)
+            return Result.Fail("None of the selected vocabularies have been exported.");
+
+        // Unexport flashcards
+        var noteIds = exportedVocabs.Select(v => v.Flashcard.NoteId!.Value).ToList();
+        var unexportResult = await flashcardService.UnexportNotesAsync(noteIds);
+        if (unexportResult.IsFailed)
         {
-            // Load vocabularies
-            var vocabularies = await vocabularyRepository.GetByIdsAsync(request.VocabularyIds);
-
-            if (vocabularies.IsNullOrEmpty())
-                return Result.Fail("No vocabularies found to unexport.");
-
-            // Pick only exported ones
-            var exportedVocabs = vocabularies
-                .Where(x => x.HasExportedFlashcard())
-                .ToList();
-
-            if (exportedVocabs.Count == 0)
-                return Result.Fail("None of the selected vocabularies have been exported.");
-
-            // Unexport flashcards
-            var noteIds = exportedVocabs.Select(v => v.Flashcard.NoteId!.Value).ToList();
-            var unexportResult = await flashcardService.UnexportNotesAsync(noteIds);
-            if (unexportResult.IsFailed)
-            {
-                logger.LogWarning("Failed to unexport multiple vocabularies. Errors={Errors}", unexportResult.Errors);
-                return Result.Fail($"Failed to unexport vocabularies. Errors: {unexportResult.Errors}");
-            }
-
-            // Update entities
-            exportedVocabs.ForEach(x => x.RemoveFlashcard());
-            await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-
-            logger.LogInformation("Successfully unexported {Count} vocabulary flashcards.", exportedVocabs.Count);
-            return Result.Ok();
+            logger.LogWarning("Failed to unexport multiple vocabularies. Errors={Errors}", unexportResult.Errors);
+            return Result.Fail($"Failed to unexport vocabularies. Errors: {unexportResult.Errors}");
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Unexpected error while unexporting multiple vocabulary flashcards.");
-            return Result.Fail("Unexpected error while unexporting vocabularies.");
-        }
+
+        // Update entities
+        exportedVocabs.ForEach(x => x.RemoveFlashcard());
+        await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+
+        logger.LogInformation("Successfully unexported {Count} vocabulary flashcards.", exportedVocabs.Count);
+        return Result.Ok().WithSuccess("Selected vocabularies unexported to Anki successfully.");
     }
 }
 

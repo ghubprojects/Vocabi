@@ -19,7 +19,7 @@ public class LookupEntryMediaFile : Entity
         MediaFileId = mediaFileId;
     }
 
-    public static LookupEntryMediaFile CreateNew(Guid lookupEntryId, Guid mediaFileId)
+    public static LookupEntryMediaFile Create(Guid lookupEntryId, Guid mediaFileId)
     {
         return new LookupEntryMediaFile(lookupEntryId, mediaFileId);
     }

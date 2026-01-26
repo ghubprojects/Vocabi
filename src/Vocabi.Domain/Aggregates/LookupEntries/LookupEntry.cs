@@ -39,19 +39,19 @@ public class LookupEntry : Entity, IAggregateRoot
         _mediaFiles = [];
     }
 
-    public static LookupEntry CreateNew(string headword, string partOfSpeech, string pronunciation)
+    public static LookupEntry Create(string headword, string partOfSpeech, string pronunciation)
     {
         return new LookupEntry(headword, partOfSpeech, pronunciation);
     }
 
     public void AddDefinition(string definition)
     {
-        _definitions.Add(LookupEntryDefinition.CreateNew(Id, definition));
+        _definitions.Add(LookupEntryDefinition.Create(Id, definition));
     }
 
     public void AddDefinitionWithExamples(string definition, IEnumerable<string> examples)
     {
-        var newDefinition = LookupEntryDefinition.CreateNew(Id, definition);
+        var newDefinition = LookupEntryDefinition.Create(Id, definition);
         foreach (var example in examples)
         {
             newDefinition.AddExample(example);
@@ -77,7 +77,7 @@ public class LookupEntry : Entity, IAggregateRoot
 
     public void AddMeaning(string meaning)
     {
-        _meanings.Add(LookupEntryMeaning.CreateNew(Id, meaning));
+        _meanings.Add(LookupEntryMeaning.Create(Id, meaning));
     }
 
     public void AddMeanings(IEnumerable<string> meanings)
@@ -90,7 +90,7 @@ public class LookupEntry : Entity, IAggregateRoot
 
     public void AttachMediaFile(Guid mediaFileId)
     {
-        _mediaFiles.Add(LookupEntryMediaFile.CreateNew(Id, mediaFileId));
+        _mediaFiles.Add(LookupEntryMediaFile.Create(Id, mediaFileId));
     }
 
     public void AttachMediaFiles(IEnumerable<Guid> mediaFileIds)

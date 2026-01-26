@@ -1,47 +1,41 @@
 ﻿using FluentResults;
 using MediatR;
-using Vocabi.Application.Common.Models;
 using Vocabi.Domain.Aggregates.Vocabularies;
+using Vocabi.Shared.Utils;
 
 namespace Vocabi.Application.Features.Vocabularies.Commands;
 
-public class CreateVocabularyCommand : IRequest<Result>
-{
-    public string Word { get; init; } = string.Empty;
-    public string PartOfSpeech { get; init; } = string.Empty;
-    public string Pronunciation { get; init; } = string.Empty;
-    public string Cloze { get; init; } = string.Empty;
-    public string Definition { get; init; } = string.Empty;
-    public string Example { get; init; } = string.Empty;
-    public string Meaning { get; init; } = string.Empty;
-    public List<Guid> MediaFileIds { get; init; } = [];
-}
+public record CreateVocabularyCommand(
+    string Word,
+    string PartOfSpeech,
+    string Pronunciation,
+    string Cloze,
+    string Definition,
+    string Example,
+    string Meaning,
+    Guid AudioFileId,
+    Guid ImageFileId
+) : IRequest<Result>;
 
-public class CreateVocabularyCommandHandler(IVocabularyRepository vocabularyRepository) : IRequestHandler<CreateVocabularyCommand, Result>
+public class CreateVocabularyCommandHandler(IVocabularyRepository vocabularyRepository)
+    : IRequestHandler<CreateVocabularyCommand, Result>
 {
     public async Task<Result> Handle(CreateVocabularyCommand request, CancellationToken cancellationToken)
     {
-        try
-        {
-            var vocabulary = Vocabulary.CreateNew(
-                request.Word,
-                request.PartOfSpeech,
-                request.Pronunciation,
-                request.Cloze,
-                request.Definition,
-                request.Example,
-                request.Meaning
-            );
-            vocabulary.AttachMediaFiles(request.MediaFileIds);
+        var vocabulary = Vocabulary.Create(
+            request.Word,
+            request.PartOfSpeech,
+            FormatterUtils.TrimSlashes(request.Pronunciation),
+            request.Cloze,
+            request.Definition,
+            request.Example,
+            request.Meaning,
+            [request.AudioFileId, request.ImageFileId]
+        );
+        vocabularyRepository.Add(vocabulary);
 
-            await vocabularyRepository.AddAsync(vocabulary);
-            await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+        await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
-            return Result.Ok();
-        }
-        catch (Exception)
-        {
-            return Result.Fail("Failed to create new vocabularies.");
-        }
+        return Result.Ok();
     }
 }

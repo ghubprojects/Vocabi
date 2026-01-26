@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vocabi.Web", "Vocabi.Web\Vocabi.Web.csproj", "{39034758-94EB-4021-AE20-2CB3D5AC27CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Vocabi.Web\Web.csproj", "{39034758-94EB-4021-AE20-2CB3D5AC27CD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vocabi.Domain", "Vocabi.Domain\Vocabi.Domain.csproj", "{DC28D1EA-6429-480E-A296-C6AB8FF797AF}"
 EndProject
@@ -12,6 +12,18 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vocabi.Infrastructure", "Vocabi.Infrastructure\Vocabi.Infrastructure.csproj", "{AE0121B2-43B4-4A12-98DB-E848C7BB9D3C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vocabi.Shared", "Vocabi.Shared\Vocabi.Shared.csproj", "{80E4D7BC-60E4-42BE-A135-216944BCA55E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VocabularyService", "VocabularyService\VocabularyService.csproj", "{1B375694-27DF-41A7-8F66-96072A86F808}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaService", "MediaService\MediaService.csproj", "{C9412FC0-F307-4D50-BCEC-DB6E95A1CC53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionaryService", "DictionaryService\DictionaryService.csproj", "{1E48864B-B20F-49E7-9653-4B9E2084AE53}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlashcardPublishingService", "FlashcardPublishingService\FlashcardPublishingService.csproj", "{83CFB84B-26CE-4963-8BC7-FC14032B0638}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildingBlocks", "BuildingBlocks\BuildingBlocks.csproj", "{3CA60B8D-6700-46D7-8FEF-E7D947F08DD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,9 +51,35 @@ Global
 		{80E4D7BC-60E4-42BE-A135-216944BCA55E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80E4D7BC-60E4-42BE-A135-216944BCA55E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80E4D7BC-60E4-42BE-A135-216944BCA55E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B375694-27DF-41A7-8F66-96072A86F808}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B375694-27DF-41A7-8F66-96072A86F808}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B375694-27DF-41A7-8F66-96072A86F808}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B375694-27DF-41A7-8F66-96072A86F808}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9412FC0-F307-4D50-BCEC-DB6E95A1CC53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9412FC0-F307-4D50-BCEC-DB6E95A1CC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9412FC0-F307-4D50-BCEC-DB6E95A1CC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9412FC0-F307-4D50-BCEC-DB6E95A1CC53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E48864B-B20F-49E7-9653-4B9E2084AE53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E48864B-B20F-49E7-9653-4B9E2084AE53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E48864B-B20F-49E7-9653-4B9E2084AE53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E48864B-B20F-49E7-9653-4B9E2084AE53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83CFB84B-26CE-4963-8BC7-FC14032B0638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83CFB84B-26CE-4963-8BC7-FC14032B0638}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83CFB84B-26CE-4963-8BC7-FC14032B0638}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83CFB84B-26CE-4963-8BC7-FC14032B0638}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CA60B8D-6700-46D7-8FEF-E7D947F08DD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CA60B8D-6700-46D7-8FEF-E7D947F08DD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CA60B8D-6700-46D7-8FEF-E7D947F08DD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CA60B8D-6700-46D7-8FEF-E7D947F08DD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1B375694-27DF-41A7-8F66-96072A86F808} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{C9412FC0-F307-4D50-BCEC-DB6E95A1CC53} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{1E48864B-B20F-49E7-9653-4B9E2084AE53} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{83CFB84B-26CE-4963-8BC7-FC14032B0638} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A3D1115E-655A-4FAD-A3AF-3AE9A2E13BCC}

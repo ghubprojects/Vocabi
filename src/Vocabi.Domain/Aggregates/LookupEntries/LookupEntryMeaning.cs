@@ -19,7 +19,7 @@ public class LookupEntryMeaning : Entity
         Text = text;
     }
 
-    public static LookupEntryMeaning CreateNew(Guid lookupEntryId, string text)
+    public static LookupEntryMeaning Create(Guid lookupEntryId, string text)
     {
         return new LookupEntryMeaning(lookupEntryId, text);
     }

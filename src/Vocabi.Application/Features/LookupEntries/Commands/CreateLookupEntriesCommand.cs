@@ -42,7 +42,7 @@ public class LookupWordCommandHandler(
                     mediaLookup[data.Headword] = [.. mediaFileIds];
                 }
 
-                var lookupEntry = LookupEntry.CreateNew(
+                var lookupEntry = LookupEntry.Create(
                     data.Headword,
                     data.PartOfSpeech,
                     data.Pronunciation);

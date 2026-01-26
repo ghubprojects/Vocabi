@@ -31,7 +31,7 @@ public class UploadMediaFileCommandHandler(
                 return Result.Fail(saveFileResult.Errors);
 
             var filePath = saveFileResult.Value;
-            var mediaFile = MediaFile.CreateNew(
+            var mediaFile = MediaFile.Create(
                 Path.GetFileName(filePath),
                 filePath,
                 FileUtils.GetContentType(filePath),

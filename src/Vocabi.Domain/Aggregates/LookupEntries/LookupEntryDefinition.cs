@@ -27,13 +27,13 @@ public class LookupEntryDefinition : Entity
         _examples = [];
     }
 
-    public static LookupEntryDefinition CreateNew(Guid lookupEntryId, string text)
+    public static LookupEntryDefinition Create(Guid lookupEntryId, string text)
     {
         return new LookupEntryDefinition(lookupEntryId, text);
     }
 
     public void AddExample(string example)
     {
-        _examples.Add(LookupEntryExample.CreateNew(Id, example));
+        _examples.Add(LookupEntryExample.Create(Id, example));
     }
 }

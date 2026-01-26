@@ -35,7 +35,7 @@ public abstract class MediaServiceBase(IFileDownloader fileDownloader, IFileStor
                     continue;
 
                 var savedFilePath = saveResult.Value;
-                var mediaFile = MediaFile.CreateNew(
+                var mediaFile = MediaFile.Create(
                     Path.GetFileName(savedFilePath),
                     savedFilePath,
                     FileUtils.GetContentType(savedFilePath),

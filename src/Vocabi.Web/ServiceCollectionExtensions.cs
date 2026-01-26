@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using System.Reflection;
+using Vocabi.Web.Common.Helpers;
 using Vocabi.Web.Services.Navigation;
 
 namespace Vocabi.Web;
@@ -14,6 +15,8 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient();
 
         services.AddScoped<INavigationService, NavigationService>();
+
+        services.AddScoped<IActionExecutor, ActionExecutor>();
 
         return services;
     }

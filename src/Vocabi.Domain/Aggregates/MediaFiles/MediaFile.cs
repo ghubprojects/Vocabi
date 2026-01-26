@@ -25,7 +25,7 @@ public class MediaFile : Entity, IAggregateRoot
         Provider = provider;
     }
 
-    public static MediaFile CreateNew(string fileName, string filePath, string contentType, long size, string provider)
+    public static MediaFile Create(string fileName, string filePath, string contentType, long size, string provider)
     {
         return new MediaFile(fileName, filePath, contentType, size, provider);
     }

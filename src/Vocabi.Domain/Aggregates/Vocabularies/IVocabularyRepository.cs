@@ -6,5 +6,6 @@ public interface IVocabularyRepository : IRepository<Vocabulary>
 {
     Task<Vocabulary?> GetByIdAsync(Guid id);
     Task<List<Vocabulary>> GetByIdsAsync(IEnumerable<Guid> ids);
-    Task AddAsync(Vocabulary entry);
+    void Add(Vocabulary entity);
+    void Remove(Vocabulary entity);
 }

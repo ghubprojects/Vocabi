@@ -19,7 +19,7 @@ public class VocabularyMediaFile : Entity
         MediaFileId = mediaFileId;
     }
 
-    internal static VocabularyMediaFile CreateNew(Guid vocabularyId, Guid mediaFileId)
+    internal static VocabularyMediaFile Create(Guid vocabularyId, Guid mediaFileId)
     {
         return new VocabularyMediaFile(vocabularyId, mediaFileId);
     }

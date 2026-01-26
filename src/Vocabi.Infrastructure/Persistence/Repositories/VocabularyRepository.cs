@@ -26,13 +26,9 @@ public class VocabularyRepository(AppDbContext context) : IVocabularyRepository
             .ToListAsync();
     }
 
-    public async Task AddAsync(Vocabulary entity)
-    {
-        await context.Vocabularies.AddAsync(entity);
-    }
+    public void Add(Vocabulary entity)
+        => context.Vocabularies.Add(entity);
 
     public void Remove(Vocabulary entity)
-    {
-        context.Vocabularies.Remove(entity);
-    }
+        => context.Vocabularies.Remove(entity);
 }

@@ -21,48 +21,38 @@ public class ExportVocabularyFlashcardCommandHandler(
 {
     public async Task<Result> Handle(ExportVocabularyFlashcardCommand request, CancellationToken cancellationToken)
     {
-        try
+        // Load vocabulary
+        var vocabulary = await vocabularyRepository.GetByIdAsync(request.VocabularyId);
+
+        if (vocabulary is null)
+            return Result.Fail($"Vocabulary with Id '{request.VocabularyId}' not found.");
+
+        // Validate vocabulary
+        if (vocabulary.HasExportedFlashcard())
+            return Result.Fail($"Vocabulary '{vocabulary.Word}' has already been exported.");
+
+        // Prepare flashcard note
+        var mediaFiles = await mediaFileRepository.GetByIdsAsync(vocabulary.MediaFiles.Select(x => x.MediaFileId));
+        var flashcardNote = mapper.Map<FlashcardNote>((vocabulary, mediaFiles));
+
+        vocabulary.EnsureFlashcardCreated();
+
+        // Export flashcard
+        var exportResult = await flashcardService.ExportNoteAsync(flashcardNote, mediaFiles.Select(x => x.FilePath));
+        if (exportResult.IsFailed)
         {
-            // Load vocabulary
-            var vocabulary = await vocabularyRepository.GetByIdAsync(request.VocabularyId);
-            
-            if (vocabulary is null)
-                return Result.Fail($"Vocabulary with Id '{request.VocabularyId}' not found.");
-
-            // Validate vocabulary
-            if (vocabulary.HasExportedFlashcard())
-                return Result.Fail($"Vocabulary '{vocabulary.Word}' has already been exported.");
-
-            // Prepare flashcard note
-            var mediaFiles = await mediaFileRepository.GetByIdsAsync(vocabulary.MediaFiles.Select(x => x.MediaFileId));
-            var flashcardNote = mapper.Map<FlashcardNote>((vocabulary, mediaFiles));
-            
-            vocabulary.EnsureFlashcardCreated();
-
-            // Export flashcard
-            var exportResult = await flashcardService.ExportNoteAsync(flashcardNote, mediaFiles.Select(x => x.FilePath));
-            if (exportResult.IsFailed)
-            {
-                vocabulary.MarkFlashcardAsFailed();
-                await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-
-                logger.LogWarning("Failed to export vocabulary flashcard. Word={Word}, Errors={Errors}", vocabulary.Word, exportResult.Errors);
-                return Result.Fail($"Failed to export vocabulary '{vocabulary.Word}'. Errors: {exportResult.Errors}");
-            }
-
-            // Mark success
-            vocabulary.MarkFlashcardAsExported(exportResult.Value);
+            vocabulary.MarkFlashcardAsFailed();
             await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
-            logger.LogInformation("Exported vocabulary flashcard successfully. Word={Word}, FlashcardId={FlashcardId}",
-              vocabulary.Word, exportResult.Value);
-            return Result.Ok();
+            logger.LogWarning("Failed to export vocabulary flashcard. Word={Word}, Errors={Errors}", vocabulary.Word, exportResult.Errors);
+            return Result.Fail($"Failed to export vocabulary '{vocabulary.Word}'. Errors: {exportResult.Errors}");
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Unexpected error while exporting vocabulary flashcard. VocabularyId={VocabularyId}", request.VocabularyId);
-            return Result.Fail("Unexpected error while exporting vocabulary.");
-        }
+
+        // Mark success
+        vocabulary.MarkFlashcardAsExported(exportResult.Value);
+        await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+
+        return Result.Ok().WithSuccess("Vocabulary exported to Anki successfully.");
     }
 }
 

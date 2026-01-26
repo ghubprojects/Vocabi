@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Vocabi.Application.Features.MediaFiles.DTOs;
@@ -8,15 +9,15 @@ using Vocabi.Domain.Aggregates.Vocabularies;
 
 namespace Vocabi.Application.Features.Vocabularies.Queries;
 
-public record GetVocabularyQuery(Guid VocabularyId) : IRequest<VocabularyDto>;
+public record GetVocabularyQuery(Guid VocabularyId) : IRequest<Result<VocabularyDto>>;
 
 public class GetVocabularyQueryHandler(
     IVocabularyRepository vocabularyRepository,
     IMediaFileRepository mediaFileRepository,
     IMapper mapper
-    ) : IRequestHandler<GetVocabularyQuery, VocabularyDto>
+    ) : IRequestHandler<GetVocabularyQuery, Result<VocabularyDto>>
 {
-    public async Task<VocabularyDto> Handle(GetVocabularyQuery request, CancellationToken cancellationToken)
+    public async Task<Result<VocabularyDto>> Handle(GetVocabularyQuery request, CancellationToken cancellationToken)
     {
         var vocabulary = await vocabularyRepository
             .GetQueryableSet()
@@ -32,9 +33,13 @@ public class GetVocabularyQueryHandler(
             .ToListAsync(cancellationToken);
 
         var dto = mapper.Map<VocabularyDto>(vocabulary);
-        dto.AudioFile = mapper.Map<MediaFileDto>(mediaFiles[0]);
-        dto.ImageFile = mapper.Map<MediaFileDto>(mediaFiles[1]);
 
-        return dto;
+        if (mediaFiles.Count > 0)
+        {
+            dto.AudioFile = mapper.Map<MediaFileDto>(mediaFiles[0]);
+            dto.ImageFile = mapper.Map<MediaFileDto>(mediaFiles[1]);
+        }
+
+        return Result.Ok(dto);
     }
 }

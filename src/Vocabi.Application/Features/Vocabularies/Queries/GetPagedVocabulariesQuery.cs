@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using FluentResults;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Vocabi.Application.Common.Extensions;
 using Vocabi.Application.Common.Models;
 using Vocabi.Application.Features.Vocabularies.DTOs;
@@ -9,24 +9,21 @@ using Vocabi.Domain.Aggregates.Vocabularies;
 
 namespace Vocabi.Application.Features.Vocabularies.Queries;
 
-public class GetPagedVocabulariesQuery : IRequest<PagedData<VocabularyDto>>
-{
-    public string SearchWord { get; init; } = string.Empty;
-    public ExportStatus Status { get; init; } = ExportStatus.Pending;
-    public int PageIndex { get; init; } = 0;
-    public int PageSize { get; init; } = 10;
-}
+public record GetPagedVocabulariesQuery(
+    string SearchWord,
+    ExportStatus Status,
+    int PageIndex,
+    int PageSize
+) : IRequest<Result<PagedData<VocabularyDto>>>;
+
 
 public class GetPagedVocabulariesQueryHandler(
     IVocabularyRepository vocabularyRepository,
-    IMapper mapper,
-    ILogger<GetPagedVocabulariesQueryHandler> logger
-    ) : IRequestHandler<GetPagedVocabulariesQuery, PagedData<VocabularyDto>>
+    IMapper mapper
+    ) : IRequestHandler<GetPagedVocabulariesQuery, Result<PagedData<VocabularyDto>>>
 {
-    public async Task<PagedData<VocabularyDto>> Handle(GetPagedVocabulariesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PagedData<VocabularyDto>>> Handle(GetPagedVocabulariesQuery request, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Handling GetPagedVocabulariesQuery: {@Request}", request);
-
         var query = vocabularyRepository
             .GetQueryableSet()
             .AsNoTracking();
@@ -55,10 +52,12 @@ public class GetPagedVocabulariesQueryHandler(
                 break;
         }
 
-        return await query.ProjectToPagedResultAsync<Vocabulary, VocabularyDto>(
+        var pagedData = await query.ProjectToPagedResultAsync<Vocabulary, VocabularyDto>(
             request.PageIndex,
             request.PageSize,
             mapper.ConfigurationProvider,
             cancellationToken);
+
+        return Result.Ok(pagedData);
     }
 }

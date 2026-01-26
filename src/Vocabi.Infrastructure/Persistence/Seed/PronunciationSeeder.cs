@@ -19,7 +19,7 @@ public class PronunciationSeeder(IPronunciationRepository pronunciationRepositor
         if (data is null || data.Count == 0)
             return;
 
-        var entities = data.Select(x => Pronunciation.CreateNew(x.Key, x.Value));
+        var entities = data.Select(x => Pronunciation.Create(x.Key, x.Value));
         await pronunciationRepository.AddRangeAsync(entities);
         await pronunciationRepository.UnitOfWork.SaveChangesAsync();
     }

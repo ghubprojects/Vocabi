@@ -22,69 +22,61 @@ public class ExportVocabularyFlashcardsCommandHandler(
 {
     public async Task<Result> Handle(ExportVocabularyFlashcardsCommand request, CancellationToken cancellationToken)
     {
-        try
+        // Load vocabularies
+        var vocabularies = await vocabularyRepository.GetByIdsAsync(request.VocabularyIds);
+
+        if (vocabularies.IsNullOrEmpty())
+            return Result.Fail("No vocabularies found to export.");
+
+        // Validate vocabularies
+        var validVocabs = vocabularies
+           .Where(x => !x.HasExportedFlashcard())
+           .ToList();
+
+        if (validVocabs.Count == 0)
+            return Result.Fail("All selected vocabularies have already been exported.");
+
+        // Prepare flashcard note
+        var allMediaFileIds = validVocabs.SelectMany(v => v.MediaFiles.Select(m => m.MediaFileId)).Distinct();
+        var allMediaFiles = await mediaFileRepository.GetByIdsAsync(allMediaFileIds);
+
+        var flashcardNotes = new List<FlashcardNote>();
+        var mediaPaths = new List<string>();
+
+        foreach (var vocab in validVocabs)
         {
-            // Load vocabularies
-            var vocabularies = await vocabularyRepository.GetByIdsAsync(request.VocabularyIds);
-            
-            if (vocabularies.IsNullOrEmpty())
-                return Result.Fail("No vocabularies found to export.");
+            var vocabMediaFiles = allMediaFiles.Where(m => vocab.MediaFiles.Any(vm => vm.MediaFileId == m.Id)).ToList();
+            var note = mapper.Map<FlashcardNote>((vocab, vocabMediaFiles));
+            flashcardNotes.Add(note);
+            mediaPaths.AddRange(vocabMediaFiles.Select(m => m.FilePath));
 
-            // Validate vocabularies
-            var validVocabs = vocabularies
-               .Where(x => !x.HasExportedFlashcard())
-               .ToList();
+            vocab.EnsureFlashcardCreated();
+        }
 
-            if (validVocabs.Count == 0)
-                return Result.Fail("All selected vocabularies have already been exported.");
-
-            // Prepare flashcard note
-            var allMediaFileIds = validVocabs.SelectMany(v => v.MediaFiles.Select(m => m.MediaFileId)).Distinct();
-            var allMediaFiles = await mediaFileRepository.GetByIdsAsync(allMediaFileIds);
-
-            var flashcardNotes = new List<FlashcardNote>();
-            var mediaPaths = new List<string>();
-
-            foreach (var vocab in validVocabs)
-            {
-                var vocabMediaFiles = allMediaFiles.Where(m => vocab.MediaFiles.Any(vm => vm.MediaFileId == m.Id)).ToList();
-                var note = mapper.Map<FlashcardNote>((vocab, vocabMediaFiles));
-                flashcardNotes.Add(note);
-                mediaPaths.AddRange(vocabMediaFiles.Select(m => m.FilePath));
-
-                vocab.EnsureFlashcardCreated();
-            }
-
-            // Export flashcards
-            var exportResult = await flashcardService.ExportNotesAsync(flashcardNotes, mediaPaths.Distinct());
-            if (exportResult.IsFailed)
-            {
-                validVocabs.ForEach(x => x.MarkFlashcardAsFailed());
-                await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-
-                logger.LogWarning("Failed to export multiple vocabulary flashcards. Errors={Errors}", exportResult.Errors);
-                return Result.Fail($"Failed to export vocabularies. Errors: {exportResult.Errors}");
-            }
-
-            // Mark success
-            var noteIds = exportResult.Value;
-            for (int i = 0; i < validVocabs.Count; i++)
-            {
-                if (i < noteIds.Length)
-                    validVocabs[i].MarkFlashcardAsExported(noteIds[i]);
-                else
-                    validVocabs[i].MarkFlashcardAsFailed();
-            }
+        // Export flashcards
+        var exportResult = await flashcardService.ExportNotesAsync(flashcardNotes, mediaPaths.Distinct());
+        if (exportResult.IsFailed)
+        {
+            validVocabs.ForEach(x => x.MarkFlashcardAsFailed());
             await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
 
-            logger.LogInformation("Successfully exported {Count} vocabulary flashcards.", noteIds.Length);
-            return Result.Ok();
+            logger.LogWarning("Failed to export multiple vocabulary flashcards. Errors={Errors}", exportResult.Errors);
+            return Result.Fail($"Failed to export vocabularies. Errors: {exportResult.Errors}");
         }
-        catch (Exception ex)
+
+        // Mark success
+        var noteIds = exportResult.Value;
+        for (int i = 0; i < validVocabs.Count; i++)
         {
-            logger.LogError(ex, "Unexpected error while exporting multiple vocabulary flashcards.");
-            return Result.Fail("Unexpected error while exporting vocabularies.");
+            if (i < noteIds.Length)
+                validVocabs[i].MarkFlashcardAsExported(noteIds[i]);
+            else
+                validVocabs[i].MarkFlashcardAsFailed();
         }
+        await vocabularyRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+
+        logger.LogInformation("Successfully exported {Count} vocabulary flashcards.", noteIds.Length);
+        return Result.Ok().WithSuccess("Selected vocabularies exported to Anki successfully.");
     }
 }
 

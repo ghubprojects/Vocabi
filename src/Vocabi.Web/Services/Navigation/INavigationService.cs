@@ -3,9 +3,10 @@
 public interface INavigationService
 {
     void GoToVocabularyPendingList();
-    void GoToVocabularyPendingCreate();
-    void GoToVocabularyPendingEdit(Guid id);
     void GoToVocabularyExportedList();
     void GoToVocabularyFailedList();
+
+    void GoToVocabularyCreate();
     void GoToVocabularyDetail(Guid id);
+    void GoToVocabularyEdit(Guid id);
 }

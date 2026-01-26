@@ -103,7 +103,7 @@ public static class FileUtils
                     var destPath = Path.Combine(destinationFolder, fileName);
 
                     using var sourceStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 8192, useAsync: true);
-                    using var destinationStream = new FileStream(destPath, overwrite ? FileMode.Create : FileMode.CreateNew, FileAccess.Write, FileShare.None, 8192, useAsync: true);
+                    using var destinationStream = new FileStream(destPath, overwrite ? FileMode.Create : FileMode.Create, FileAccess.Write, FileShare.None, 8192, useAsync: true);
                     await sourceStream.CopyToAsync(destinationStream);
                 }
                 catch (Exception ex)

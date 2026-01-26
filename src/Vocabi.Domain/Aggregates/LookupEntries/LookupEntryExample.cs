@@ -19,7 +19,7 @@ public class LookupEntryExample : Entity
         Text = text;
     }
 
-    public static LookupEntryExample CreateNew(Guid lookupEntryDefinitionId, string text)
+    public static LookupEntryExample Create(Guid lookupEntryDefinitionId, string text)
     {
         return new LookupEntryExample(lookupEntryDefinitionId, text);
     }

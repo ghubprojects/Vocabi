@@ -25,6 +25,7 @@ using Vocabi.Infrastructure.Persistence.Seed;
 using Vocabi.Infrastructure.Services;
 using Vocabi.Infrastructure.Services.Identity;
 using Vocabi.Infrastructure.Storage;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace Vocabi.Infrastructure;
 
@@ -79,7 +80,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")).UseSnakeCaseNamingConvention());
         services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
         return services;
     }
