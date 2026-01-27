@@ -1,4 +1,6 @@
-﻿namespace BuildingBlocks.Domain;
+﻿using BuildingBlocks.Domain.Abstractions;
+
+namespace BuildingBlocks.Domain;
 
 public abstract class AggregateRoot : Entity
 {
@@ -6,9 +8,9 @@ public abstract class AggregateRoot : Entity
 
     public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
-    protected void AddDomainEvent(IDomainEvent @event)
+    protected void AddDomainEvent(IDomainEvent domainEvent)
     {
-        _domainEvents.Add(@event);
+        _domainEvents.Add(domainEvent);
     }
 
     public void ClearDomainEvents()

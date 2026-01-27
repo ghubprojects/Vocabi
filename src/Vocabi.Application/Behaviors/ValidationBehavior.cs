@@ -6,26 +6,19 @@ using Vocabi.Domain.Exceptions;
 
 namespace Vocabi.Application.Behaviors;
 
-public class ValidationBehavior<TRequest, TResponse> 
+public class ValidationBehavior<TRequest, TResponse>(
+    IEnumerable<IValidator<TRequest>> validators, 
+    ILogger<ValidationBehavior<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse> 
     where TRequest : IRequest<TResponse>
 {
-    private readonly ILogger<ValidationBehavior<TRequest, TResponse>> _logger;
-    private readonly IEnumerable<IValidator<TRequest>> _validators;
-
-    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators, ILogger<ValidationBehavior<TRequest, TResponse>> logger)
-    {
-        _validators = validators;
-        _logger = logger;
-    }
-
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         var typeName = request.GetGenericTypeName();
 
-        _logger.LogInformation("Validating command {CommandType}", typeName);
+        logger.LogInformation("Validating command {CommandType}", typeName);
 
-        var validationTasks = _validators.Select(v => v.ValidateAsync(request, cancellationToken));
+        var validationTasks = validators.Select(v => v.ValidateAsync(request, cancellationToken));
         var validationResults = await Task.WhenAll(validationTasks);
 
         var failures = validationResults
@@ -33,14 +26,18 @@ public class ValidationBehavior<TRequest, TResponse>
             .Where(error => error != null)
             .ToList();
 
-        if (failures.Any())
+        if (failures.Count > 0)
         {
-            _logger.LogWarning("Validation errors - {CommandType} - Command: {@Command} - Errors: {@ValidationErrors}", typeName, request, failures);
+            logger.LogWarning(
+                "Validation errors - {CommandType} - Command: {@Command} - Errors: {@ValidationErrors}", 
+                typeName, 
+                request, 
+                failures);
 
             throw new DomainException(
                 $"Command Validation Errors for type {typeof(TRequest).Name}", new ValidationException("Validation exception", failures));
         }
 
-        return await next();
+        return await next(cancellationToken);
     }
 }

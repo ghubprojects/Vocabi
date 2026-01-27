@@ -1,6 +1,6 @@
 ﻿namespace BuildingBlocks.Domain;
 
-public abstract class Entity : IEntity<Guid>
+public abstract class Entity
 {
     public Guid Id { get; protected set; }
 
@@ -25,7 +25,8 @@ public abstract class Entity : IEntity<Guid>
         return Id == other.Id;
     }
 
-    public override int GetHashCode() {
+    public override int GetHashCode()
+    {
         return Id.GetHashCode();
     }
 }

@@ -8,27 +8,16 @@ using Vocabi.Application.Services.Interfaces;
 
 namespace Vocabi.Application.Behaviors;
 
-public class PerformanceBehaviour<TRequest, TResponse>
+public class PerformanceBehaviour<TRequest, TResponse>(
+    ILogger<PerformanceBehaviour<TRequest, TResponse>> logger,
+    ICurrentUserAccessor currentUserAccessor,
+    IPerformanceRedactor redactor,
+    IOptions<PerformanceSettings> options)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    private readonly ILogger<PerformanceBehaviour<TRequest, TResponse>> _logger;
-    private readonly ICurrentUserAccessor _currentUserAccessor;
-    private readonly IPerformanceRedactor _redactor;
-    private readonly PerformanceSettings _options;
+    private readonly PerformanceSettings _options = options.Value;
     private static readonly ActivitySource ActivitySource = new("Application.Performance");
-
-    public PerformanceBehaviour(
-        ILogger<PerformanceBehaviour<TRequest, TResponse>> logger,
-        ICurrentUserAccessor currentUserAccessor,
-        IPerformanceRedactor redactor,
-        IOptions<PerformanceSettings> options)
-    {
-        _logger = logger;
-        _currentUserAccessor = currentUserAccessor;
-        _redactor = redactor;
-        _options = options.Value;
-    }
 
     public async Task<TResponse> Handle(
         TRequest request,
@@ -41,17 +30,17 @@ public class PerformanceBehaviour<TRequest, TResponse>
 
         var stopwatch = Stopwatch.StartNew();
 
-        var response = await next().ConfigureAwait(false);
+        var response = await next(cancellationToken).ConfigureAwait(false);
 
         stopwatch.Stop();
 
         if (stopwatch.ElapsedMilliseconds > _options.ThresholdMilliseconds)
         {
             var requestName = typeof(TRequest).Name;
-            var userName = _currentUserAccessor.SessionInfo?.UserName;
-            var safeRequest = _redactor.Redact(request);
+            var userName = currentUserAccessor.SessionInfo?.UserName;
+            var safeRequest = redactor.Redact(request);
 
-            _logger.LogWarning(
+            logger.LogWarning(
                 "Long-running request detected: {RequestName} ({ElapsedMilliseconds}ms) {@Request} by {UserName}",
                 requestName,
                 stopwatch.ElapsedMilliseconds,

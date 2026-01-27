@@ -1,6 +1,26 @@
-﻿namespace MediaService;
+﻿using BuildingBlocks.Infrastructure.Extensions;
+using MediaService.Infrastructure.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-public class ServiceCollectionExtensions
+namespace MediaService;
+
+public static class ServiceCollectionExtensions
 {
+    public static IServiceCollection AddVocabularyServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services
+            .AddOptions(configuration);
 
+        return services;
+    }
+
+    private static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddServiceOptions<StorageOptions>(configuration);
+
+        //services.Configure<PixabaySettings>(configuration.GetSection(nameof(PixabaySettings)));
+
+        return services;
+    }
 }

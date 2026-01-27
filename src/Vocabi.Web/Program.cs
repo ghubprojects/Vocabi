@@ -1,3 +1,4 @@
+using DictionaryService;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Serilog;
 using Vocabi.Application;
@@ -6,6 +7,7 @@ using Vocabi.Infrastructure.Persistence.Seed;
 using Vocabi.Shared.Utils;
 using Vocabi.Web;
 using Vocabi.Web.Components;
+using VocabularyService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +23,11 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddFluentUIComponents();
 
+var configuration = builder.Configuration;
 builder.Services
+    .AddDictionaryServices(configuration)
+    .AddVocabularyServices(configuration)
+
     .AddApplicationServices(builder.Configuration)
     .AddInfrastructureServices(builder.Configuration, builder.Environment)
     .AddWebServices();
