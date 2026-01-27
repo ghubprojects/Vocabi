@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Infrastructure.Extensions;
+using DictionaryService.Application.Abstractions;
 using DictionaryService.Infrastructure.Configuration;
 using DictionaryService.Infrastructure.Persistence;
 using DictionaryService.Infrastructure.Persistence.Interceptors;
@@ -14,8 +15,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDictionaryServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services
-            .AddOptions(configuration)
+        services.AddOptions(configuration)
             .AddDatabase();
 
         //// Register seeders
@@ -67,14 +67,18 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<ISaveChangesInterceptor, DomainEventInterceptor>();
 
-        services.AddDbContext<DictionaryDbContext>((serviceProvider, optionsBuilder) =>
+        services.AddDbContext<DictionaryContext>((provider, options) =>
         {
-            var databaseOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-            optionsBuilder
-                .AddInterceptors(serviceProvider.GetServices<ISaveChangesInterceptor>())
+            var databaseOptions = provider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
+            var interceptors = provider.GetServices<ISaveChangesInterceptor>();
+
+            options.AddInterceptors(interceptors)
                 .UseNpgsql(databaseOptions.ConnectionString)
                 .UseSnakeCaseNamingConvention();
         });
+
+        services.AddScoped<IDictionaryWriteContext>(provider => provider.GetRequiredService<DictionaryContext>());
+        services.AddScoped<IDictionaryReadContext>(provider => provider.GetRequiredService<DictionaryContext>());
 
         return services;
     }

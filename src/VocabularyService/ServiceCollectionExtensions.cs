@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using VocabularyService.Application.Abstractions;
 using VocabularyService.Infrastructure.Configuration;
 using VocabularyService.Infrastructure.Persistence;
 using VocabularyService.Infrastructure.Persistence.Interceptors;
@@ -14,8 +15,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddVocabularyServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services
-            .AddOptions(configuration)
+        services.AddOptions(configuration)
             .AddDatabase();
 
         //// Register seeders
@@ -69,14 +69,18 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ISaveChangesInterceptor, SoftDeleteInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, DomainEventInterceptor>();
 
-        services.AddDbContext<VocabularyDbContext>((serviceProvider, optionsBuilder) =>
+        services.AddDbContext<VocabularyContext>((provider, options) =>
         {
-            var databaseOptions = serviceProvider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-            optionsBuilder
-                .AddInterceptors(serviceProvider.GetServices<ISaveChangesInterceptor>())
+            var databaseOptions = provider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
+            var interceptors = provider.GetServices<ISaveChangesInterceptor>();
+
+            options.AddInterceptors(interceptors)
                 .UseNpgsql(databaseOptions.ConnectionString)
                 .UseSnakeCaseNamingConvention();
         });
+
+        services.AddScoped<IVocabularyWriteContext>(provider => provider.GetRequiredService<VocabularyContext>());
+        services.AddScoped<IVocabularyReadContext>(provider => provider.GetRequiredService<VocabularyContext>());
 
         return services;
     }
