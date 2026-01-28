@@ -1,27 +1,23 @@
-﻿using DictionaryService.Application.Abstractions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using DictionaryService.Application.Abstractions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace DictionaryService.Application.Features.SearchDictionaryEntries;
 
-public sealed class SearchDictionaryEntriesHandler(IDictionaryReadContext context) : IRequestHandler<SearchDictionaryEntriesQuery, SearchDictionaryEntriesResult>
+public sealed class SearchDictionaryEntriesHandler(IDictionaryReadContext context, IMapper mapper)
+    : IRequestHandler<SearchDictionaryEntriesQuery, SearchDictionaryEntriesResult>
 {
     public async Task<SearchDictionaryEntriesResult> Handle(SearchDictionaryEntriesQuery request, CancellationToken cancellationToken)
     {
         var keyword = request.Keyword.Trim();
 
-        var items = await _db.DictionaryEntries
-            .AsNoTracking()
-            .Where(e =>
-                e.Headword.StartsWith(keyword)) // prefix search (fast, index-friendly)
+        var items = await context.DictionaryEntries
+            .Where(e => EF.Functions.ILike(e.Headword, $"{keyword}%"))
             .OrderBy(e => e.Headword)
-            .Take(request.Limit)
-            .Select(e => new DictionaryEntrySearchItem(
-                e.Id,
-                e.Headword,
-                e.PartOfSpeech,
-                e.Pronunciation
-            ))
-            .ToListAsync(ct);
+            .ProjectTo<DictionaryEntrySearchItem>(mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
         return new SearchDictionaryEntriesResult(items);
     }

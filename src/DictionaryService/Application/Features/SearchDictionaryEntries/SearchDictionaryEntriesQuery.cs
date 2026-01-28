@@ -1,5 +1,7 @@
-﻿namespace DictionaryService.Application.Features.SearchDictionaryEntries;
+﻿using MediatR;
+
+namespace DictionaryService.Application.Features.SearchDictionaryEntries;
 
 public sealed record SearchDictionaryEntriesQuery(
-    string? Keyword
-);
+    string Keyword
+) : IRequest<SearchDictionaryEntriesResult>;

@@ -10,13 +10,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.Reflection;
 
-namespace DictionaryService;
+namespace DictionaryService.Application;
 
-public static class DependencyInjection
+internal static class DependencyInjection
 {
-    public static IServiceCollection AddDictionaryServices(this IServiceCollection services, IConfiguration configuration)
+    internal static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddOptions(configuration)
+        services
+            .AddOptions(configuration)
             .AddDatabase();
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
