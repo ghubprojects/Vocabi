@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace VocabularyService.Infrastructure.Persistence.Interceptors;
 
-public sealed class SoftDeleteInterceptor(ICurrentUser currentUser, IClock clock) : SaveChangesInterceptor
+public sealed class SoftDeleteInterceptor(ICurrentUser currentUser, TimeProvider timeProvider) : SaveChangesInterceptor
 {
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
@@ -17,7 +17,7 @@ public sealed class SoftDeleteInterceptor(ICurrentUser currentUser, IClock clock
             return base.SavingChangesAsync(eventData, result, cancellationToken);
 
         var userId = currentUser.Session?.UserId;
-        var now = clock.UtcNow;
+        var now = timeProvider.GetUtcNow();
 
         foreach (var entry in context.ChangeTracker.Entries<ISoftDeletable>())
         {

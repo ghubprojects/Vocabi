@@ -15,8 +15,11 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddVocabularyServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddOptions(configuration)
+        services
+            .AddOptions(configuration)
             .AddDatabase();
+
+        services.AddSingleton(TimeProvider.System);
 
         //// Register seeders
         //services.AddScoped<PronunciationSeeder>();
