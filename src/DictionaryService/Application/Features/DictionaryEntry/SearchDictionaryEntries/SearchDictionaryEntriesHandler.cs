@@ -4,7 +4,7 @@ using DictionaryService.Application.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace DictionaryService.Application.Features.SearchDictionaryEntries;
+namespace DictionaryService.Application.Features.DictionaryEntry.SearchDictionaryEntries;
 
 public sealed class SearchDictionaryEntriesHandler(IDictionaryReadContext context, IMapper mapper)
     : IRequestHandler<SearchDictionaryEntriesQuery, SearchDictionaryEntriesResult>

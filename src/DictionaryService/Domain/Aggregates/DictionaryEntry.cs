@@ -9,8 +9,8 @@ public sealed class DictionaryEntry : AggregateRoot
     public string Pronunciation { get; private set; } = string.Empty;
     public string Source { get; private set; } = string.Empty;
 
-    private readonly List<DictionarySense> _senses = [];
-    public IReadOnlyCollection<DictionarySense> Senses => _senses.AsReadOnly();
+    private readonly List<DictionaryDefinition> _senses = [];
+    public IReadOnlyCollection<DictionaryDefinition> Senses => _senses.AsReadOnly();
 
     private DictionaryEntry() { }
 
@@ -30,7 +30,7 @@ public sealed class DictionaryEntry : AggregateRoot
     public void AddSense(string definition)
     {
         var orderIndex = _senses.Count + 1;
-        _senses.Add(DictionarySense.Create(definition, orderIndex));
+        _senses.Add(DictionaryDefinition.Create(definition, orderIndex));
     }
 
     public void AddExampleToSense(Guid senseId, string text)

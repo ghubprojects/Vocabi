@@ -1,8 +1,8 @@
-﻿using BuildingBlocks.Application.Infrastructure.Configuration;
+﻿using BuildingBlocks.Infrastructure.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BuildingBlocks.Application.Infrastructure.Extensions;
+namespace BuildingBlocks.Infrastructure.Extensions;
 
 public static class OptionsExtensions
 {

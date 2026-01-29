@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Application.Infrastructure.Configuration;
+﻿namespace BuildingBlocks.Infrastructure.Configuration;
 
 public interface IServiceOptions
 {

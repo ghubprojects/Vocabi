@@ -19,12 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DictionaryService\DictionaryService.csproj" />
-    <ProjectReference Include="..\FlashcardPublishingService\FlashcardPublishingService.csproj" />
-    <ProjectReference Include="..\MediaService\MediaService.csproj" />
+    <ProjectReference Include="..\DictionaryService\DictionaryService.Api.csproj" />
+    <ProjectReference Include="..\MediaService\MediaServiceold.csproj" />
     <ProjectReference Include="..\Vocabi.Application\Vocabi.Application.csproj" />
     <ProjectReference Include="..\Vocabi.Infrastructure\Vocabi.Infrastructure.csproj" />
-    <ProjectReference Include="..\VocabularyService\VocabularyService.csproj" />
+    <ProjectReference Include="..\VocabularyService\VocabularyService.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

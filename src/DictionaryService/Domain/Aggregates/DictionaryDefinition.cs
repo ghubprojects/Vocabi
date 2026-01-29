@@ -2,25 +2,25 @@
 
 namespace DictionaryService.Domain.Aggregates;
 
-public sealed class DictionarySense : Entity
+public sealed class DictionaryDefinition : Entity
 {
-    public string Definition { get; private set; } = string.Empty;
+    public string Text { get; private set; } = string.Empty;
     public int OrderIndex { get; private set; }
 
     private readonly List<DictionaryExample> _examples = [];
     public IReadOnlyCollection<DictionaryExample> Examples => _examples.AsReadOnly();
 
-    private DictionarySense() { }
+    private DictionaryDefinition() { }
 
-    private DictionarySense(string definition, int orderIndex)
+    private DictionaryDefinition(string definition, int orderIndex)
     {
-        Definition = definition;
+        Text = definition;
         OrderIndex = orderIndex;
     }
 
-    internal static DictionarySense Create(string definition, int orderIndex)
+    internal static DictionaryDefinition Create(string definition, int orderIndex)
     {
-        return new DictionarySense(definition, orderIndex);
+        return new DictionaryDefinition(definition, orderIndex);
     }
 
     internal void AddExample(string text)

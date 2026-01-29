@@ -7,12 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\Repositories\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.0.0" />
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
     <PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.12">
@@ -25,6 +20,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Features\DictionaryExample\NewFolder\" />
+    <Folder Include="Application\Features\DictionaryEntry\NewFolder\" />
+    <Folder Include="Application\Features\DictionaryExample\GetDictionaryExamples\" />
+    <Folder Include="Application\Features\DictionaryDefinition\GetDictionaryDefinition\" />
   </ItemGroup>
 
 </Project>

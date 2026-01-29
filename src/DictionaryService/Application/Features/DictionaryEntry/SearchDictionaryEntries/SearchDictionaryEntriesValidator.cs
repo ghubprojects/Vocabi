@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace DictionaryService.Application.Features.SearchDictionaryEntries;
+namespace DictionaryService.Application.Features.DictionaryEntry.SearchDictionaryEntries;
 
 public sealed class SearchDictionaryEntriesQueryValidator : AbstractValidator<SearchDictionaryEntriesQuery>
 {

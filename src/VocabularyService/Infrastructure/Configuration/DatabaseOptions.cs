@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Infrastructure.Configuration;
+﻿using BuildingBlocks.Application.Infrastructure.Configuration;
 
 namespace VocabularyService.Infrastructure.Configuration;
 

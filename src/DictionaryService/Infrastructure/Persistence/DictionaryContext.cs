@@ -11,7 +11,7 @@ public class DictionaryContext(DbContextOptions<DictionaryContext> options)
     public DbSet<DictionaryEntry> DictionaryEntries { get; private set; }
     IQueryable<DictionaryEntry> IDictionaryReadContext.DictionaryEntries => DictionaryEntries.AsNoTracking();
 
-    public IQueryable<DictionarySense> DictionarySenses => Set<DictionarySense>().AsNoTracking();
+    public IQueryable<DictionaryDefinition> DictionarySenses => Set<DictionaryDefinition>().AsNoTracking();
     public IQueryable<DictionaryExample> DictionaryExamples => Set<DictionaryExample>().AsNoTracking();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

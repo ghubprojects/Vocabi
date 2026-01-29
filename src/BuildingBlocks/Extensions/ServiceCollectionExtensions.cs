@@ -1,5 +1,5 @@
 ﻿using BuildingBlocks.Application.Behaviors;
-using BuildingBlocks.Infrastructure.Extensions;
+using BuildingBlocks.Application.Infrastructure.Extensions;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

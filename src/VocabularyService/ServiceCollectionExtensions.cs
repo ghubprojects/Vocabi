@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Infrastructure.Extensions;
+﻿using BuildingBlocks.Application.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
