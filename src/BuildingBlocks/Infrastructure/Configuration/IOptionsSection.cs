@@ -1,6 +1,0 @@
-﻿namespace BuildingBlocks.Application.Infrastructure.Configuration;
-
-public interface IOptionsSection
-{
-    static abstract string SectionName { get; }
-}

@@ -1,6 +1,0 @@
-﻿namespace BuildingBlocks.Application.Infrastructure.Configuration;
-
-public interface IServiceOptions
-{
-    static abstract string ServiceName { get; }
-}
