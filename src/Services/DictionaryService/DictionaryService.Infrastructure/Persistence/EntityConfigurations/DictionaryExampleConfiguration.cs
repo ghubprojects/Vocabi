@@ -16,6 +16,6 @@ internal sealed class DictionaryExampleConfiguration : IEntityTypeConfiguration<
             .IsRequired()
             .HasMaxLength(2000);
 
-        builder.Property<Guid>("DictionarySenseId");
+        builder.Property<Guid>("DictionaryExampleId");
     }
 }

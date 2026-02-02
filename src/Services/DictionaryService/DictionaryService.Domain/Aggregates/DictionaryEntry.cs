@@ -9,8 +9,8 @@ public sealed class DictionaryEntry : AggregateRoot
     public string Pronunciation { get; private set; } = string.Empty;
     public string Source { get; private set; } = string.Empty;
 
-    private readonly List<DictionaryDefinition> _senses = [];
-    public IReadOnlyCollection<DictionaryDefinition> Senses => _senses.AsReadOnly();
+    private readonly List<DictionaryDefinition> _definitions = [];
+    public IReadOnlyCollection<DictionaryDefinition> Definitions => _definitions.AsReadOnly();
 
     private DictionaryEntry() { }
 
@@ -27,17 +27,17 @@ public sealed class DictionaryEntry : AggregateRoot
         return new DictionaryEntry(headword, partOfSpeech, pronunciation, source);
     }
 
-    public void AddSense(string definition)
+    public void AddDefinition(string text)
     {
-        var orderIndex = _senses.Count + 1;
-        _senses.Add(DictionaryDefinition.Create(definition, orderIndex));
+        var orderIndex = _definitions.Count + 1;
+        _definitions.Add(DictionaryDefinition.Create(text, orderIndex));
     }
 
-    public void AddExampleToSense(Guid senseId, string text)
+    public void AddExample(Guid definitionId, string text)
     {
-        var sense = _senses.FirstOrDefault(s => s.Id == senseId)
-            ?? throw new InvalidOperationException("Sense not found");
+        var definition = _definitions.FirstOrDefault(s => s.Id == definitionId)
+            ?? throw new InvalidOperationException("Definition not found");
 
-        sense.AddExample(text);
+        definition.AddExample(text);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using BuildingBlocks.Domain;
 using BuildingBlocks.Domain.Abstractions;
 using BuildingBlocks.Domain.ValueObjects;
+using VocabularyService.Domain.Aggregates.Rules;
 
 namespace VocabularyService.Domain.Aggregates;
 
@@ -38,6 +39,8 @@ public sealed class Vocabulary : AggregateRoot, IAuditable, ISoftDeletable
 
     public void AddExample(string text)
     {
+        CheckRule(new CannotModifyDeletedVocabularyRule(SoftDelete.IsDeleted));
+
         _examples.Add(VocabularyExample.Create(text));
     }
 }

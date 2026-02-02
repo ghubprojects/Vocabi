@@ -1,41 +1,35 @@
-﻿using BuildingBlocks.Application.Extensions;
+﻿using BuildingBlocks.Application.Abstractions;
+using BuildingBlocks.Application.Extensions;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Vocabi.Domain.Exceptions;
 
 namespace BuildingBlocks.Application.Behaviors;
 
 public class ValidationBehavior<TRequest, TResponse>(
-    IEnumerable<IValidator<TRequest>> validators, 
+    IEnumerable<IValidator<TRequest>> validators,
     ILogger<ValidationBehavior<TRequest, TResponse>> logger)
-    : IPipelineBehavior<TRequest, TResponse> 
-    where TRequest : IRequest<TResponse>
+    : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : ICommand<TResponse>
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        var typeName = request.GetGenericTypeName();
-
-        logger.LogInformation("Validating command {CommandType}", typeName);
-
         var validationTasks = validators.Select(v => v.ValidateAsync(request, cancellationToken));
         var validationResults = await Task.WhenAll(validationTasks);
 
         var failures = validationResults
             .SelectMany(result => result.Errors)
-            .Where(error => error != null)
+            .Where(error => error is not null)
             .ToList();
 
         if (failures.Count > 0)
         {
             logger.LogWarning(
-                "Validation errors - {CommandType} - Command: {@Command} - Errors: {@ValidationErrors}", 
-                typeName, 
-                request, 
-                failures);
+                "Validation errors for {RequestName}: {@Errors}",
+                request.GetGenericTypeName(),
+                failures.Select(e => new { e.PropertyName, e.ErrorCode }));
 
-            throw new DomainException(
-                $"Command Validation Errors for type {typeof(TRequest).Name}", new ValidationException("Validation exception", failures));
+            throw new ValidationException(failures);
         }
 
         return await next(cancellationToken);

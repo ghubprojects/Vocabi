@@ -1,25 +1,24 @@
-﻿using BuildingBlocks.Application.Infrastructure.Extensions;
+﻿using BuildingBlocks.Infrastructure.Extensions;
+using DictionaryService.Application.Abstractions;
+using DictionaryService.Infrastructure.Configuration;
+using DictionaryService.Infrastructure.Persistence;
+using DictionaryService.Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using VocabularyService.Application.Abstractions;
-using VocabularyService.Infrastructure.Configuration;
-using VocabularyService.Infrastructure.Persistence;
-using VocabularyService.Infrastructure.Persistence.Interceptors;
+using System.Reflection;
 
-namespace VocabularyService;
+namespace DictionaryService;
 
-public static class ServiceCollectionExtensions
+public static class DependencyInjection
 {
-    public static IServiceCollection AddVocabularyServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDictionaryServiceInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services
-            .AddOptions(configuration)
-            .AddDatabase();
+        services.AddOptions(configuration);
 
-        services.AddSingleton(TimeProvider.System);
+        services.AddDatabase();
 
         //// Register seeders
         //services.AddScoped<PronunciationSeeder>();
@@ -68,11 +67,9 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddDatabase(this IServiceCollection services)
     {
-        services.AddScoped<ISaveChangesInterceptor, AuditInterceptor>();
-        services.AddScoped<ISaveChangesInterceptor, SoftDeleteInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, DomainEventInterceptor>();
 
-        services.AddDbContext<VocabularyContext>((provider, options) =>
+        services.AddDbContext<DictionaryContext>((provider, options) =>
         {
             var databaseOptions = provider.GetRequiredService<IOptions<DatabaseOptions>>().Value;
             var interceptors = provider.GetServices<ISaveChangesInterceptor>();
@@ -82,8 +79,8 @@ public static class ServiceCollectionExtensions
                 .UseSnakeCaseNamingConvention();
         });
 
-        services.AddScoped<IVocabularyWriteContext>(provider => provider.GetRequiredService<VocabularyContext>());
-        services.AddScoped<IVocabularyReadContext>(provider => provider.GetRequiredService<VocabularyContext>());
+        services.AddScoped<IDictionaryWriteContext>(provider => provider.GetRequiredService<DictionaryContext>());
+        services.AddScoped<IDictionaryReadContext>(provider => provider.GetRequiredService<DictionaryContext>());
 
         return services;
     }

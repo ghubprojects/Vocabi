@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using BuildingBlocks.Application.Abstractions;
 using DictionaryService.Application.Abstractions;
 using DictionaryService.Application.Features.DictionaryEntry.SearchDictionaryEntries;
 using DictionaryService.Application.Features.SearchDictionaryEntries;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DictionaryService.Application.Features.DictionaryEntry.GetDictionaryEntry;
 
 public sealed class GetDictionaryEntryHandler(IDictionaryReadContext context, IMapper mapper)
-    : IRequestHandler<GetDictionaryEntryQuery, GetDictionaryEntryResult>
+    : IQueryHandler<GetDictionaryEntryQuery, GetDictionaryEntryResult>
 {
     public async Task<GetDictionaryEntryResult> Handle(GetDictionaryEntryQuery request, CancellationToken cancellationToken)
     {
@@ -22,7 +23,7 @@ public sealed class GetDictionaryEntryHandler(IDictionaryReadContext context, IM
         var items = await context.DictionaryEntries
             .Where(e => EF.Functions.ILike(e.Headword, $"{keyword}%"))
             .OrderBy(e => e.Headword)
-            .ProjectTo<DictionaryEntrySearchItem>(mapper.ConfigurationProvider)
+            .ProjectTo<GetDictionaryEntryResult.DictionaryEntryDetail>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
         return new SearchDictionaryEntriesResult(items);

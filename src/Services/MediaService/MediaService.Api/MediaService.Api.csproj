@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MediaService.Application\MediaService.Application.csproj" />
+    <ProjectReference Include="..\MediaService.Infrastructure\MediaService.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

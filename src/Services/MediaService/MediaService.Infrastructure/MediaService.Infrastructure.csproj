@@ -23,7 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\MediaService.Application\MediaService.Application.csproj" />
+    <ProjectReference Include="..\MediaService.Domain\MediaService.Domain.csproj" />
   </ItemGroup>
 
 </Project>

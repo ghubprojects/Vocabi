@@ -1,7 +1,7 @@
-﻿using MediatR;
+﻿using BuildingBlocks.Application.Abstractions;
 
 namespace DictionaryService.Application.Features.DictionaryEntry.SearchDictionaryEntries;
 
 public sealed record SearchDictionaryEntriesQuery(
     string Keyword
-) : IRequest<SearchDictionaryEntriesResult>;
+) : IQuery<SearchDictionaryEntriesResult>;
