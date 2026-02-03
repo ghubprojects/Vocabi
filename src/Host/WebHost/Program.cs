@@ -1,13 +1,15 @@
 using DictionaryService;
+using DictionaryService.Api;
+using VocabularyService.Api;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Serilog;
 using Vocabi.Application;
 using Vocabi.Infrastructure;
 using Vocabi.Infrastructure.Persistence.Seed;
 using Vocabi.Shared.Utils;
-using Vocabi.Web;
 using Vocabi.Web.Components;
 using VocabularyService;
+using WebHost;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,12 +27,9 @@ builder.Services.AddFluentUIComponents();
 
 var configuration = builder.Configuration;
 builder.Services
-    .AddDictionaryServices(configuration)
-    .AddVocabularyServices(configuration)
-
-    .AddApplicationServices(builder.Configuration)
-    .AddInfrastructureServices(builder.Configuration, builder.Environment)
-    .AddWebServices();
+    .AddDictionaryService(configuration)
+    .AddVocabularyService(configuration)
+    .AddWebHost();
 
 var app = builder.Build();
 

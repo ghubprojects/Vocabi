@@ -1,18 +1,13 @@
-﻿using DictionaryService.Application.Abstractions;
-using DictionaryService.Domain.Aggregates;
+﻿using BuildingBlocks.Domain.Abstractions;
+using DictionaryService.Domain.Aggregates.DictionaryEntry;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace DictionaryService.Infrastructure.Persistence;
 
-public class DictionaryContext(DbContextOptions<DictionaryContext> options)
-    : DbContext(options), IDictionaryReadContext, IDictionaryWriteContext
+public class DictionaryContext(DbContextOptions<DictionaryContext> options) : DbContext(options), IUnitOfWork
 {
-    public DbSet<DictionaryEntry> DictionaryEntries { get; private set; }
-    IQueryable<DictionaryEntry> IDictionaryReadContext.DictionaryEntries => DictionaryEntries.AsNoTracking();
-
-    public IQueryable<DictionaryDefinition> DictionaryDefinitions => Set<DictionaryDefinition>().AsNoTracking();
-    public IQueryable<DictionaryExample> DictionaryExamples => Set<DictionaryExample>().AsNoTracking();
+    internal DbSet<DictionaryEntry> DictionaryEntries { get; private set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

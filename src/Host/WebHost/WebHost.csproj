@@ -19,6 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Services\DictionaryService\DictionaryService.Api\DictionaryService.Api.csproj" />
+    <ProjectReference Include="..\..\Services\MediaService\MediaService.Api\MediaService.Api.csproj" />
+    <ProjectReference Include="..\..\Services\VocabularyService\VocabularyService.Api\VocabularyService.Api.csproj" />
     <ProjectReference Include="..\DictionaryService\DictionaryService.Api.csproj" />
     <ProjectReference Include="..\MediaService\MediaService.Infrastructure.csproj" />
     <ProjectReference Include="..\Vocabi.Application\Vocabi.Application.csproj" />

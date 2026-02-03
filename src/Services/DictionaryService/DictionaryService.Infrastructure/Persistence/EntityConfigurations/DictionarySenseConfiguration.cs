@@ -1,5 +1,4 @@
-﻿using DictionaryService.Domain.Aggregates;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DictionaryService.Infrastructure.Persistence.EntityConfigurations;

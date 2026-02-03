@@ -18,7 +18,7 @@ public abstract class AggregateRoot : Entity
         _domainEvents.Clear();
     }
 
-    protected static void CheckRule(IBusinessRule rule)
+    protected void CheckRule(IBusinessRule rule)
     {
         if (rule.IsBroken())
             throw new BusinessRuleViolationException(rule);

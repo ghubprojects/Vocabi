@@ -1,16 +1,18 @@
 ﻿using BuildingBlocks.Infrastructure.Extensions;
 using DictionaryService.Application.Abstractions;
+using DictionaryService.Domain.Aggregates.DictionaryEntry;
 using DictionaryService.Infrastructure.Configuration;
 using DictionaryService.Infrastructure.Persistence;
 using DictionaryService.Infrastructure.Persistence.Interceptors;
+using DictionaryService.Infrastructure.Persistence.QueryServices;
+using DictionaryService.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Reflection;
 
-namespace DictionaryService;
+namespace DictionaryService.Infrastructure;
 
 public static class DependencyInjection
 {
@@ -19,6 +21,9 @@ public static class DependencyInjection
         services.AddOptions(configuration);
 
         services.AddDatabase();
+
+        services.AddScoped<IDictionaryEntryQueryService, DictionaryEntryQueryService>();
+        services.AddScoped<IDictionaryEntryRepository, DictionaryEntryRepository>();
 
         //// Register seeders
         //services.AddScoped<PronunciationSeeder>();
@@ -78,9 +83,6 @@ public static class DependencyInjection
                 .UseNpgsql(databaseOptions.ConnectionString)
                 .UseSnakeCaseNamingConvention();
         });
-
-        services.AddScoped<IDictionaryWriteContext>(provider => provider.GetRequiredService<DictionaryContext>());
-        services.AddScoped<IDictionaryReadContext>(provider => provider.GetRequiredService<DictionaryContext>());
 
         return services;
     }

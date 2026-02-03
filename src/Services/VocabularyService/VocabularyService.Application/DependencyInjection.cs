@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BuildingBlocks.Application;
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
-namespace VocabularyService.Application
+namespace VocabularyService.Application;
+
+public static class DependencyInjection
 {
-    internal class DependencyInjection
+    public static IServiceCollection AddVocabularyServiceApplication(this IServiceCollection services)
     {
+        services.AddBuildingBlocksApplication(Assembly.GetExecutingAssembly());
+
+        return services;
     }
 }
