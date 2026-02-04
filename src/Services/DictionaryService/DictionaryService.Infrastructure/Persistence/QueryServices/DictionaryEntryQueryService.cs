@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using DictionaryService.Application.Abstractions;
-using DictionaryService.Application.Features.DictionaryEntry.Dtos;
+using DictionaryService.Application.UseCases.DictionaryEntries.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace DictionaryService.Infrastructure.Persistence.QueryServices;
@@ -29,4 +29,3 @@ public sealed class DictionaryEntryQueryService(DictionaryContext context, IMapp
             .SingleOrDefaultAsync(cancellationToken);
     }
 }
-

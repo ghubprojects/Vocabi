@@ -1,5 +1,7 @@
 ﻿using BuildingBlocks.Domain.Abstractions;
-using DictionaryService.Domain.Aggregates.DictionaryEntry;
+using DictionaryService.Domain.Aggregates.DictionaryEntries;
+using DictionaryService.Domain.Aggregates.DictionaryEntries.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DictionaryService.Infrastructure.Persistence.Repositories;
 
@@ -22,5 +24,17 @@ public class DictionaryEntryRepository(DictionaryContext context) : IDictionaryE
         var entity = await context.DictionaryEntries.FindAsync(id);
         if (entity != null)
             context.DictionaryEntries.Remove(entity);
+    }
+
+    public async Task<bool> ExistsByHeadwordAsync(string headword)
+    {
+        return await context.DictionaryEntries
+             .AnyAsync(e => e.Headword == headword);
+    }
+
+    public async Task<bool> ExistsByHeadwordAndPartOfSpeechAsync(string headword, string partOfSpeech)
+    {
+        return await context.DictionaryEntries
+             .AnyAsync(e => e.Headword == headword && e.PartOfSpeech == partOfSpeech);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using BuildingBlocks.Domain.Abstractions;
-using DictionaryService.Domain.Aggregates.DictionaryEntry;
+using DictionaryService.Domain.Aggregates.DictionaryEntries.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 

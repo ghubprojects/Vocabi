@@ -1,4 +1,4 @@
-﻿using DictionaryService.Application.Features.DictionaryEntry.Dtos;
+﻿using DictionaryService.Application.UseCases.DictionaryEntries.Dtos;
 
 namespace DictionaryService.Application.Abstractions;
 

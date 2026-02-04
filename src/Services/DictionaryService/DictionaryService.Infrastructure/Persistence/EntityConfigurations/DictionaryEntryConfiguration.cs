@@ -1,4 +1,4 @@
-﻿using DictionaryService.Domain.Aggregates.DictionaryEntry;
+﻿using DictionaryService.Domain.Aggregates.DictionaryEntries.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -1,11 +1,13 @@
 ﻿using BuildingBlocks.Infrastructure.Extensions;
 using DictionaryService.Application.Abstractions;
-using DictionaryService.Domain.Aggregates.DictionaryEntry;
+using DictionaryService.Domain.Aggregates.DictionaryEntries;
+using DictionaryService.Domain.Aggregates.DictionaryEntries.Services;
 using DictionaryService.Infrastructure.Configuration;
 using DictionaryService.Infrastructure.Persistence;
 using DictionaryService.Infrastructure.Persistence.Interceptors;
 using DictionaryService.Infrastructure.Persistence.QueryServices;
 using DictionaryService.Infrastructure.Persistence.Repositories;
+using DictionaryService.Infrastructure.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -64,6 +66,7 @@ public static class DependencyInjection
     private static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddServiceOptions<DatabaseOptions>(configuration);
+        services.AddServiceOptions<DictionaryScrapingOptions>(configuration);
 
         //services.Configure<PixabaySettings>(configuration.GetSection(nameof(PixabaySettings)));
 
