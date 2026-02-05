@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Application.Extensions;
+﻿namespace BuildingBlocks.Common.Extensions;
 
 public static class GenericTypeExtensions
 {

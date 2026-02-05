@@ -18,4 +18,8 @@
     <ProjectReference Include="..\DictionaryService.Domain\DictionaryService.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Scraping\Extensions\" />
+  </ItemGroup>
+
 </Project>
