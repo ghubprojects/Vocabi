@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Application.Extensions;
+﻿using BuildingBlocks.Common.Extensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

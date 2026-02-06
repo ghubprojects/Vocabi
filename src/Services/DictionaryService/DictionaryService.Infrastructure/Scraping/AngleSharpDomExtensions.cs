@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Dom;
+using System.Text.RegularExpressions;
 
 namespace DictionaryService.Infrastructure.Scraping;
 
@@ -28,12 +29,10 @@ internal static class AngleSharpDomExtensions
         return [];
     }
 
-    public static string? SelectText(this IParentNode node, IEnumerable<string> selectors)
+    public static string SelectText(this IParentNode node, IEnumerable<string> selectors)
     {
-        return node
-            .SelectElement(selectors)
-            ?.TextContent
-            .Trim();
+        var content = node.SelectElement(selectors)?.TextContent;
+        return Normalize(content);
     }
 
     public static IReadOnlyList<string> SelectTexts(this IParentNode node, IEnumerable<string> selectors)
@@ -44,4 +43,9 @@ internal static class AngleSharpDomExtensions
             .Where(t => !string.IsNullOrWhiteSpace(t))
             .ToArray();
     }
+
+    private static string Normalize(string? value) =>
+        string.IsNullOrWhiteSpace(value)
+            ? string.Empty
+            : Regex.Replace(value, @"\s+", " ").Trim();
 }

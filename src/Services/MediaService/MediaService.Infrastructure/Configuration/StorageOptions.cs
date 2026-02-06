@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Application.Infrastructure.Configuration;
+﻿using BuildingBlocks.Infrastructure.Configuration;
 
 namespace MediaService.Infrastructure.Configuration;
 

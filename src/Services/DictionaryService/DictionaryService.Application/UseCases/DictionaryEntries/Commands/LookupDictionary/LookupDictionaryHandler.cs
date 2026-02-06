@@ -21,7 +21,7 @@ public sealed class LookupDictionaryHandler(
 
         var scrapeResult = await scraper.LookupAsync(keyword);
         if (scrapeResult is null)
-            return Result.Fail("");
+            return Result.Fail("The search term does not match any dictionary entries.");
 
         foreach (var scrapedEntry in scrapeResult.Entries)
         {

@@ -10,9 +10,10 @@ namespace DictionaryService.Infrastructure.Scraping;
 
 public class CambridgeDictionaryScraper : IDictionaryScraper
 {
+    private const string SourceName = "Cambridge Dictionary";
+
     private readonly DictionaryScrapingOptions _options;
     private readonly ILogger<CambridgeDictionaryScraper> _logger;
-
     private readonly IBrowsingContext _context;
 
     public CambridgeDictionaryScraper(IOptions<DictionaryScrapingOptions> options, ILogger<CambridgeDictionaryScraper> logger)
@@ -30,18 +31,18 @@ public class CambridgeDictionaryScraper : IDictionaryScraper
             return null;
 
         var document = await LoadDocumentAsync(keyword);
+        if (document is null)
+            return null;
 
-        var entryElements = document.SelectElements(CambridgeDictionarySelectors.Entry);
+        var entryElements = document.SelectElements(CambridgeDictionarySelectors.EntryBlock);
         if (!entryElements.Any())
             return null;
 
         var entries = ParseEntries(entryElements);
-        if (entries.Count == 0)
-            return null;
 
-        return entries.Count == 0
-            ? null
-            : new DictionaryScrapeResult(entries);
+        return entries.Count > 0
+            ? new DictionaryScrapeResult(entries)
+            : null;
     }
 
     private async Task<IDocument> LoadDocumentAsync(string keyword)
@@ -53,7 +54,7 @@ public class CambridgeDictionaryScraper : IDictionaryScraper
 
     private List<ScrapedDictionaryEntry> ParseEntries(IEnumerable<IElement> entryElements)
     {
-        var results = new List<ScrapedDictionaryEntry>();
+        var result = new List<ScrapedDictionaryEntry>();
 
         foreach (var entryElement in entryElements)
         {
@@ -67,11 +68,14 @@ public class CambridgeDictionaryScraper : IDictionaryScraper
                 if (definitions.Count == 0)
                     continue;
 
-                results.Add(
-                    new ScrapedDictionaryEntry(
-                        headword,
-                        phonetic,
-                        definitions));
+                var scrapedEntry = new ScrapedDictionaryEntry(
+                    headword,
+                    partOfSpeech,
+                    pronunciation,
+                    SourceName,
+                    definitions);
+
+                result.Add(scrapedEntry);
             }
             catch (Exception ex)
             {
@@ -79,43 +83,30 @@ public class CambridgeDictionaryScraper : IDictionaryScraper
             }
         }
 
-        return results;
+        return result;
     }
 
-    private static List<ScrapedDictionaryDefinition> ParseDefinitions(IElement entry)
+    private static List<ScrapedDictionaryDefinition> ParseDefinitions(IElement entryElement)
     {
-        var results = new List<ScrapedDictionaryDefinition>();
+        var result = new List<ScrapedDictionaryDefinition>();
 
-        foreach (var posHeader in posHeaders)
+        var definitionElements = entryElement.SelectElements(CambridgeDictionarySelectors.DefinitionBlock);
+
+        foreach (var definitionElement in definitionElements)
         {
-            var defBlocks = posHeader
-                .ParentElement?
-                .QueryAll(CambridgeDictionarySelectors.DefinitionBlocks)
-                ?? Enumerable.Empty<IElement>();
+            var definition = definitionElement
+                .SelectText(CambridgeDictionarySelectors.Definition)
+                .TrimEnd(':');
 
-            foreach (var defBlock in defBlocks)
-            {
-                var definition = defBlock
-                    .QueryFirst(CambridgeDictionarySelectors.DefinitionText)
-                    ?.TextContent
-                    .Trim();
+            if (string.IsNullOrWhiteSpace(definition))
+                continue;
 
-                if (string.IsNullOrWhiteSpace(definition))
-                    continue;
+            var examples = definitionElement.SelectTexts(CambridgeDictionarySelectors.Example);
 
-                var examples = defBlock
-                    .QueryAll(CambridgeDictionarySelectors.Examples)
-                    .Select(x => x.TextContent.Trim())
-                    .Where(x => !string.IsNullOrWhiteSpace(x))
-                    .ToList();
-
-                results.Add(
-                    new ScrapedDictionaryDefinition(
-                        definition,
-                        examples));
-            }
+            var scrapedDefinition = new ScrapedDictionaryDefinition(definition, examples);
+            result.Add(scrapedDefinition);
         }
 
-        return results;
+        return result;
     }
 }

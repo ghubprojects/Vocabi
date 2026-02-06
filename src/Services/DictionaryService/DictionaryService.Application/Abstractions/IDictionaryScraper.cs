@@ -4,5 +4,5 @@ namespace DictionaryService.Application.Abstractions;
 
 public interface IDictionaryScraper
 {
-    Task<DictionaryScrapeResult> LookupAsync(string keyword);
+    Task<DictionaryScrapeResult?> LookupAsync(string keyword);
 }

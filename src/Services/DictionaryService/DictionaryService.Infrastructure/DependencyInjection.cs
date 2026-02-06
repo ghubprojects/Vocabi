@@ -1,13 +1,12 @@
 ﻿using BuildingBlocks.Infrastructure.Extensions;
 using DictionaryService.Application.Abstractions;
 using DictionaryService.Domain.Aggregates.DictionaryEntries;
-using DictionaryService.Domain.Aggregates.DictionaryEntries.Services;
-using DictionaryService.Infrastructure.Configuration;
+using DictionaryService.Infrastructure.Configurations;
 using DictionaryService.Infrastructure.Persistence;
 using DictionaryService.Infrastructure.Persistence.Interceptors;
 using DictionaryService.Infrastructure.Persistence.QueryServices;
 using DictionaryService.Infrastructure.Persistence.Repositories;
-using DictionaryService.Infrastructure.Persistence.Services;
+using DictionaryService.Infrastructure.Scraping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +25,8 @@ public static class DependencyInjection
 
         services.AddScoped<IDictionaryEntryQueryService, DictionaryEntryQueryService>();
         services.AddScoped<IDictionaryEntryRepository, DictionaryEntryRepository>();
+
+        services.AddScoped<IDictionaryScraper, CambridgeDictionaryScraper>();
 
         //// Register seeders
         //services.AddScoped<PronunciationSeeder>();

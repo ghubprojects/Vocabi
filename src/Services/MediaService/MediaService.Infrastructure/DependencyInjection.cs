@@ -1,9 +1,9 @@
-﻿using BuildingBlocks.Application.Infrastructure.Extensions;
+﻿using BuildingBlocks.Infrastructure.Extensions;
 using MediaService.Infrastructure.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MediaService;
+namespace MediaService.Infrastructure;
 
 public static class DependencyInjection
 {

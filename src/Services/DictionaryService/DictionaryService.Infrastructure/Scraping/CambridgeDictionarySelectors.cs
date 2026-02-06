@@ -38,15 +38,14 @@ internal static class CambridgeDictionarySelectors
         ".sense-body > .def-block"
     ];
 
-    public static readonly string[] DefinitionText =
+    public static readonly string[] Definition =
     [
-        ".def",
-        ".ddef_h"
+        ".ddef_d",
     ];
 
-    public static readonly string[] Examples =
+    public static readonly string[] Example =
     [
-        ".examp",
+        ".deg",
         ".eg"
     ];
 }

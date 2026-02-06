@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DictionaryService.Domain.Aggregates.DictionaryEntries.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DictionaryService.Infrastructure.Persistence.EntityConfigurations;
 
-internal sealed class DictionarySenseConfiguration : IEntityTypeConfiguration<DictionaryDefinition>
+internal sealed class DictionaryDefinitionConfiguration : IEntityTypeConfiguration<DictionaryDefinition>
 {
     public void Configure(EntityTypeBuilder<DictionaryDefinition> builder)
     {
-        builder.ToTable("DictionarySense");
+        builder.ToTable("DictionaryDefinition");
 
         builder.HasKey(x => x.Id);
 
