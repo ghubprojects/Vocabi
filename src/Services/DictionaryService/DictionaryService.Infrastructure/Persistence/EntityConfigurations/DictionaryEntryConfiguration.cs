@@ -17,6 +17,7 @@ internal sealed class DictionaryEntryConfiguration : IEntityTypeConfiguration<Di
             .HasMaxLength(200);
 
         builder.Property(x => x.PartOfSpeech)
+            .IsRequired()
             .HasMaxLength(50);
 
         builder.Property(x => x.Pronunciation)
@@ -24,5 +25,9 @@ internal sealed class DictionaryEntryConfiguration : IEntityTypeConfiguration<Di
 
         builder.Property(x => x.Source)
             .HasMaxLength(200);
+
+        builder
+            .HasIndex(x => new { x.Headword, x.PartOfSpeech })
+            .IsUnique();
     }
 }

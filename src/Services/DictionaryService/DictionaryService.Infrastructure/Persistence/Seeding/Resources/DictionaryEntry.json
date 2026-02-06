@@ -1,0 +1,39 @@
+﻿[
+  {
+    "headword": "run",
+    "partOfSpeech": "verb",
+    "pronunciation": "/rʌn/",
+    "source": "Oxford",
+    "definitions": [
+      {
+        "text": "to move quickly on foot",
+        "examples": [
+          "I run every morning.",
+          "She runs faster than anyone else in the team."
+        ]
+      },
+      {
+        "text": "to operate or function",
+        "examples": [
+          "This program runs on Windows.",
+          "The engine is running smoothly."
+        ]
+      }
+    ]
+  },
+  {
+    "headword": "book",
+    "partOfSpeech": "noun",
+    "pronunciation": "/bʊk/",
+    "source": "Cambridge",
+    "definitions": [
+      {
+        "text": "a written or printed work consisting of pages",
+        "examples": [
+          "She borrowed a book from the library.",
+          "This book is very popular among students."
+        ]
+      }
+    ]
+  }
+]

@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Infrastructure.Extensions;
+using BuildingBlocks.Infrastructure.Persistence.Abstractions;
 using DictionaryService.Application.Abstractions;
 using DictionaryService.Domain.Aggregates.DictionaryEntries;
 using DictionaryService.Infrastructure.Configurations;
@@ -87,6 +88,9 @@ public static class DependencyInjection
                 .UseNpgsql(databaseOptions.ConnectionString)
                 .UseSnakeCaseNamingConvention();
         });
+
+        services.AddScoped<IDatabaseSeeder, DictionaryDatabaseSeeder>();
+        services.AddScoped<IDbContextInitializer, DictionaryDbContextInitializer>();
 
         return services;
     }
