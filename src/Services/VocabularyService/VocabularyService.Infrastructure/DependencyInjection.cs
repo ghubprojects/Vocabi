@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Infrastructure.Extensions;
+using BuildingBlocks.Infrastructure.Persistence.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +12,7 @@ using VocabularyService.Infrastructure.Persistence;
 using VocabularyService.Infrastructure.Persistence.Interceptors;
 using VocabularyService.Infrastructure.Persistence.QueryServices;
 using VocabularyService.Infrastructure.Persistence.Repositories;
+using VocabularyService.Infrastructure.Persistence.Seeding;
 
 namespace VocabularyService.Infrastructure;
 
@@ -83,6 +85,9 @@ public static class DependencyInjection
                 .UseNpgsql(databaseOptions.ConnectionString)
                 .UseSnakeCaseNamingConvention();
         });
+
+        services.AddScoped<IDatabaseSeeder, VocabularySeeder>();
+        services.AddScoped<IDbContextInitializer, VocabularyContextInitializer>();
 
         return services;
     }

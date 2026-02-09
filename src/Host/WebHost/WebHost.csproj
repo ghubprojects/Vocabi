@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Vocabularies\Components\" />
     <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 </Project>

@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Commands\" />
+    <Folder Include="UseCases\Vocabularies\Commands\" />
   </ItemGroup>
 
 </Project>

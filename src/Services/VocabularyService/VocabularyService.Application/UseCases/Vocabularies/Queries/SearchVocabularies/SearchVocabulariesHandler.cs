@@ -1,7 +1,7 @@
 ﻿using BuildingBlocks.Application.Abstractions;
 using VocabularyService.Application.Abstractions;
 
-namespace VocabularyService.Application.Features.Queries.SearchVocabularies;
+namespace VocabularyService.Application.UseCases.Vocabularies.Queries.SearchVocabularies;
 
 public sealed class SearchVocabulariesHandler(IVocabularyQueryService queryService)
     : IQueryHandler<SearchVocabulariesQuery, SearchVocabulariesResult>

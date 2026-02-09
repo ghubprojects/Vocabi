@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace VocabularyService.Application.Features.Dtos;
+namespace VocabularyService.Application.UseCases.Vocabularies.Dtos;
 
 public sealed class VocabularySearchItemMapping : Profile
 {

@@ -4,7 +4,7 @@ using BuildingBlocks.Application.Models;
 using BuildingBlocks.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using VocabularyService.Application.Abstractions;
-using VocabularyService.Application.Features.Dtos;
+using VocabularyService.Application.UseCases.Vocabularies.Dtos;
 using VocabularyService.Domain.Aggregates;
 
 namespace VocabularyService.Infrastructure.Persistence.QueryServices;

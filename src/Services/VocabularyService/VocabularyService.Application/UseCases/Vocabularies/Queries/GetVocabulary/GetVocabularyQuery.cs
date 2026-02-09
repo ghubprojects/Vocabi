@@ -1,6 +1,6 @@
 ﻿using BuildingBlocks.Application.Abstractions;
 
-namespace VocabularyService.Application.Features.Queries.GetVocabulary;
+namespace VocabularyService.Application.UseCases.Vocabularies.Queries.GetVocabulary;
 
 public sealed record GetVocabularyQuery(
     Guid Id

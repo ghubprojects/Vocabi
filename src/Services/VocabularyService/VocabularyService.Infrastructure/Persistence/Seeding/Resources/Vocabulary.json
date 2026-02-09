@@ -1,0 +1,62 @@
+﻿[
+  {
+    "word": "commitment",
+    "partOfSpeech": "noun",
+    "pronunciation": "kəˈmɪtmənt",
+    "cloze": "c_mm_tm_nt",
+    "definition": "A promise or firm decision to do something.",
+    "translation": "Sự cam kết",
+    "examples": [
+      "Marriage requires commitment from both partners.",
+      "She showed great commitment to her work."
+    ]
+  },
+  {
+    "word": "development",
+    "partOfSpeech": "noun",
+    "pronunciation": "dɪˈveləpmənt",
+    "cloze": "d_v_l_pm_nt",
+    "definition": "The process of growth or improvement.",
+    "translation": "Sự phát triển",
+    "examples": [
+      "Child development is an important field of study.",
+      "The development of technology is rapid."
+    ]
+  },
+  {
+    "word": "knowledge",
+    "partOfSpeech": "noun",
+    "pronunciation": "ˈnɒlɪdʒ",
+    "cloze": "kn_wl_dg",
+    "definition": "Facts, information, and skills acquired through experience or education.",
+    "translation": "Kiến thức",
+    "examples": [
+      "Knowledge is power.",
+      "She has extensive knowledge of history."
+    ]
+  },
+  {
+    "word": "opportunity",
+    "partOfSpeech": "noun",
+    "pronunciation": "ˌɒpəˈtjuːnɪti",
+    "cloze": "_pp_rt_n_t_",
+    "definition": "A set of circumstances that makes it possible to do something.",
+    "translation": "Cơ hội",
+    "examples": [
+      "This job is a great opportunity for her.",
+      "He missed the opportunity to explain."
+    ]
+  },
+  {
+    "word": "responsibility",
+    "partOfSpeech": "noun",
+    "pronunciation": "rɪˌspɒnsəˈbɪlɪti",
+    "cloze": "r_sp_ns_b_l_t_",
+    "definition": "The state or fact of having a duty to deal with something.",
+    "translation": "Trách nhiệm",
+    "examples": [
+      "Parents have responsibility for their children.",
+      "It is your responsibility to finish the task."
+    ]
+  }
+]

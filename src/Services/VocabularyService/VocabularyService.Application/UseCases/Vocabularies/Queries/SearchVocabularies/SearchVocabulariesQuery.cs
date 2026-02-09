@@ -1,6 +1,6 @@
 ﻿using BuildingBlocks.Application.Abstractions;
 
-namespace VocabularyService.Application.Features.Queries.SearchVocabularies;
+namespace VocabularyService.Application.UseCases.Vocabularies.Queries.SearchVocabularies;
 
 public sealed record SearchVocabulariesQuery(
     string Keyword,

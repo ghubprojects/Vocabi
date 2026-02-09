@@ -33,11 +33,13 @@ builder.Services
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var pronunciationSeeder = scope.ServiceProvider.GetRequiredService<PronunciationSeeder>();
-    await pronunciationSeeder.SeedAsync(FileUtils.GetWwwRootPath("pronunciations.json"));
-}
+await app.InitializeDatabaseAsync();
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var pronunciationSeeder = scope.ServiceProvider.GetRequiredService<PronunciationSeeder>();
+//    await pronunciationSeeder.SeedAsync(FileUtils.GetWwwRootPath("pronunciations.json"));
+//}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

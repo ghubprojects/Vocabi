@@ -1,7 +1,7 @@
 ﻿using BuildingBlocks.Application.Abstractions;
 using VocabularyService.Application.Abstractions;
 
-namespace VocabularyService.Application.Features.Queries.GetVocabulary;
+namespace VocabularyService.Application.UseCases.Vocabularies.Queries.GetVocabulary;
 
 public sealed class GetVocabularyHandler(IVocabularyQueryService queryService)
     : IQueryHandler<GetVocabularyQuery, GetVocabularyResult>

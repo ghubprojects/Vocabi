@@ -4,7 +4,7 @@ using DictionaryService.Infrastructure.Persistence.Seeding.Dtos;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace DictionaryService.Infrastructure.Persistence.Seeders;
+namespace DictionaryService.Infrastructure.Persistence.Seeding;
 
 public class DictionarySeeder(
     DictionaryContext context,
@@ -16,27 +16,26 @@ public class DictionarySeeder(
     {
         logger.LogInformation("Seeding Dictionary data...");
 
-        var entrySeeds = GetSeedDataFromResource<DictionaryEntrySeedDto>();
+        var seeds = GetSeedDataFromResource<DictionaryEntrySeedDto>();
 
-        foreach (var entrySeed in entrySeeds)
+        foreach (var seed in seeds)
         {
             var entry = await domainService.CreateAsync(
-                entrySeed.Headword,
-                entrySeed.PartOfSpeech,
-                entrySeed.Pronunciation,
-                entrySeed.Source);
+                seed.Headword,
+                seed.PartOfSpeech,
+                seed.Pronunciation,
+                seed.Source);
 
-            foreach (var definitionSeed in entrySeed.Definitions)
+            foreach (var definitionSeed in seed.Definitions)
                 entry.AddDefinition(definitionSeed.Text, definitionSeed.Examples);
 
             context.DictionaryEntries.Add(entry);
         }
 
         await context.SaveChangesAsync();
-
-        logger.LogInformation("Dictionary seeding completed.");
-
         context.ChangeTracker.Clear();
+        
+        logger.LogInformation("Dictionary seeding completed.");
     }
 
     private static List<T> GetSeedDataFromResource<T>()

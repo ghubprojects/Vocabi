@@ -7,6 +7,7 @@ using DictionaryService.Infrastructure.Persistence;
 using DictionaryService.Infrastructure.Persistence.Interceptors;
 using DictionaryService.Infrastructure.Persistence.QueryServices;
 using DictionaryService.Infrastructure.Persistence.Repositories;
+using DictionaryService.Infrastructure.Persistence.Seeding;
 using DictionaryService.Infrastructure.Scraping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -89,8 +90,8 @@ public static class DependencyInjection
                 .UseSnakeCaseNamingConvention();
         });
 
-        services.AddScoped<IDatabaseSeeder, DictionaryDatabaseSeeder>();
-        services.AddScoped<IDbContextInitializer, DictionaryDbContextInitializer>();
+        services.AddScoped<IDatabaseSeeder, DictionarySeeder>();
+        services.AddScoped<IDbContextInitializer, DictionaryContextInitializer>();
 
         return services;
     }

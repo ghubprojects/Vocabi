@@ -1,5 +1,5 @@
 ﻿using BuildingBlocks.Application.Models;
-using VocabularyService.Application.Features.Dtos;
+using VocabularyService.Application.UseCases.Vocabularies.Dtos;
 
 namespace VocabularyService.Application.Abstractions;
 
