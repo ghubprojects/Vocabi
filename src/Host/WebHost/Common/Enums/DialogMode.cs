@@ -1,4 +1,4 @@
-﻿namespace Vocabi.Web.Common.Enums;
+﻿namespace WebHost.Common.Enums;
 
 public enum DialogMode
 {

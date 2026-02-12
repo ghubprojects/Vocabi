@@ -1,12 +1,12 @@
-﻿@page "/vocabularies/detail/{Id:guid}"
+﻿@* @page "/vocabularies/detail/{Id:guid}"
 @rendermode InteractiveServer
 @using Vocabi.Domain.Aggregates.MediaFiles
 @using Vocabi.Shared
 @using Vocabi.Shared.Common
-@using Vocabi.Web.Components.Common
-@using static Vocabi.Shared.Common.Enums
+@using WebHost.Components.Common
+@using static Vocabi.Shared.Common.Enums *@
 
-<PageTitle>Detail Vocabulary</PageTitle>
+@* <PageTitle>Detail Vocabulary</PageTitle>
 
 <FluentStack Orientation="Orientation.Vertical">
     <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
@@ -90,4 +90,4 @@
             </FluentStack>
         </FluentStack>
     </FluentEditForm>
-</FluentStack>
+</FluentStack> *@

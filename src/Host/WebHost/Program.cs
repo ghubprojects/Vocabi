@@ -1,15 +1,9 @@
-using DictionaryService;
 using DictionaryService.Api;
-using VocabularyService.Api;
 using Microsoft.FluentUI.AspNetCore.Components;
 using Serilog;
-using Vocabi.Application;
-using Vocabi.Infrastructure;
-using Vocabi.Infrastructure.Persistence.Seed;
-using Vocabi.Shared.Utils;
-using Vocabi.Web.Components;
-using VocabularyService;
+using VocabularyService.Api;
 using WebHost;
+using WebHost.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 

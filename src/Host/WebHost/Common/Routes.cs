@@ -1,4 +1,4 @@
-﻿namespace Vocabi.Web.Common;
+﻿namespace WebHost.Common;
 
 public static class Routes
 {

@@ -1,33 +1,38 @@
 ﻿using BuildingBlocks.Infrastructure.Persistence.Abstractions;
-using Serilog;
 using System.Reflection;
-using Vocabi.Web.Common.Helpers;
-using Vocabi.Web.Services.Navigation;
+using WebHost.Common.Helpers;
+using WebHost.Features.Vocabularies;
 
 namespace WebHost;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddWebHost(this IServiceCollection services)
-    {
-        // AutoMapper configuration
-        services.AddAutoMapper(cfg => { }, Assembly.GetExecutingAssembly());
+	public static IServiceCollection AddWebHost(this IServiceCollection services)
+	{
+		services.AddNavigations();
 
-        services.AddHttpClient();
+		services.AddAutoMapper(cfg => { }, Assembly.GetExecutingAssembly());
 
-        services.AddScoped<INavigationService, NavigationService>();
+		services.AddHttpClient();
 
-        services.AddScoped<IActionExecutor, ActionExecutor>();
+		services.AddScoped<IActionExecutor, ActionExecutor>();
 
-        return services;
-    }
+		return services;
+	}
 
-    public static async Task InitializeDatabaseAsync(this IHost host)
-    {
-        using var scope = host.Services.CreateScope();
-        var initializers = scope.ServiceProvider.GetServices<IDbContextInitializer>();
+	public static IServiceCollection AddNavigations(this IServiceCollection services)
+	{
+		services.AddScoped<VocabularyNavigation>();
 
-        foreach (var initializer in initializers)
-            await initializer.InitializeAsync();
-    }
+		return services;
+	}
+
+	public static async Task InitializeDatabaseAsync(this IHost host)
+	{
+		using var scope = host.Services.CreateScope();
+		var initializers = scope.ServiceProvider.GetServices<IDbContextInitializer>();
+
+		foreach (var initializer in initializers)
+			await initializer.InitializeAsync();
+	}
 }

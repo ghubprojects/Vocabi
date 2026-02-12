@@ -1,6 +1,6 @@
 ﻿using BuildingBlocks.Domain.Abstractions;
 using VocabularyService.Domain.Aggregates;
-using VocabularyService.Infrastructure.Persistence;
+using VocabularyService.Infrastructure.Persistence.DataContext;
 
 namespace VocabularyService.Infrastructure.Persistence.Repositories;
 

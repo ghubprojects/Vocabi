@@ -7,7 +7,7 @@ namespace VocabularyService.Domain.Aggregates;
 
 public sealed class Vocabulary : AggregateRoot, IAuditable, ISoftDeletable
 {
-    public string Word { get; private set; } = string.Empty;
+    public string Headword { get; private set; } = string.Empty;
     public string PartOfSpeech { get; private set; } = string.Empty;
     public string Pronunciation { get; private set; } = string.Empty;
     public string Cloze { get; private set; } = string.Empty;
@@ -22,9 +22,9 @@ public sealed class Vocabulary : AggregateRoot, IAuditable, ISoftDeletable
 
     private Vocabulary() { }
 
-    private Vocabulary(string word, string partOfSpeech, string pronunciation, string cloze, string definition, string translation)
+    private Vocabulary(string headword, string partOfSpeech, string pronunciation, string cloze, string definition, string translation)
     {
-        Word = word;
+        Headword = headword;
         PartOfSpeech = partOfSpeech;
         Pronunciation = pronunciation;
         Cloze = cloze;
@@ -32,9 +32,9 @@ public sealed class Vocabulary : AggregateRoot, IAuditable, ISoftDeletable
         Translation = translation;
     }
 
-    public static Vocabulary Create(string word, string partOfSpeech, string pronunciation, string cloze, string definition, string translation)
+    public static Vocabulary Create(string headword, string partOfSpeech, string pronunciation, string cloze, string definition, string translation)
     {
-        return new Vocabulary(word, partOfSpeech, pronunciation, cloze, definition, translation);
+        return new Vocabulary(headword, partOfSpeech, pronunciation, cloze, definition, translation);
     }
 
     public void AddExample(string text)

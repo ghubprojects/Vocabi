@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using DictionaryService.Application.Abstractions;
-using DictionaryService.Application.UseCases.DictionaryEntries.Dtos;
+using DictionaryService.Application.UseCases.DictionaryEntries.GetDictionaryEntry;
+using DictionaryService.Application.UseCases.DictionaryEntries.SearchDictionaryEntries;
+using DictionaryService.Infrastructure.Persistence.DataContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace DictionaryService.Infrastructure.Persistence.QueryServices;
 
 public sealed class DictionaryEntryQueryService(DictionaryContext context, IMapper mapper) : IDictionaryEntryQueryService
 {
-    public async Task<IReadOnlyList<DictionaryEntrySearchItem>> SearchAsync(string keyword, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<DictionaryEntrySearchItemDto>> SearchAsync(string keyword, CancellationToken cancellationToken)
     {
         keyword = keyword.Trim();
 
@@ -16,16 +18,16 @@ public sealed class DictionaryEntryQueryService(DictionaryContext context, IMapp
             .AsNoTracking()
             .Where(e => EF.Functions.ILike(e.Headword, $"{keyword}%"))
             .OrderBy(e => e.Headword)
-            .ProjectTo<DictionaryEntrySearchItem>(mapper.ConfigurationProvider)
+            .ProjectTo<DictionaryEntrySearchItemDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<DictionaryEntryDetail?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<DictionaryEntryDetailDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await context.DictionaryEntries
             .AsNoTracking()
             .Where(x => x.Id == id)
-            .ProjectTo<DictionaryEntryDetail>(mapper.ConfigurationProvider)
+            .ProjectTo<DictionaryEntryDetailDto>(mapper.ConfigurationProvider)
             .SingleOrDefaultAsync(cancellationToken);
     }
 }

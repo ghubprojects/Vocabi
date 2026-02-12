@@ -1,4 +1,4 @@
-﻿namespace Vocabi.Web.ViewModels.MediaFiles;
+﻿namespace WebHost.ViewModels.MediaFiles;
 
 public class MediaFileViewModel
 {

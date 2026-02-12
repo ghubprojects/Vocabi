@@ -34,7 +34,7 @@ public sealed class AzureBlobFileStorage : IFileStorage
     public async Task<Stream> GetAsync(string path, CancellationToken ct = default)
     {
         var blob = _container.GetBlobClient(path);
-        var result = await blob.DownloadStreamingAsync(ct);
+        var result = await blob.DownloadStreamingAsync();
         return result.Value.Content;
     }
 

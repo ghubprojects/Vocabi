@@ -14,15 +14,10 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.12">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\VocabularyService.Application\VocabularyService.Application.csproj" />
     <ProjectReference Include="..\VocabularyService.Infrastructure\VocabularyService.Infrastructure.csproj" />
   </ItemGroup>

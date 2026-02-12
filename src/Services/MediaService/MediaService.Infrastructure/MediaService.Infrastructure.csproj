@@ -14,17 +14,13 @@
     <PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
     <PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
     <PackageReference Include="FluentValidation" Version="12.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.12">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
-    <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Application\BuildingBlocks.Application.csproj" />
     <ProjectReference Include="..\MediaService.Application\MediaService.Application.csproj" />
     <ProjectReference Include="..\MediaService.Domain\MediaService.Domain.csproj" />
   </ItemGroup>

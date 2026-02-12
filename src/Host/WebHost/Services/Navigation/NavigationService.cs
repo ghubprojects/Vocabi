@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Vocabi.Web.Common;
+using WebHost.Common;
 
-namespace Vocabi.Web.Services.Navigation;
+namespace WebHost.Services.Navigation;
 
 public class NavigationService(NavigationManager nav) : INavigationService
 {

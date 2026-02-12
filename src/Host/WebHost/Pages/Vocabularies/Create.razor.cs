@@ -1,349 +1,349 @@
-﻿using AutoMapper;
-using MediatR;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.FluentUI.AspNetCore.Components;
-using Vocabi.Application.Features.LookupEntries.Commands;
-using Vocabi.Application.Features.LookupEntries.DTOs;
-using Vocabi.Application.Features.LookupEntries.Queries;
-using Vocabi.Application.Features.MediaFiles.Commands;
-using Vocabi.Application.Features.MediaFiles.DTOs;
-using Vocabi.Application.Features.MediaFiles.Queries;
-using Vocabi.Application.Features.Vocabularies.Commands;
-using Vocabi.Shared.Extensions;
-using Vocabi.Shared.Utils;
-<<<<<<<< HEAD:src/Vocabi.Web/Pages/Vocabularies/Create.razor.cs
-using Vocabi.Web.Common.Helpers;
-using Vocabi.Web.Services.Navigation;
-using Vocabi.Web.ViewModels.Vocabularies;
-using static Vocabi.Shared.Common.Enums;
+﻿//using AutoMapper;
+//using MediatR;
+//using Microsoft.AspNetCore.Components;
+//using Microsoft.AspNetCore.Components.Forms;
+//using Microsoft.FluentUI.AspNetCore.Components;
+//using Vocabi.Application.Features.LookupEntries.Commands;
+//using Vocabi.Application.Features.LookupEntries.DTOs;
+//using Vocabi.Application.Features.LookupEntries.Queries;
+//using Vocabi.Application.Features.MediaFiles.Commands;
+//using Vocabi.Application.Features.MediaFiles.DTOs;
+//using Vocabi.Application.Features.MediaFiles.Queries;
+//using Vocabi.Application.Features.Vocabularies.Commands;
+//using Vocabi.Shared.Extensions;
+//using Vocabi.Shared.Utils;
+//<<<<<<<< HEAD:src/WebHost/Pages/Vocabularies/Create.razor.cs
+//using WebHost.Common.Helpers;
+//using WebHost.Services.Navigation;
+//using WebHost.ViewModels.Vocabularies;
+//using static Vocabi.Shared.Common.Enums;
 
-namespace Vocabi.Web.Pages.Vocabularies;
-========
-using Vocabi.Web.Models.Vocabularies;
-using static Vocabi.Shared.Common.Enums;
+//namespace WebHost.Pages.Vocabularies;
+//========
+//using WebHost.Models.Vocabularies;
+//using static Vocabi.Shared.Common.Enums;
 
-namespace Vocabi.Web.Pages.Vocabularies.Pending;
->>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/Vocabi.Web/Pages/Vocabularies/Pending/Create.razor.cs
+//namespace WebHost.Pages.Vocabularies.Pending;
+//>>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/WebHost/Pages/Vocabularies/Pending/Create.razor.cs
 
-public partial class Create
-{
-     [Inject] protected IDialogService DialogService { get; private set; } = default!;
-    [Inject] protected INavigationService Navigation { get; private set; } = default!;
-    [Inject] protected IMediator Mediator { get; private set; } = default!;
-    [Inject] protected IMapper Mapper { get; private set; } = default!;
-    [Inject] protected IToastService ToastService{ get; private set; } = default!;
-    [Inject] protected IActionExecutor ActionExecutor { get; private set; } = default!;
+//public partial class Create
+//{
+//     [Inject] protected IDialogService DialogService { get; private set; } = default!;
+//    [Inject] protected INavigationService Navigation { get; private set; } = default!;
+//    [Inject] protected IMediator Mediator { get; private set; } = default!;
+//    [Inject] protected IMapper Mapper { get; private set; } = default!;
+//    [Inject] protected IToastService ToastService{ get; private set; } = default!;
+//    [Inject] protected IActionExecutor ActionExecutor { get; private set; } = default!;
 
-    private EditContext editContext = default!;
+//    private EditContext editContext = default!;
 
-<<<<<<<< HEAD:src/Vocabi.Web/Pages/Vocabularies/Create.razor.cs
-    private VocabularyDetailViewModel vocabularyForm = new();
-========
-    private VocabularyFormModel vocabularyForm = new();
->>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/Vocabi.Web/Pages/Vocabularies/Pending/Create.razor.cs
-    private IReadOnlyList<LookupEntryDto> lookupEntryDtos = [];
+//<<<<<<<< HEAD:src/WebHost/Pages/Vocabularies/Create.razor.cs
+//    private VocabularyDetailViewModel vocabularyForm = new();
+//========
+//    private VocabularyFormModel vocabularyForm = new();
+//>>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/WebHost/Pages/Vocabularies/Pending/Create.razor.cs
+//    private IReadOnlyList<LookupEntryDto> lookupEntryDtos = [];
 
-    private MediaFileDto audioFile = new();
-    private MediaFileDto imageFile = new();
-    private List<MediaFileDto> alternativeImageFiles = [];
+//    private MediaFileDto audioFile = new();
+//    private MediaFileDto imageFile = new();
+//    private List<MediaFileDto> alternativeImageFiles = [];
 
-    private bool isSubmitting;
-    private bool isLookingUp;
+//    private bool isSubmitting;
+//    private bool isLookingUp;
 
-    protected override void OnInitialized()
-    {
-        editContext = new EditContext(vocabularyForm);
-    }
+//    protected override void OnInitialized()
+//    {
+//        editContext = new EditContext(vocabularyForm);
+//    }
 
-    private async Task SubmitAsync()
-    {
-        if (!editContext.Validate() || isSubmitting)
-            return;
+//    private async Task SubmitAsync()
+//    {
+//        if (!editContext.Validate() || isSubmitting)
+//            return;
 
-        // TODO: Use ExecuteAsync
-        //await ExecuteWithLoadingAsync(async () =>
-        //{
-        //    var command = new CreateVocabularyCommand
-        //    {
-        //        Word = vocabularyForm.Word,
-        //        PartOfSpeech = vocabularyForm.PartOfSpeech,
-        //        Pronunciation = FormatterUtils.TrimSlashes(vocabularyForm.Pronunciation),
-        //        Cloze = vocabularyForm.Cloze,
-        //        Definition = vocabularyForm.Definition,
-        //        Example = vocabularyForm.Example,
-        //        Meaning = vocabularyForm.Meaning,
-        //        MediaFileIds = [audioFile.Id, imageFile.Id]
-        //    };
+//        // TODO: Use ExecuteAsync
+//        //await ExecuteWithLoadingAsync(async () =>
+//        //{
+//        //    var command = new CreateVocabularyCommand
+//        //    {
+//        //        Word = vocabularyForm.Word,
+//        //        PartOfSpeech = vocabularyForm.PartOfSpeech,
+//        //        Pronunciation = FormatterUtils.TrimSlashes(vocabularyForm.Pronunciation),
+//        //        Cloze = vocabularyForm.Cloze,
+//        //        Definition = vocabularyForm.Definition,
+//        //        Example = vocabularyForm.Example,
+//        //        Meaning = vocabularyForm.Meaning,
+//        //        MediaFileIds = [audioFile.Id, imageFile.Id]
+//        //    };
 
-<<<<<<<< HEAD:src/Vocabi.Web/Pages/Vocabularies/Create.razor.cs
-        //    var result = await Mediator.Send(command);
-        //    if (result.IsFailed)
-        //    {
-        //        foreach (var error in result.Errors)
-        //            ToastService.ShowError(error.Message);
-        //        return;
-        //    }
+//<<<<<<<< HEAD:src/WebHost/Pages/Vocabularies/Create.razor.cs
+//        //    var result = await Mediator.Send(command);
+//        //    if (result.IsFailed)
+//        //    {
+//        //        foreach (var error in result.Errors)
+//        //            ToastService.ShowError(error.Message);
+//        //        return;
+//        //    }
 
-        //    Navigation.GoToVocabularyPendingList();
-        //},
-        //x => isSubmitting = x);
-========
-            var result = await Mediator.Send(command);
-            if (result.IsFailed)
-            {
-                foreach (var error in result.Errors)
-                    ToastService.ShowError(error.Message);
-                return;
-            }
+//        //    Navigation.GoToVocabularyPendingList();
+//        //},
+//        //x => isSubmitting = x);
+//========
+//            var result = await Mediator.Send(command);
+//            if (result.IsFailed)
+//            {
+//                foreach (var error in result.Errors)
+//                    ToastService.ShowError(error.Message);
+//                return;
+//            }
 
-            Navigation.GoToVocabularyPendingList();
-        },
-        x => isSubmitting = x);
->>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/Vocabi.Web/Pages/Vocabularies/Pending/Create.razor.cs
-    }
+//            Navigation.GoToVocabularyPendingList();
+//        },
+//        x => isSubmitting = x);
+//>>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/WebHost/Pages/Vocabularies/Pending/Create.razor.cs
+//    }
 
-    private void ClearForm()
-    {
-        vocabularyForm = new();
-        lookupEntryDtos = [];
-        audioFile = new();
-        imageFile = new();
-        editContext = new EditContext(vocabularyForm);
-    }
+//    private void ClearForm()
+//    {
+//        vocabularyForm = new();
+//        lookupEntryDtos = [];
+//        audioFile = new();
+//        imageFile = new();
+//        editContext = new EditContext(vocabularyForm);
+//    }
 
-    private async Task LookupAsync()
-    {
-        if (string.IsNullOrWhiteSpace(vocabularyForm.Word))
-        {
-            ToastService.ShowWarning("Please enter a word first.");
-            return;
-        }
+//    private async Task LookupAsync()
+//    {
+//        if (string.IsNullOrWhiteSpace(vocabularyForm.Word))
+//        {
+//            ToastService.ShowWarning("Please enter a word first.");
+//            return;
+//        }
 
-<<<<<<<< HEAD:src/Vocabi.Web/Pages/Vocabularies/Create.razor.cs
-        // TODO: Use ExecuteAsync
-        //await ExecuteWithLoadingAsync(async () =>
-        //{
-        //    var result = await Mediator.Send(new CreateLookupEntriesCommand { Word = vocabularyForm.Word });
-        //    if (result.IsFailed)
-        //    {
-        //        foreach (var error in result.Errors)
-        //            ToastService.ShowError(error.Message);
-        //        return;
-        //    }
-========
-        await ExecuteWithLoadingAsync(async () =>
-        {
-            var result = await Mediator.Send(new CreateLookupEntriesCommand { Word = vocabularyForm.Word });
-            if (result.IsFailed)
-            {
-                foreach (var error in result.Errors)
-                    ToastService.ShowError(error.Message);
-                return;
-            }
->>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/Vocabi.Web/Pages/Vocabularies/Pending/Create.razor.cs
+//<<<<<<<< HEAD:src/WebHost/Pages/Vocabularies/Create.razor.cs
+//        // TODO: Use ExecuteAsync
+//        //await ExecuteWithLoadingAsync(async () =>
+//        //{
+//        //    var result = await Mediator.Send(new CreateLookupEntriesCommand { Word = vocabularyForm.Word });
+//        //    if (result.IsFailed)
+//        //    {
+//        //        foreach (var error in result.Errors)
+//        //            ToastService.ShowError(error.Message);
+//        //        return;
+//        //    }
+//========
+//        await ExecuteWithLoadingAsync(async () =>
+//        {
+//            var result = await Mediator.Send(new CreateLookupEntriesCommand { Word = vocabularyForm.Word });
+//            if (result.IsFailed)
+//            {
+//                foreach (var error in result.Errors)
+//                    ToastService.ShowError(error.Message);
+//                return;
+//            }
+//>>>>>>>> 9842cd63dc353721663e65e43b087c5b9f598e26:src/WebHost/Pages/Vocabularies/Pending/Create.razor.cs
 
-        //    lookupEntryDtos = await Mediator.Send(new GetLookupEntriesQuery { Ids = result.Value });
-        //    var defaultEntry = lookupEntryDtos[0];
+//        //    lookupEntryDtos = await Mediator.Send(new GetLookupEntriesQuery { Ids = result.Value });
+//        //    var defaultEntry = lookupEntryDtos[0];
 
-        //    vocabularyForm.UpdateFromEntry(defaultEntry);
+//        //    vocabularyForm.UpdateFromEntry(defaultEntry);
 
-        //    var mediaFileDtos = await Mediator.Send(new GetMediaFilesQuery { Ids = defaultEntry.MediaFileIds });
-        //    var audio = mediaFileDtos.FirstOrDefault(x => FileUtils.GetMediaType(x.ContentType) == MediaType.Audio);
-        //    if (audio is not null)
-        //        audioFile = audio;
-        //    var image = mediaFileDtos.FirstOrDefault(x => FileUtils.GetMediaType(x.ContentType) == MediaType.Image);
-        //    if (image is not null)
-        //        imageFile = image;
-        //    if (mediaFileDtos.Count > 1)
-        //        alternativeImageFiles = [.. mediaFileDtos
-        //            .Where(x => FileUtils.GetMediaType(x.ContentType) == MediaType.Image && x.Id != imageFile.Id)];
+//        //    var mediaFileDtos = await Mediator.Send(new GetMediaFilesQuery { Ids = defaultEntry.MediaFileIds });
+//        //    var audio = mediaFileDtos.FirstOrDefault(x => FileUtils.GetMediaType(x.ContentType) == MediaType.Audio);
+//        //    if (audio is not null)
+//        //        audioFile = audio;
+//        //    var image = mediaFileDtos.FirstOrDefault(x => FileUtils.GetMediaType(x.ContentType) == MediaType.Image);
+//        //    if (image is not null)
+//        //        imageFile = image;
+//        //    if (mediaFileDtos.Count > 1)
+//        //        alternativeImageFiles = [.. mediaFileDtos
+//        //            .Where(x => FileUtils.GetMediaType(x.ContentType) == MediaType.Image && x.Id != imageFile.Id)];
 
-        //    await InvokeAsync(StateHasChanged);
-        //},
-        //x => isLookingUp = x);
-    }
+//        //    await InvokeAsync(StateHasChanged);
+//        //},
+//        //x => isLookingUp = x);
+//    }
 
-    private void HandleChangeWordType()
-    {
-        try
-        {
-            //Model.Detail.WordType = wordType;
+//    private void HandleChangeWordType()
+//    {
+//        try
+//        {
+//            //Model.Detail.WordType = wordType;
 
-            //if (_lookupResult is null)
-            //    return;
+//            //if (_lookupResult is null)
+//            //    return;
 
-            //var entry = _lookupResult.Entries.Find(e => e.WordType == Model.Detail.WordType);
-            //if (entry is null)
-            //    return;
+//            //var entry = _lookupResult.Entries.Find(e => e.WordType == Model.Detail.WordType);
+//            //if (entry is null)
+//            //    return;
 
-            //Model.Detail.Phonetic = entry.Phonetic;
+//            //Model.Detail.Phonetic = entry.Phonetic;
 
-            //_availableDefinitions.Clear();
-            //_availableDefinitions.AddRange(entry.Definitions.Select(d => d.Definition));
-            //Model.Detail.Definition = _availableDefinitions.First();
+//            //_availableDefinitions.Clear();
+//            //_availableDefinitions.AddRange(entry.Definitions.Select(d => d.Definition));
+//            //Model.Detail.Definition = _availableDefinitions.First();
 
-            //UpdateExamples();
-        }
-        catch (Exception e)
-        {
-            ToastService.ShowError($"Error changing word type: {e.Message}");
-        }
-    }
+//            //UpdateExamples();
+//        }
+//        catch (Exception e)
+//        {
+//            ToastService.ShowError($"Error changing word type: {e.Message}");
+//        }
+//    }
 
-    private void HandleChangeDefinition()
-    {
-        try
-        {
-            //if (_lookupResult is null)
-            //    return;
+//    private void HandleChangeDefinition()
+//    {
+//        try
+//        {
+//            //if (_lookupResult is null)
+//            //    return;
 
-            //var entry = _lookupResult.Entries.Find(
-            //    e => e.Definitions.Any(d => d.Definition == Model.Detail.Definition));
-            //if (entry is null)
-            //    return;
+//            //var entry = _lookupResult.Entries.Find(
+//            //    e => e.Definitions.Any(d => d.Definition == Model.Detail.Definition));
+//            //if (entry is null)
+//            //    return;
 
-            //Model.Detail.WordType = entry.WordType;
-            //Model.Detail.Phonetic = entry.Phonetic;
+//            //Model.Detail.WordType = entry.WordType;
+//            //Model.Detail.Phonetic = entry.Phonetic;
 
-            //UpdateExamples();
-        }
-        catch (Exception e)
-        {
-            ToastService.ShowError($"Error changing definition: {e.Message}");
-        }
-    }
+//            //UpdateExamples();
+//        }
+//        catch (Exception e)
+//        {
+//            ToastService.ShowError($"Error changing definition: {e.Message}");
+//        }
+//    }
 
-    private void HandleChangeExample()
-    {
-        try
-        {
-            //if (_lookupResult is null)
-            //    return;
+//    private void HandleChangeExample()
+//    {
+//        try
+//        {
+//            //if (_lookupResult is null)
+//            //    return;
 
-            //var entry = _lookupResult.Entries.Find(
-            //    e => e.Definitions.Any(d => d.Examples.Contains(Model.Detail.Example)));
-            //if (entry is null)
-            //    return;
+//            //var entry = _lookupResult.Entries.Find(
+//            //    e => e.Definitions.Any(d => d.Examples.Contains(Model.Detail.Example)));
+//            //if (entry is null)
+//            //    return;
 
-            //Model.Detail.WordType = entry.WordType;
-            //Model.Detail.Phonetic = entry.Phonetic;
+//            //Model.Detail.WordType = entry.WordType;
+//            //Model.Detail.Phonetic = entry.Phonetic;
 
-            //var definition = entry.Definitions.Find(d => d.Examples.Contains(Model.Detail.Example));
-            //if (definition is not null)
-            //{
-            //    Model.Detail.Definition = definition.Definition;
-            //}
-        }
-        catch (Exception e)
-        {
-            ToastService.ShowError($"Error changing example: {e.Message}");
-        }
-    }
+//            //var definition = entry.Definitions.Find(d => d.Examples.Contains(Model.Detail.Example));
+//            //if (definition is not null)
+//            //{
+//            //    Model.Detail.Definition = definition.Definition;
+//            //}
+//        }
+//        catch (Exception e)
+//        {
+//            ToastService.ShowError($"Error changing example: {e.Message}");
+//        }
+//    }
 
-    //private void UpdateExamples()
-    //{
-    //    try
-    //    {
-    //        if (_lookupResult is null)
-    //            return;
+//    //private void UpdateExamples()
+//    //{
+//    //    try
+//    //    {
+//    //        if (_lookupResult is null)
+//    //            return;
 
-    //        var entry = _lookupResult.Entries.Find(
-    //            e => e.Definitions.Any(d => d.Definition == Model.Detail.Definition));
-    //        if (entry is null)
-    //            return;
+//    //        var entry = _lookupResult.Entries.Find(
+//    //            e => e.Definitions.Any(d => d.Definition == Model.Detail.Definition));
+//    //        if (entry is null)
+//    //            return;
 
-    //        _availableExamples.Clear();
-    //        _availableExamples.AddRange(
-    //            entry.Definitions
-    //            .Where(d => d.Definition == Model.Detail.Definition)
-    //            .SelectMany(d => d.Examples));
-    //        Model.Detail.Example = _availableExamples.First();
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        ToastService.ShowError($"Error updating examples: {e.Message}");
-    //    }
-    //}
+//    //        _availableExamples.Clear();
+//    //        _availableExamples.AddRange(
+//    //            entry.Definitions
+//    //            .Where(d => d.Definition == Model.Detail.Definition)
+//    //            .SelectMany(d => d.Examples));
+//    //        Model.Detail.Example = _availableExamples.First();
+//    //    }
+//    //    catch (Exception e)
+//    //    {
+//    //        ToastService.ShowError($"Error updating examples: {e.Message}");
+//    //    }
+//    //}
 
-    //protected async Task HandleFileUploadCompletedAsync(IEnumerable<FluentInputFileEventArgs> files, MediaFileInputModel fileModel)
-    //{
-    //    var file = files.First();
-    //    ////if (!IsValidFile(file, inputFile))
-    //    ////    return;
+//    //protected async Task HandleFileUploadCompletedAsync(IEnumerable<FluentInputFileEventArgs> files, MediaFileInputModel fileModel)
+//    //{
+//    //    var file = files.First();
+//    //    ////if (!IsValidFile(file, inputFile))
+//    //    ////    return;
 
-    //    //var fileName = FileHelper.NormalizeFileName(Model.Detail.Word, Path.GetExtension(file.Name));
-    //    //var tempFilePath = FileHelper.GetFullTempUploadPath(fileName, Environment.WebRootPath);
+//    //    //var fileName = FileHelper.NormalizeFileName(Model.Detail.Word, Path.GetExtension(file.Name));
+//    //    //var tempFilePath = FileHelper.GetFullTempUploadPath(fileName, Environment.WebRootPath);
 
-    //    var command = new UploadMediaFileCommand
-    //    {
-    //        Stream = file.Stream,
-    //        Filename = file.Name
-    //    };
+//    //    var command = new UploadMediaFileCommand
+//    //    {
+//    //        Stream = file.Stream,
+//    //        Filename = file.Name
+//    //    };
 
-    //    var result = await Mediator.Send(command);
-    //    if (result.IsFailure)
-    //    {
-    //        ToastService.ShowWarning(result.ErrorMessages);
-    //        return;
-    //    }
+//    //    var result = await Mediator.Send(command);
+//    //    if (result.IsFailure)
+//    //    {
+//    //        ToastService.ShowWarning(result.ErrorMessages);
+//    //        return;
+//    //    }
 
-    //    fileModel.UpdateFrom(result.Data);
+//    //    fileModel.UpdateFrom(result.Data);
 
-    //    //inputFile.FilePath = FileHelper.GetRelativePath(tempFilePath, Environment.WebRootPath);
-    //    //inputFile.FileSource = FileSource.Local;
-    //    //ToastService.ShowSuccess($"File '{file.Name}' uploaded successfully.");
-    //}
+//    //    //inputFile.FilePath = FileHelper.GetRelativePath(tempFilePath, Environment.WebRootPath);
+//    //    //inputFile.FileSource = FileSource.Local;
+//    //    //ToastService.ShowSuccess($"File '{file.Name}' uploaded successfully.");
+//    //}
 
-    protected async Task HandleFileUploadedAsync(FluentInputFileEventArgs uploadedFile)
-    {
-        //var file = files.First();
-        ////if (!IsValidFile(file, inputFile))
-        ////    return;
+//    protected async Task HandleFileUploadedAsync(FluentInputFileEventArgs uploadedFile)
+//    {
+//        //var file = files.First();
+//        ////if (!IsValidFile(file, inputFile))
+//        ////    return;
 
-        //var fileName = FileHelper.NormalizeFileName(Model.Detail.Word, Path.GetExtension(file.Name));
-        //var tempFilePath = FileHelper.GetFullTempUploadPath(fileName, Environment.WebRootPath);
+//        //var fileName = FileHelper.NormalizeFileName(Model.Detail.Word, Path.GetExtension(file.Name));
+//        //var tempFilePath = FileHelper.GetFullTempUploadPath(fileName, Environment.WebRootPath);
 
-        var command = new UploadMediaFileCommand
-        {
-            Stream = uploadedFile.Stream!,
-            Filename = uploadedFile.Name
-        };
+//        var command = new UploadMediaFileCommand
+//        {
+//            Stream = uploadedFile.Stream!,
+//            Filename = uploadedFile.Name
+//        };
 
-        var result = await Mediator.Send(command);
-        if (result.IsFailed)
-        {
-            ToastService.ShowWarning(result.GetErrorMessages());
-            return;
-        }
+//        var result = await Mediator.Send(command);
+//        if (result.IsFailed)
+//        {
+//            ToastService.ShowWarning(result.GetErrorMessages());
+//            return;
+//        }
 
-        //fileModel.UpdateFrom(result.Data);
-        if (FileUtils.GetMediaType(result.Value.ContentType) == MediaType.Audio)
-            audioFile = result.Value;
-        else if (FileUtils.GetMediaType(result.Value.ContentType) == MediaType.Image)
-            imageFile = result.Value;
+//        //fileModel.UpdateFrom(result.Data);
+//        if (FileUtils.GetMediaType(result.Value.ContentType) == MediaType.Audio)
+//            audioFile = result.Value;
+//        else if (FileUtils.GetMediaType(result.Value.ContentType) == MediaType.Image)
+//            imageFile = result.Value;
 
 
-        //inputFile.FilePath = FileHelper.GetRelativePath(tempFilePath, Environment.WebRootPath);
-        //inputFile.FileSource = FileSource.Local;
-        //ToastService.ShowSuccess($"File '{file.Name}' uploaded successfully.");
-    }
+//        //inputFile.FilePath = FileHelper.GetRelativePath(tempFilePath, Environment.WebRootPath);
+//        //inputFile.FileSource = FileSource.Local;
+//        //ToastService.ShowSuccess($"File '{file.Name}' uploaded successfully.");
+//    }
 
-    protected void HandleRemoveFile(MediaType type)
-    {
-        //Model.Detail.RemoveFile(fileType);
-        //if (fileType == MediaType.Image)
-        //    _availableImages.Clear();
-        switch (type)
-        {
-            case MediaType.Audio:
-                audioFile = new();
-                break;
-            case MediaType.Image:
-                imageFile = new();
-                break;
-            default:
-                break;
-        }
-    }
-}
+//    protected void HandleRemoveFile(MediaType type)
+//    {
+//        //Model.Detail.RemoveFile(fileType);
+//        //if (fileType == MediaType.Image)
+//        //    _availableImages.Clear();
+//        switch (type)
+//        {
+//            case MediaType.Audio:
+//                audioFile = new();
+//                break;
+//            case MediaType.Image:
+//                imageFile = new();
+//                break;
+//            default:
+//                break;
+//        }
+//    }
+//}

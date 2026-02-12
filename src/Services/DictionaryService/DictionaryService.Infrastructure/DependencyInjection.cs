@@ -3,7 +3,7 @@ using BuildingBlocks.Infrastructure.Persistence.Abstractions;
 using DictionaryService.Application.Abstractions;
 using DictionaryService.Domain.Aggregates.DictionaryEntries;
 using DictionaryService.Infrastructure.Configurations;
-using DictionaryService.Infrastructure.Persistence;
+using DictionaryService.Infrastructure.Persistence.DataContext;
 using DictionaryService.Infrastructure.Persistence.Interceptors;
 using DictionaryService.Infrastructure.Persistence.QueryServices;
 using DictionaryService.Infrastructure.Persistence.Repositories;

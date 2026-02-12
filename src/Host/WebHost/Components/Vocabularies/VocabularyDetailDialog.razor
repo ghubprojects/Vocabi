@@ -1,9 +1,10 @@
-﻿@using Vocabi.Domain.Aggregates.MediaFiles
+﻿@* @using Vocabi.Domain.Aggregates.MediaFiles
 @using Vocabi.Shared
 @using Vocabi.Shared.Common
-@using Vocabi.Web.Components.Common
-@using static Vocabi.Shared.Common.Enums
+@using WebHost.Components.Common
+@using static Vocabi.Shared.Common.Enums *@
 
+@*
 <FluentDialogHeader ShowDismiss="true" Style="gap:0">
     <FluentLabel Typo="Typography.H3">
         @Dialog.Instance.Parameters.Title
@@ -13,7 +14,7 @@
 <FluentDialogBody>
     <FluentEditForm EditContext="editContext" style="width:100%">
         <DataAnnotationsValidator />
-        @* <CustomValidator @ref="_customValidator" />  *@
+        <CustomValidator @ref="_customValidator" />
 
         <div style="color: var(--error);">
             <FluentValidationSummary />
@@ -120,4 +121,4 @@
             Save
         </FluentButton>
     </FluentStack>
-</FluentDialogFooter>
+</FluentDialogFooter> *@

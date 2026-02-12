@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 
-namespace Vocabi.Web.Components.Common.Layout;
+namespace WebHost.Components.Common.Layout;
 
 public partial class MainLayout
 {

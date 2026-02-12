@@ -4,31 +4,32 @@ using BuildingBlocks.Application.Models;
 using BuildingBlocks.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using VocabularyService.Application.Abstractions;
-using VocabularyService.Application.UseCases.Vocabularies.Dtos;
+using VocabularyService.Application.UseCases.Vocabularies.GetVocabulary;
+using VocabularyService.Application.UseCases.Vocabularies.SearchVocabularies;
 using VocabularyService.Domain.Aggregates;
+using VocabularyService.Infrastructure.Persistence.DataContext;
 
 namespace VocabularyService.Infrastructure.Persistence.QueryServices;
 
 public sealed class VocabularyQueryService(VocabularyContext context, IMapper mapper) : IVocabularyQueryService
 {
-    public async Task<PagedResult<VocabularySearchItem>> SearchAsync(string keyword, int pageIndex, int pageSize, CancellationToken cancellationToken)
+    public async Task<PagedResult<VocabularySearchItemDto>> SearchAsync(string keyword, int pageIndex, int pageSize, CancellationToken cancellationToken)
     {
         keyword = keyword.Trim();
 
         return await context.Vocabularies
             .AsNoTracking()
-            .Where(x => EF.Functions.ILike(x.Word, $"%{keyword}%"))
+            .Where(x => EF.Functions.ILike(x.Headword, $"%{keyword}%"))
             .OrderByDescending(x => x.Audit.CreatedAt)
-            .ProjectToPagedResultAsync<Vocabulary, VocabularySearchItem>(pageIndex, pageSize, mapper.ConfigurationProvider, cancellationToken);
+            .ProjectToPagedResultAsync<Vocabulary, VocabularySearchItemDto>(pageIndex, pageSize, mapper.ConfigurationProvider, cancellationToken);
     }
 
-    public async Task<VocabularyDetail?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<VocabularyDetailDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await context.Vocabularies
             .AsNoTracking()
             .Where(x => x.Id == id)
-            .ProjectTo<VocabularyDetail>(mapper.ConfigurationProvider)
+            .ProjectTo<VocabularyDetailDto>(mapper.ConfigurationProvider)
             .SingleOrDefaultAsync(cancellationToken);
     }
 }
-

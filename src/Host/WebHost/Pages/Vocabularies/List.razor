@@ -1,10 +1,10 @@
-﻿@page "/vocabularies/{statusText}"
+﻿@* @page "/vocabularies/{statusText}"
 @rendermode InteractiveServer
-@using Vocabi.Web.ViewModels.Vocabularies
+@using WebHost.ViewModels.Vocabularies
 @using Vocabi.Shared.Utils
-@using Vocabi.Web.Components.Vocabularies
+@using WebHost.Components.Vocabularies *@
 
-<PageTitle>Vocabulary @Status List</PageTitle>
+@* <PageTitle>Vocabulary @Status List</PageTitle>
 
 <FluentStack Orientation="Orientation.Vertical">
     <FluentStack HorizontalAlignment="HorizontalAlignment.SpaceBetween" VerticalAlignment="VerticalAlignment.Center">
@@ -163,4 +163,4 @@
         </FluentDataGrid>
         <FluentPaginator State="pagination" Style="width:100%;margin-top:0" />
     </FluentStack>
-</FluentStack>
+</FluentStack> *@

@@ -1,9 +1,10 @@
-﻿using DictionaryService.Application.UseCases.DictionaryEntries.Dtos;
+﻿using DictionaryService.Application.UseCases.DictionaryEntries.GetDictionaryEntry;
+using DictionaryService.Application.UseCases.DictionaryEntries.SearchDictionaryEntries;
 
 namespace DictionaryService.Application.Abstractions;
 
 public interface IDictionaryEntryQueryService
 {
-    Task<IReadOnlyList<DictionaryEntrySearchItem>> SearchAsync(string keyword, CancellationToken cancellationToken);
-    Task<DictionaryEntryDetail?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<IReadOnlyList<DictionaryEntrySearchItemDto>> SearchAsync(string keyword, CancellationToken cancellationToken);
+    Task<DictionaryEntryDetailDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 }

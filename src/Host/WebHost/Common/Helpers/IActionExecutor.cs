@@ -1,6 +1,6 @@
 ﻿using FluentResults;
 
-namespace Vocabi.Web.Common.Helpers;
+namespace WebHost.Common.Helpers;
 
 public interface IActionExecutor
 {

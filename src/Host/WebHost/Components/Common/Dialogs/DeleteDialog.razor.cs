@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.FluentUI.AspNetCore.Components;
-using Vocabi.Web.Common.Helpers;
+using WebHost.Common.Helpers;
 
-namespace Vocabi.Web.Components.Common.Dialogs;
+namespace WebHost.Components.Common.Dialogs;
 
 public partial class DeleteDialog : IDialogContentComponent<string>
 {

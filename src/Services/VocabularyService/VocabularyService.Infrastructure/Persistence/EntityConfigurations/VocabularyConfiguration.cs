@@ -12,7 +12,7 @@ internal sealed class VocabularyConfiguration : IEntityTypeConfiguration<Vocabul
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Word)
+        builder.Property(x => x.Headword)
             .IsRequired()
             .HasMaxLength(200);
 

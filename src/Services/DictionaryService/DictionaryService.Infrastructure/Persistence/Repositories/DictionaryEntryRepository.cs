@@ -1,6 +1,7 @@
 ﻿using BuildingBlocks.Domain.Abstractions;
 using DictionaryService.Domain.Aggregates.DictionaryEntries;
 using DictionaryService.Domain.Aggregates.DictionaryEntries.Models;
+using DictionaryService.Infrastructure.Persistence.DataContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace DictionaryService.Infrastructure.Persistence.Repositories;

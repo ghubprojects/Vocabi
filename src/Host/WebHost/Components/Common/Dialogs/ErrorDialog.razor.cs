@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System.Net;
-using Vocabi.Domain.Exceptions;
 
-namespace Vocabi.Web.Components.Common.Dialogs;
+namespace WebHost.Components.Common.Dialogs;
 
 public partial class ErrorDialog
 {
@@ -17,7 +15,7 @@ public partial class ErrorDialog
     {
         switch (Exception)
         {
-            case DomainException ex:
+            case Exception ex:
                 Message = ex.Message;
 
                 break;

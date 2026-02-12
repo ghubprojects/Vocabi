@@ -1,4 +1,4 @@
-﻿namespace Vocabi.Web.Services.Navigation;
+﻿namespace WebHost.Services.Navigation;
 
 public interface INavigationService
 {

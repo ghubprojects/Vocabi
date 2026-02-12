@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using VocabularyService.Application.Abstractions;
 using VocabularyService.Domain.Aggregates;
 using VocabularyService.Infrastructure.Configuration;
-using VocabularyService.Infrastructure.Persistence;
+using VocabularyService.Infrastructure.Persistence.DataContext;
 using VocabularyService.Infrastructure.Persistence.Interceptors;
 using VocabularyService.Infrastructure.Persistence.QueryServices;
 using VocabularyService.Infrastructure.Persistence.Repositories;

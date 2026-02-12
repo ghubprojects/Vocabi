@@ -1,7 +1,7 @@
 ﻿using FluentResults;
 using Microsoft.FluentUI.AspNetCore.Components;
 
-namespace Vocabi.Web.Common.Helpers;
+namespace WebHost.Common.Helpers;
 
 public class ActionExecutor(IToastService toastService) : IActionExecutor
 {
