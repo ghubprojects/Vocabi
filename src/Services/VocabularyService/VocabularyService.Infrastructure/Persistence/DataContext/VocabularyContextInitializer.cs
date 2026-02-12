@@ -16,29 +16,42 @@ public class VocabularyContextInitializer(
 {
     private readonly DatabaseOptions _options = options.Value;
 
-    public async Task InitializeAsync()
+    public async Task InitializeAsync(CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Initializing Vocabulary DB with mode {Mode}", _options.InitMode);
 
-        switch (_options.InitMode)
+        if (_options.InitMode == DatabaseInitMode.None)
         {
-            case DatabaseInitMode.None:
-                return;
-
-            case DatabaseInitMode.Migrate:
-                await context.Database.MigrateAsync();
-                break;
-
-            case DatabaseInitMode.Recreate:
-                await context.Database.EnsureDeletedAsync();
-                await context.Database.EnsureCreatedAsync();
-                break;
-
-            case DatabaseInitMode.RecreateAndSeed:
-                await context.Database.EnsureDeletedAsync();
-                await context.Database.EnsureCreatedAsync();
-                await seeder.SeedAsync();
-                break;
+            logger.LogInformation("Database initialization skipped.");
+            return;
         }
+
+        var strategy = context.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
+        {
+            switch (_options.InitMode)
+            {
+                case DatabaseInitMode.Migrate:
+                    await context.Database.MigrateAsync(cancellationToken);
+                    break;
+
+                case DatabaseInitMode.Recreate:
+                    await context.Database.EnsureDeletedAsync(cancellationToken);
+                    await context.Database.MigrateAsync(cancellationToken);
+                    break;
+
+                case DatabaseInitMode.RecreateAndSeed:
+                    await context.Database.EnsureDeletedAsync(cancellationToken);
+                    await context.Database.MigrateAsync(cancellationToken);
+                    await seeder.SeedAsync(cancellationToken);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        });
+
+        logger.LogInformation("Database initialization completed successfully.");
     }
 }

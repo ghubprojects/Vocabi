@@ -18,7 +18,7 @@ public class DictionarySeeder(
         PropertyNameCaseInsensitive = true
     };
 
-    public async Task SeedAsync()
+    public async Task SeedAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("Seeding Dictionary data...");
 
@@ -38,7 +38,7 @@ public class DictionarySeeder(
             context.DictionaryEntries.Add(entry);
         }
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
         context.ChangeTracker.Clear();
         
         logger.LogInformation("Dictionary seeding completed.");

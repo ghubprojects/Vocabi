@@ -17,7 +17,7 @@ public class VocabularySeeder(
         PropertyNameCaseInsensitive = true
     };
 
-    public async Task SeedAsync()
+    public async Task SeedAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("Seeding Vocabulary data...");
 
@@ -39,7 +39,7 @@ public class VocabularySeeder(
             context.Vocabularies.Add(vocabulary);
         }
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
         context.ChangeTracker.Clear();
 
         logger.LogInformation("Vocabulary seeding completed.");
